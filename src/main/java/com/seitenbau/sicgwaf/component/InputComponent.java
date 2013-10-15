@@ -8,13 +8,14 @@ public class InputComponent extends HtmlElementComponent
   
   public String value;
   
-  public InputComponent()
+  public InputComponent(Component parent)
   {
+    super(parent);
   }
 
-  public InputComponent(String elementName, String id)
+  public InputComponent(String elementName, String id, Component parent)
   {
-    super(elementName, id);
+    super(elementName, id, parent);
   }
 
   public void processRequest(HttpServletRequest request)

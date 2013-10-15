@@ -14,15 +14,15 @@ public class SnippetListComponent extends Component
   /** Unmodifiable list of parts. */
   public final List<ComponentPart> parts;
   
-  public SnippetListComponent()
+  public SnippetListComponent(Component parent)
   {
-    super(null);
+    super(null, parent);
     this.parts = new ArrayList<>();
   }
 
-  public SnippetListComponent(List<ComponentPart> parts)
+  public SnippetListComponent(List<ComponentPart> parts, Component parent)
   {
-    super(null);
+    super(null, parent);
     this.parts = parts;
   }
   

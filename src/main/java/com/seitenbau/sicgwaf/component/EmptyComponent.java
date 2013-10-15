@@ -10,14 +10,14 @@ import java.util.List;
  */
 public class EmptyComponent extends Component
 {
-  public EmptyComponent()
+  public EmptyComponent(Component parent)
   {
-    super(null);
+    super(null, parent);
   }
 
-  public EmptyComponent(String id)
+  public EmptyComponent(String id, Component parent)
   {
-    super(id);
+    super(id, parent);
   }
 
   @Override

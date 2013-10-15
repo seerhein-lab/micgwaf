@@ -16,7 +16,7 @@ public class SnippetListContentHandler extends ContentHandler
   
   public StringBuilder currentStringPart = new StringBuilder();
   
-  private SnippetListComponent component = new SnippetListComponent();
+  private SnippetListComponent component = new SnippetListComponent(null);
 
   @Override
   public void startElement(

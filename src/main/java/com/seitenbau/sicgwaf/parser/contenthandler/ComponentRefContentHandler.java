@@ -47,6 +47,6 @@ public class ComponentRefContentHandler extends ContentHandler
   @Override
   public RefComponent finished() throws SAXException
   {
-    return new RefComponent(refid);
+    return new RefComponent(refid, null);
   }
 }

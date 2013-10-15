@@ -86,11 +86,11 @@ public class HtmlElementContentHandler extends ContentHandler
     HtmlElementComponent htmlElementComponent;
     if (inputElements.contains(elementName))
     {
-      htmlElementComponent = new InputComponent(elementName, id);
+      htmlElementComponent = new InputComponent(elementName, id, null);
     }
     else
     {
-      htmlElementComponent = new HtmlElementComponent(elementName, id);
+      htmlElementComponent = new HtmlElementComponent(elementName, id, null);
     }
     htmlElementComponent.attributes.putAll(attributeValues);
     htmlElementComponent.children.addAll(children);
@@ -100,7 +100,9 @@ public class HtmlElementContentHandler extends ContentHandler
     }
     if (multiple)
     {
-      return new ChildListComponent(null, htmlElementComponent);
+      Component result = new ChildListComponent(null, null, htmlElementComponent);
+      htmlElementComponent.parent = result;
+      return result;
     }
     return htmlElementComponent;
   }

@@ -12,19 +12,19 @@ public class ChildListComponent extends Component
 {
   public final List<Component> children = new ArrayList<Component>();
   
-  public ChildListComponent()
+  public ChildListComponent(Component parent)
   {
-    super(null);
+    super(null, parent);
   }
 
-  public ChildListComponent(String id)
+  public ChildListComponent(String id, Component parent)
   {
-    super(id);
+    super(id, parent);
   }
 
-  public ChildListComponent(String id, Component child)
+  public ChildListComponent(String id, Component parent, Component child)
   {
-    super(id);
+    super(id, parent);
     children.add(child);
   }
 

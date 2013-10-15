@@ -35,6 +35,6 @@ public class RemoveContentHandler extends ContentHandler
   @Override
   public EmptyComponent finished() throws SAXException
   {
-    return new EmptyComponent();
+    return new EmptyComponent(null);
   }
 }

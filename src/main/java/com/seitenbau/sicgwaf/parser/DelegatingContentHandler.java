@@ -105,6 +105,10 @@ public class DelegatingContentHandler extends DefaultHandler
     while (contentDepth == currentDelegate.startDepth && contentDepth != -1)
     {
       Component result = currentDelegate.contentHandler.finished();
+      for (Component child : result.getChildren())
+      {
+        child.parent = result;
+      }
       currentDelegate = delegateList.remove(delegateList.size() - 1);
       currentDelegate.contentHandler.child(result);
       if (!endElementCalled)

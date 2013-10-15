@@ -15,14 +15,14 @@ public class SnippetComponent extends Component
   /** The referenced snippet. */
   public String snippet;
   
-  public SnippetComponent()
+  public SnippetComponent(Component parent)
   {
-    super(null);
+    super(null, parent);
   }
 
-  public SnippetComponent(String id, String snippet)
+  public SnippetComponent(String id, String snippet, Component parent)
   {
-    super(id);
+    super(id, parent);
     this.snippet = snippet;
   }
   

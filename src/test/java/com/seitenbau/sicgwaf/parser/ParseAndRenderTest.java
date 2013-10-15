@@ -7,6 +7,7 @@ import java.io.StringWriter;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.seitenbau.sicgwaf.component.Component;
@@ -32,5 +33,15 @@ public class ParseAndRenderTest
     String expected = FileUtils.readFileToString(new File(componentDir, "expected/expected.xhtml"));
     expected = expected.replace("\r\n", "\n");
     assertEquals(expected, stringWriter.toString());
+  }
+  
+  @Test
+  @Ignore
+  public void testChildAndParentReferences() throws Exception
+  {
+    File componentDir = new File("src/test/resources/com/seitenbau/sicgwaf/page");
+    Map<String, Component> components 
+        = new HtmlParser().readComponents(componentDir);
+    // TODO check child and parent references
   }
 }

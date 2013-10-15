@@ -27,14 +27,14 @@ public class HtmlElementComponent extends Component
   
   public final List<Component> children = new ArrayList<Component>();
   
-  public HtmlElementComponent()
+  public HtmlElementComponent(Component parent)
   {
-    super(null);
+    super(null, parent);
   }
 
-  public HtmlElementComponent(String elementName, String id)
+  public HtmlElementComponent(String elementName, String id, Component parent)
   {
-    super(id);
+    super(id, parent);
     this.elementName = elementName;
   }
 

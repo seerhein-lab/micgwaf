@@ -11,9 +11,12 @@ public abstract class Component
 {
   public String id;
   
-  public Component(String id)
+  public Component parent;
+  
+  public Component(String id, Component parent)
   {
     this.id = id;
+    this.parent = parent;
   }
   
   public abstract List<Component> getChildren();
