@@ -8,6 +8,8 @@ public class ContentHandlerRegistry
 
   public static final String MULTIPLE_ATTR = "multiple";
   
+  public static final String REMOVE_ELEMENT_NAME = "remove";
+
   /**
    * Key is name of attribute in our namespace, value is handler.
    */

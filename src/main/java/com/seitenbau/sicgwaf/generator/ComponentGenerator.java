@@ -40,7 +40,8 @@ public abstract class ComponentGenerator
       String componentField,
       Component component,
       String targetPackage,
-      int indent);
+      int indent,
+      Map<String, String> filesToWrite);
   
   public abstract void generateExtension(
       String componentName,
@@ -77,28 +78,43 @@ public abstract class ComponentGenerator
   }
 
   public void generateFieldFromComponent(
-      Component component, 
+      Component component,
       String targetPackage, 
       StringBuilder result,
+      String modifier,
       String fieldName,
-      int indent)
+      int indent,
+      Map<String, String> filesToWrite)
   {
     String indentString = getIndentString(indent);
     ComponentGenerator generator = Generator.getGenerator(component);
-    String className = generator.getReferencableClassName(null, component, targetPackage);
-    result.append(indentString).append(className).append(" ").append(fieldName)
-        .append(" = new ").append(className).append("(this);\n");
-    result.append(generator.generateInitializer(fieldName, component, targetPackage, indent));
+    String newComponentName = generator.generateNewComponent(fieldName, component, targetPackage);
+    if (newComponentName == null)
+    {
+      String className = generator.getReferencableClassName(null, component, targetPackage);
+      result.append(indentString).append(className).append(" ").append(fieldName)
+          .append(" = new ").append(className).append("(this);\n");
+      result.append(generator.generateInitializer(fieldName, component, targetPackage, indent, filesToWrite));
+    }
+    else
+    {
+      generator.generate(component.id, component, targetPackage, filesToWrite);
+      String componentClassName = generator.getReferencableClassName(component.id, component, targetPackage);
+      result.append(indentString).append(modifier).append(componentClassName).append(" ").append(fieldName)
+          .append(" = new ").append(componentClassName).append("(this);\n\n");
+    }
   }
+
 
   public void generateInitChildren(
       Component component, 
       String targetPackage,
       StringBuilder result,
       String componentField,
-      int indent)
+      int indent,
+      Map<String, String> filesToWrite)
   {
-    List<Component> children = component.getChildren();
+    List<? extends Component> children = component.getChildren();
     if (children.isEmpty())
     {
       return;
@@ -117,7 +133,7 @@ public abstract class ComponentGenerator
       {
         fieldName = getChildName(componentField, counter);
       }
-      generateFieldFromComponent(child, targetPackage, result, fieldName, indent + 2);
+      generateFieldFromComponent(child, targetPackage, result, "public", fieldName, indent + 2, filesToWrite);
       result.append(indentString).append("  ").append(componentField).append(".children.add(")
           .append(fieldName).append(");\n");
 

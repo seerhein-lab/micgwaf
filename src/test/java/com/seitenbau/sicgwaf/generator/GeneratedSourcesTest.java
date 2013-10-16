@@ -15,7 +15,7 @@ public class GeneratedSourcesTest
   @Test
   public void testRender() throws Exception
   {
-    Root root = new Root();
+    Root root = new Root(null);
     StringWriter stringWriter = new StringWriter();
     root.render(stringWriter);
     System.out.println(stringWriter);

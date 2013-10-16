@@ -100,7 +100,7 @@ public class Generator
       ComponentGenerator componentGenerator = componentGeneratorMap.get(component.getClass());
       String componentClassName = componentGenerator.getReferencableClassName(componentName, component, targetPackage);
       content.append("    components.put(\"").append(componentName)
-          .append("\", new ").append(componentClassName).append("());\n");
+          .append("\", new ").append(componentClassName).append("(null));\n");
     }
     content.append("  }\n");
     content.append("}\n");
@@ -113,10 +113,15 @@ public class Generator
   
   public static ComponentGenerator getGenerator(Component component)
   {
-    ComponentGenerator result = componentGeneratorMap.get(component.getClass());
+    return getGenerator(component.getClass());
+  }
+
+  public static ComponentGenerator getGenerator(Class<? extends Component> componentClass)
+  {
+    ComponentGenerator result = componentGeneratorMap.get(componentClass);
     if (result == null)
     {
-      throw new IllegalArgumentException("Unknown component class " + component.getClass());
+      throw new IllegalArgumentException("Unknown component class " + componentClass);
     }
     return result;
   }

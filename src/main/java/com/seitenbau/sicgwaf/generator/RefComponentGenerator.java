@@ -55,7 +55,8 @@ public class RefComponentGenerator extends ComponentGenerator
       String componentField,
       Component rawComponent,
       String targetPackage,
-      int indent)
+      int indent,
+      Map<String, String> filesToWrite)
   {
     return "";
   }

@@ -19,7 +19,7 @@ public abstract class Component
     this.parent = parent;
   }
   
-  public abstract List<Component> getChildren();
+  public abstract List<? extends Component> getChildren();
   
   /**
    * Binds other components to this component

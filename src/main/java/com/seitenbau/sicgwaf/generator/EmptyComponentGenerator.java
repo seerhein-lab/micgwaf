@@ -2,9 +2,7 @@ package com.seitenbau.sicgwaf.generator;
 
 import java.util.Map;
 
-import com.seitenbau.sicgwaf.component.ChildListComponent;
 import com.seitenbau.sicgwaf.component.Component;
-import com.seitenbau.sicgwaf.component.RefComponent;
 
 public class EmptyComponentGenerator extends ComponentGenerator
 {
@@ -54,7 +52,8 @@ public class EmptyComponentGenerator extends ComponentGenerator
       String componentField,
       Component rawComponent,
       String targetPackage,
-      int indent)
+      int indent,
+      Map<String, String> filesToWrite)
   {
     return "";
   }

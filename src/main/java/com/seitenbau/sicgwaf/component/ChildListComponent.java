@@ -8,9 +8,9 @@ import java.util.List;
 /**
  * A Component consisting of a list of child componets.
  */
-public class ChildListComponent extends Component
+public class ChildListComponent<T extends Component> extends Component
 {
-  public final List<Component> children = new ArrayList<Component>();
+  public final List<T> children = new ArrayList<T>();
   
   public ChildListComponent(Component parent)
   {
@@ -22,13 +22,13 @@ public class ChildListComponent extends Component
     super(id, parent);
   }
 
-  public ChildListComponent(String id, Component parent, Component child)
+  public ChildListComponent(String id, Component parent, T child)
   {
     super(id, parent);
     children.add(child);
   }
 
-  public List<Component> getChildren()
+  public List<T> getChildren()
   {
     return children;
   }

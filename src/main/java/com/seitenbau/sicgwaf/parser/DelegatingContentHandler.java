@@ -11,6 +11,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import com.seitenbau.sicgwaf.component.Component;
+import com.seitenbau.sicgwaf.component.EmptyComponent;
 import com.seitenbau.sicgwaf.parser.contenthandler.ContentHandler;
 import com.seitenbau.sicgwaf.parser.contenthandler.ContentHandlerFactory;
 import com.seitenbau.sicgwaf.parser.contenthandler.ContentHandlerRegistry;
@@ -19,6 +20,8 @@ import com.seitenbau.sicgwaf.util.Constants;
 
 public class DelegatingContentHandler extends DefaultHandler
 {
+
+  public static final String REMOVE_ELEMENT_NAME = "remove";
 
   public List<DelegateReference> delegateList = new ArrayList<>();
   
@@ -110,7 +113,10 @@ public class DelegatingContentHandler extends DefaultHandler
         child.parent = result;
       }
       currentDelegate = delegateList.remove(delegateList.size() - 1);
-      currentDelegate.contentHandler.child(result);
+      if (!(result instanceof EmptyComponent))
+      {
+        currentDelegate.contentHandler.child(result);
+      }
       if (!endElementCalled)
       {
         currentDelegate.contentHandler.endElement(uri, localName, qName);

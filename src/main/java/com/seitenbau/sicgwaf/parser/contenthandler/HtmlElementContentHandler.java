@@ -100,7 +100,10 @@ public class HtmlElementContentHandler extends ContentHandler
     }
     if (multiple)
     {
-      Component result = new ChildListComponent(null, null, htmlElementComponent);
+      Component result = new ChildListComponent<HtmlElementComponent>(
+          null,
+          null, 
+          htmlElementComponent);
       htmlElementComponent.parent = result;
       return result;
     }

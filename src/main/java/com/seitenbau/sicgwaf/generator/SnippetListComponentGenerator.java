@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.seitenbau.sicgwaf.component.ChildListComponent;
 import com.seitenbau.sicgwaf.component.Component;
 import com.seitenbau.sicgwaf.component.ComponentPart;
 import com.seitenbau.sicgwaf.component.SnippetListComponent;
@@ -60,6 +61,7 @@ public class SnippetListComponentGenerator extends ComponentGenerator
     fileContent.append("import ").append(List.class.getName()).append(";\n");
     fileContent.append("import ").append(ArrayList.class.getName()).append(";\n");
     fileContent.append("import ").append(ComponentPart.class.getName()).append(";\n");
+    fileContent.append("import ").append(ChildListComponent.class.getName()).append(";\n");
     fileContent.append("\n");
     fileContent.append("public class ").append(className)
         .append(" extends ").append(Component.class.getSimpleName())
@@ -85,7 +87,7 @@ public class SnippetListComponentGenerator extends ComponentGenerator
           String componentClassName = generator.getReferencableClassName(null, part.component, targetPackage);
           fileContent.append("  public ").append(componentClassName).append(" ").append(componentField)
               .append(" = new ").append(componentClassName).append("(this);\n\n");
-          fileContent.append(generator.generateInitializer(componentField, part.component, targetPackage, 2));
+          fileContent.append(generator.generateInitializer(componentField, part.component, targetPackage, 2, filesToWrite));
         }
         else
         {
@@ -196,7 +198,8 @@ public class SnippetListComponentGenerator extends ComponentGenerator
       String componentField,
       Component component,
       String targetPackage,
-      int indent)
+      int indent,
+      Map<String, String> filesToWrite)
   {
     String indentString = getIndentString(indent);
     SnippetListComponent snippetListComponent = (SnippetListComponent) component;
@@ -208,7 +211,7 @@ public class SnippetListComponentGenerator extends ComponentGenerator
       if (part.component != null)
       {
         String fieldName = getChildName(componentField, counter);
-        generateFieldFromComponent(part.component, targetPackage, result, fieldName, indent + 2);
+        generateFieldFromComponent(part.component, targetPackage, result, "public", fieldName, indent + 2, filesToWrite);
         result.append(indentString).append("  ").append(componentField)
             .append(".parts.add(ComponentPart.fromComponent(")
             .append(fieldName).append("));\n");
