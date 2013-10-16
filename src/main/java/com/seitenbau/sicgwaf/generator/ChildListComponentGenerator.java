@@ -1,6 +1,5 @@
 package com.seitenbau.sicgwaf.generator;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import com.seitenbau.sicgwaf.component.ChildListComponent;
@@ -76,7 +75,7 @@ public class ChildListComponentGenerator extends ComponentGenerator
     {
       Component child = childListComponent.children.get(i);
       ComponentGenerator delegate = Generator.getGenerator(child);
-      generateFieldFromComponent(child, targetPackage, result, "", componentField + i, 2, filesToWrite);
+      generateFieldFromComponent(child, targetPackage, result, "", componentField + i, 4, filesToWrite);
       // hacky, also creates sub classes
       result.append(delegate.generateInitializer(componentField + i, child, targetPackage, indent + 2, filesToWrite));
       result.append(indentString).append("  ").append(componentField).append(".children.add(")
