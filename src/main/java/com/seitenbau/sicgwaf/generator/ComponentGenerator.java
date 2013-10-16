@@ -9,25 +9,25 @@ public abstract class ComponentGenerator
 {
   public abstract String getClassName(
       String componentName,
-      Component rawComponent,
+      Component component,
       String targetPackage);
 
   public abstract String getExtensionClassName(
       String componentName,
-      Component rawComponent,
+      Component component,
       String targetPackage);
   
   public String getReferencableClassName(
       String componentName,
-      Component rawComponent,
+      Component component,
       String targetPackage)
   {
-    String result = getExtensionClassName(componentName, rawComponent, targetPackage);
+    String result = getExtensionClassName(componentName, component, targetPackage);
     if (result != null)
     {
       return result;
     }
-    return getClassName(componentName, rawComponent, targetPackage);
+    return getClassName(componentName, component, targetPackage);
   }
 
   public abstract void generate(
@@ -87,7 +87,7 @@ public abstract class ComponentGenerator
     ComponentGenerator generator = Generator.getGenerator(component);
     String className = generator.getReferencableClassName(null, component, targetPackage);
     result.append(indentString).append(className).append(" ").append(fieldName)
-        .append(" = new ").append(className).append("();\n");
+        .append(" = new ").append(className).append("(this);\n");
     result.append(generator.generateInitializer(fieldName, component, targetPackage, indent));
   }
 

@@ -7,8 +7,10 @@ import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 
+import com.seitenbau.sicgwaf.component.ChildListComponent;
 import com.seitenbau.sicgwaf.component.Component;
 import com.seitenbau.sicgwaf.component.ComponentRegistry;
+import com.seitenbau.sicgwaf.component.EmptyComponent;
 import com.seitenbau.sicgwaf.component.HtmlElementComponent;
 import com.seitenbau.sicgwaf.component.InputComponent;
 import com.seitenbau.sicgwaf.component.RefComponent;
@@ -25,6 +27,8 @@ public class Generator
     componentGeneratorMap.put(HtmlElementComponent.class, new HtmlElementComponentGenerator());
     componentGeneratorMap.put(InputComponent.class, new InputComponentGenerator());
     componentGeneratorMap.put(RefComponent.class, new RefComponentGenerator());
+    componentGeneratorMap.put(ChildListComponent.class, new ChildListComponentGenerator());
+    componentGeneratorMap.put(EmptyComponent.class, new EmptyComponentGenerator());
   }
   
   public void generateComponent(

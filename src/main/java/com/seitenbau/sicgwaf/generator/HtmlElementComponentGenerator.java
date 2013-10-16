@@ -60,7 +60,11 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
     fileContent.append("public class ").append(className)
         .append(" extends ").append(HtmlElementComponent.class.getSimpleName())
         .append("\n");
-    fileContent.append("{\n");
+    fileContent.append("{\n\n");
+    fileContent.append("  public " + className + "(Component parent)");
+    fileContent.append("  {\n");
+    fileContent.append("    super(parent);\n");
+    fileContent.append("  }\n");
     int componentCounter = 1;
     for (Component child : htmlElementCompont.children)
     {
@@ -78,7 +82,7 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
             {
               String componentClassName = generator.getReferencableClassName(null, part.component, targetPackage);
               fileContent.append("  public ").append(componentClassName).append(" ").append(componentField)
-                  .append(" = new ").append(componentClassName).append("();\n\n");
+                  .append(" = new ").append(componentClassName).append("(this);\n\n");
               fileContent.append(generator.generateInitializer(componentField, part.component, targetPackage, 2));
             }
             else
@@ -86,14 +90,14 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
               generator.generate(part.component.id, part.component, targetPackage, filesToWrite);
               String componentClassName = generator.getReferencableClassName(part.component.id, part.component, targetPackage);
               fileContent.append("  public ").append(componentClassName).append(" ").append(componentField)
-                  .append(" = new ").append(componentClassName).append("();\n\n");
+                  .append(" = new ").append(componentClassName).append("(this);\n\n");
             }
           }
           else
           {
             fileContent.append("  public ").append(SnippetComponent.class.getSimpleName()).append(" ")
                     .append(componentField).append(" = new ").append(SnippetComponent.class.getSimpleName())
-                    .append("(null, ").append(asConstant(part.htmlSnippet)).append(");\n\n");
+                    .append("(null, ").append(asConstant(part.htmlSnippet)).append(", this);\n\n");
           }
           componentCounter++;                      
         }
@@ -106,7 +110,7 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
       {
         String componentClassName = generator.getReferencableClassName(null, child, targetPackage);
         fileContent.append("  public ").append(componentClassName).append(" ").append(componentField)
-            .append(" = new ").append(componentClassName).append("();\n\n");
+            .append(" = new ").append(componentClassName).append("(this);\n\n");
         fileContent.append(generator.generateInitializer(componentField, child, targetPackage, 2));
       }
       else
@@ -114,7 +118,7 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
         generator.generate(child.id, child, targetPackage, filesToWrite);
         String componentClassName = generator.getReferencableClassName(child.id, child, targetPackage);
         fileContent.append("  public ").append(componentClassName).append(" ").append(componentField)
-            .append(" = new ").append(componentClassName).append("();\n\n");
+            .append(" = new ").append(componentClassName).append("(this);\n\n");
       }
       componentCounter++;          
     }
@@ -170,10 +174,16 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
     StringBuilder fileContent = new StringBuilder();
     fileContent.append("package ").append(targetPackage).append(";\n\n");
     fileContent.append("\n");
+    fileContent.append("import ").append(Component.class.getName()).append(";\n");
+    fileContent.append("\n");
     fileContent.append("public class ").append(extensionClassName)
         .append(" extends ").append(className)
         .append("\n");
     fileContent.append("{\n");
+    fileContent.append("  public " + extensionClassName + "(Component parent)\n");
+    fileContent.append("  {\n");
+    fileContent.append("    super(parent);\n");
+    fileContent.append("  }\n");
     fileContent.append("}\n");
     int componentCounter = 1;
     for (Component child : htmlElementCompont.children)
