@@ -71,10 +71,16 @@ public class InputComponentGenerator extends HtmlElementComponentGenerator
     StringBuilder fileContent = new StringBuilder();
     fileContent.append("package ").append(targetPackage).append(";\n\n");
     fileContent.append("\n");
+    fileContent.append("import ").append(Component.class.getName()).append(";\n");
+    fileContent.append("\n");
     fileContent.append("public class ").append(extensionClassName)
         .append(" extends ").append(className)
         .append("\n");
     fileContent.append("{\n");
+    fileContent.append("  public " + extensionClassName + "(Component parent)\n");
+    fileContent.append("  {\n");
+    fileContent.append("    super(parent);\n");
+    fileContent.append("  }\n");
     fileContent.append("}\n");
     filesToWrite.put(extensionClassName, fileContent.toString());
   }
