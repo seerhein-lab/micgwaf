@@ -48,6 +48,14 @@ public class EmptyComponentGenerator extends ComponentGenerator
     return null;
   }
 
+  public String generateNewExtensionComponent(
+      String componentName,
+      Component component,
+      String targetPackage)
+  {
+    return null;
+  }
+
   public String generateInitializer(
       String componentField,
       Component rawComponent,

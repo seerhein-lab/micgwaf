@@ -184,7 +184,7 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
           if (part.component != null)
           {
             ComponentGenerator generator = Generator.getGenerator(part.component);
-            String newComponentName = generator.generateNewComponent(componentField, part.component, targetPackage);
+            String newComponentName = generator.generateNewExtensionComponent(componentField, part.component, targetPackage);
             if (newComponentName != null)
             {
               generator.generateExtension(part.component.id, part.component, targetPackage, filesToWrite);
@@ -207,6 +207,15 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
   }
 
   public String generateNewComponent(
+      String componentName,
+      Component component,
+      String targetPackage)
+  {
+    HtmlElementComponent htmlElementCompont = (HtmlElementComponent) component;
+    return htmlElementCompont.id;
+  }
+
+  public String generateNewExtensionComponent(
       String componentName,
       Component component,
       String targetPackage)

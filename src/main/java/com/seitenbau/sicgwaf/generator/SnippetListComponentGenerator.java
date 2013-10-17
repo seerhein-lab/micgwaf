@@ -45,6 +45,14 @@ public class SnippetListComponentGenerator extends ComponentGenerator
     return null;
   }
 
+  public String generateNewExtensionComponent(
+      String componentName,
+      Component component,
+      String targetPackage)
+  {
+    return null;
+  }
+
   public void generate(
         String componentName,
         Component component,
@@ -183,7 +191,7 @@ public class SnippetListComponentGenerator extends ComponentGenerator
       {
         String componentField = getComponentFieldName(part.component, componentCounter);
         ComponentGenerator generator = Generator.getGenerator(part.component);
-        String newComponentName = generator.generateNewComponent(componentField, part.component, targetPackage);
+        String newComponentName = generator.generateNewExtensionComponent(componentField, part.component, targetPackage);
         if (newComponentName != null)
         {
           generator.generateExtension(part.component.id, part.component, targetPackage, filesToWrite);

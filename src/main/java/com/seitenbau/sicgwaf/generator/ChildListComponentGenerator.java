@@ -49,7 +49,7 @@ public class ChildListComponentGenerator extends ComponentGenerator
   {
     Component child = component.getChildren().get(0);
     ComponentGenerator delegate = Generator.getGenerator(child);
-    delegate.generateExtension(child.id, component, targetPackage, filesToWrite);
+    delegate.generateExtension(child.id, child, targetPackage, filesToWrite);
   }
 
   public String generateNewComponent(
@@ -58,6 +58,14 @@ public class ChildListComponentGenerator extends ComponentGenerator
       String targetPackage)
   {
     return null;
+  }
+
+  public String generateNewExtensionComponent(
+      String componentName,
+      Component component,
+      String targetPackage)
+  {
+    return "";
   }
 
   public String generateInitializer(
@@ -80,8 +88,6 @@ public class ChildListComponentGenerator extends ComponentGenerator
       result.append(delegate.generateInitializer(componentField + i, child, targetPackage, indent + 2, filesToWrite));
       result.append(indentString).append("  ").append(componentField).append(".children.add(")
          .append(componentField).append(i).append(");\n");
-      // hacky, also creates sub classes
-      delegate.generateExtension(child.id, child, targetPackage, filesToWrite);
     }
     result.append(indentString).append("}\n");
     return result.toString();

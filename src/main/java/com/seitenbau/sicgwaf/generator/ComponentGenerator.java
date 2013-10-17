@@ -62,6 +62,22 @@ public abstract class ComponentGenerator
       Component component,
       String targetPackage);
   
+  /**
+   * Retuns the name of a new extension component to generate, or null not to generate an extension class
+   * (beware: this also disables generating extension classes for children), or "" to generate extension
+   * classes not for this component but for the children.
+   * 
+   * @param componentName
+   * @param component
+   * @param targetPackage
+   * @return null if inline code should be created for the component,
+   *         the name of the component if a new component class should be created. 
+   */
+  public abstract String generateNewExtensionComponent(
+      String componentName,
+      Component component,
+      String targetPackage);
+  
   public String toJavaName(String componentName)
   {
     return componentName.substring(0, 1).toUpperCase()
