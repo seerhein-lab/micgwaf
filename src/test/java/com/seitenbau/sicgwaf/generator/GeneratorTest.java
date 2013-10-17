@@ -14,6 +14,10 @@ public class GeneratorTest
   public void testGenerate() throws Exception
   {
     File componentDir = new File("src/test/resources/com/seitenbau/sicgwaf/page");
-    generator.generateComponent(componentDir, new File("target/generated-sources/com/sb/test"), "com.sb.test");
+    generator.generateComponent(
+        componentDir, 
+        new File("target/generated-sources/com/sb/test"), 
+        new File("target/generated-extension-sources/com/sb/test"),
+        "com.sb.test");
   }
 }

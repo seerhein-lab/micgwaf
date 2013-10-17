@@ -34,6 +34,7 @@ public class Generator
   public void generateComponent(
         File sourceDirectory,
         File targetDirectory,
+        File extensionsTargetDirectory,
         String targetPackage)
       throws IOException
   {
@@ -67,7 +68,7 @@ public class Generator
       }
       for (Map.Entry<String, String> fileToWriteEntry : extensionFilesToWrite.entrySet())
       {
-        File targetFile = new File(targetDirectory, fileToWriteEntry.getKey() + ".java");
+        File targetFile = new File(extensionsTargetDirectory, fileToWriteEntry.getKey() + ".java");
         FileUtils.writeStringToFile(
             targetFile, 
             fileToWriteEntry.getValue(), 
