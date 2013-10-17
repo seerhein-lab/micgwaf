@@ -69,10 +69,13 @@ public class Generator
       for (Map.Entry<String, String> fileToWriteEntry : extensionFilesToWrite.entrySet())
       {
         File targetFile = new File(extensionsTargetDirectory, fileToWriteEntry.getKey() + ".java");
-        FileUtils.writeStringToFile(
-            targetFile, 
-            fileToWriteEntry.getValue(), 
-            "ISO-8859-1");
+        if (!targetFile.exists())
+        {
+          FileUtils.writeStringToFile(
+              targetFile, 
+              fileToWriteEntry.getValue(), 
+              "ISO-8859-1");
+        }
       }
     }
     generateComponentRegistry(componentMap, targetDirectory, targetPackage);
