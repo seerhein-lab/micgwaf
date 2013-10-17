@@ -211,7 +211,7 @@ public class SnippetListComponentGenerator extends ComponentGenerator
       if (part.component != null)
       {
         String fieldName = getChildName(componentField, counter);
-        generateFieldFromComponent(part.component, targetPackage, result, "public", fieldName, indent + 2, filesToWrite);
+        generateFieldFromComponent(part.component, targetPackage, result, "", fieldName, indent + 2, filesToWrite);
         result.append(indentString).append("  ").append(componentField)
             .append(".parts.add(ComponentPart.fromComponent(")
             .append(fieldName).append("));\n");
