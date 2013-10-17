@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import com.seitenbau.sicgwaf.component.ChildListComponent;
 import com.seitenbau.sicgwaf.component.Component;
 import com.seitenbau.sicgwaf.component.ComponentPart;
 import com.seitenbau.sicgwaf.component.HtmlElementComponent;
@@ -51,6 +52,7 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
     fileContent.append("import ").append(Component.class.getName()).append(";\n");
     fileContent.append("import ").append(HtmlElementComponent.class.getName()).append(";\n");
     fileContent.append("import ").append(SnippetComponent.class.getName()).append(";\n");
+    fileContent.append("import ").append(ChildListComponent.class.getName()).append(";\n");
     fileContent.append("import ").append(ComponentPart.class.getName()).append(";\n");
     fileContent.append("import ").append(IOException.class.getName()).append(";\n");
     fileContent.append("import ").append(Writer.class.getName()).append(";\n");
