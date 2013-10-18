@@ -1,79 +1,61 @@
 package com.seitenbau.sicgwaf.generator;
 
-import java.util.Map;
-
 import com.seitenbau.sicgwaf.component.ChildListComponent;
 import com.seitenbau.sicgwaf.component.Component;
 
 public class ChildListComponentGenerator extends ComponentGenerator
 {
-  public String getClassName(
-      String componentName,
+  @Override
+  public JavaClassName getClassName(
       Component component,
       String targetPackage)
   {
     Component child = component.getChildren().get(0);
     ComponentGenerator delegate = Generator.getGenerator(child);
-    return "ChildListComponent<" + delegate.getClassName(child.id, child, targetPackage) + ">";
+    return new JavaClassName(
+        "ChildListComponent<" + delegate.getClassName(child, targetPackage).getSimpleName() + ">",
+        ChildListComponent.class.getPackage().getName());
   }
   
-  public String getExtensionClassName(
-      String componentName,
+  @Override
+  public JavaClassName getExtensionClassName(
       Component component,
       String targetPackage)
   {
     Component child = component.getChildren().get(0);
     ComponentGenerator delegate = Generator.getGenerator(child);
-    String delegateClassName = delegate.getExtensionClassName(child.id, child, targetPackage);
+    String delegateClassName = delegate.getExtensionClassName(child, targetPackage).getSimpleName();
     if (delegateClassName == null)
     {
       return null;
     }
-    return "ChildListComponent<" + delegateClassName + ">";
+    return  new JavaClassName(
+        "ChildListComponent<" + delegateClassName + ">",
+        ChildListComponent.class.getPackage().getName()); 
   }
   
-  public void generate(
-        String componentName,
+  @Override
+  public String generate(
         Component component,
-        String targetPackage,
-        Map<String, String> filesToWrite)
+        String targetPackage)
   {
-    throw new UnsupportedOperationException();
+    return null;
   }
   
-  public void generateExtension(
-        String componentName,
+  @Override
+  public String generateExtension(
         Component component,
-        String targetPackage,
-        Map<String, String> filesToWrite)
-  {
-    Component child = component.getChildren().get(0);
-    ComponentGenerator delegate = Generator.getGenerator(child);
-    delegate.generateExtension(child.id, child, targetPackage, filesToWrite);
-  }
-
-  public String generateNewComponent(
-      String componentName,
-      Component component,
-      String targetPackage)
+        String targetPackage)
   {
     return null;
   }
 
-  public String generateNewExtensionComponent(
-      String componentName,
-      Component component,
-      String targetPackage)
-  {
-    return "";
-  }
-
+  @Override
   public String generateInitializer(
       String componentField,
       Component component,
       String targetPackage,
-      int indent,
-      Map<String, String> filesToWrite)
+      int indent)
   {
     ChildListComponent<?> childListComponent = (ChildListComponent<?>) component;
     String indentString = getIndentString(indent);
@@ -83,14 +65,19 @@ public class ChildListComponentGenerator extends ComponentGenerator
     {
       Component child = childListComponent.children.get(i);
       ComponentGenerator delegate = Generator.getGenerator(child);
-      generateFieldFromComponent(child, targetPackage, result, "", componentField + i, 4, filesToWrite);
-      // hacky, also creates sub classes
-      result.append(delegate.generateInitializer(componentField + i, child, targetPackage, indent + 2, filesToWrite));
+      generateFieldOrVariableFromComponent(child, targetPackage, result, "", componentField + i, 4);
+      result.append(delegate.generateInitializer(componentField + i, child, targetPackage, indent + 2));
       result.append(indentString).append("  ").append(componentField).append(".children.add(")
          .append(componentField).append(i).append(");\n");
     }
     result.append(indentString).append("}\n");
     return result.toString();
+  }
+
+  @Override
+  public boolean generateExtensionClass(Component component)
+  {
+    return false;
   }
 
 }

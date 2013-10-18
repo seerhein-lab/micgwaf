@@ -43,14 +43,12 @@ public class Generator
         = parser.readComponents(sourceDirectory);
     for (Map.Entry<String, Component> entry : componentMap.entrySet())
     {
-      String componentName = entry.getKey();
       Component component = entry.getValue();
       
-      ComponentGenerator componentGenerator = componentGeneratorMap.get(component.getClass());
-      Map<String, String> componentFilesToWrite = new HashMap<>();
-      Map<String, String> extensionFilesToWrite = new HashMap<>();
-      componentGenerator.generate(componentName, component, targetPackage, componentFilesToWrite);
-      componentGenerator.generateExtension(componentName, component, targetPackage, extensionFilesToWrite);
+      Map<JavaClassName, String> componentFilesToWrite = new HashMap<>();
+      Map<JavaClassName, String> extensionFilesToWrite = new HashMap<>();
+      generate(component, targetPackage, componentFilesToWrite);
+      generateExtension(component, targetPackage, extensionFilesToWrite);
       if (!componentFilesToWrite.isEmpty() && !targetDirectory.exists())
       {
         if (!targetDirectory.mkdirs())
@@ -58,17 +56,23 @@ public class Generator
           throw new IOException("Could not create directory " + targetDirectory.getAbsolutePath());
         }
       }
-      for (Map.Entry<String, String> fileToWriteEntry : componentFilesToWrite.entrySet())
+      for (Map.Entry<JavaClassName, String> fileToWriteEntry : componentFilesToWrite.entrySet())
       {
-        File targetFile = new File(targetDirectory, fileToWriteEntry.getKey() + ".java");
+        // TODO use package information
+        File targetFile = new File(
+            targetDirectory,
+            fileToWriteEntry.getKey().getSimpleName() + ".java");
         FileUtils.writeStringToFile(
             targetFile, 
             fileToWriteEntry.getValue(), 
             "ISO-8859-1");
       }
-      for (Map.Entry<String, String> fileToWriteEntry : extensionFilesToWrite.entrySet())
+      for (Map.Entry<JavaClassName, String> fileToWriteEntry : extensionFilesToWrite.entrySet())
       {
-        File targetFile = new File(extensionsTargetDirectory, fileToWriteEntry.getKey() + ".java");
+        // TODO use package information
+        File targetFile = new File(
+            extensionsTargetDirectory,
+            fileToWriteEntry.getKey().getSimpleName() + ".java");
         if (!targetFile.exists())
         {
           FileUtils.writeStringToFile(
@@ -79,6 +83,34 @@ public class Generator
       }
     }
     generateComponentRegistry(componentMap, targetDirectory, targetPackage);
+  }
+  
+  public void generate(Component component, String targetPackage, Map<JavaClassName, String> filesToWrite)
+  {
+    ComponentGenerator componentGenerator = componentGeneratorMap.get(component.getClass());
+    String result = componentGenerator.generate(component, targetPackage);
+    if (result != null)
+    {
+      filesToWrite.put(componentGenerator.getClassName(component, targetPackage), result);
+    }
+    for (Component child : component.getChildren())
+    {
+      generate(child, targetPackage, filesToWrite);
+    }
+  }
+  
+  public void generateExtension(Component component, String targetPackage, Map<JavaClassName, String> filesToWrite)
+  {
+    ComponentGenerator componentGenerator = componentGeneratorMap.get(component.getClass());
+    if (componentGenerator.generateExtensionClass(component))
+    {
+      String result = componentGenerator.generateExtension(component, targetPackage);
+      filesToWrite.put(componentGenerator.getExtensionClassName(component, targetPackage), result);
+    }
+    for (Component child : component.getChildren())
+    {
+      generateExtension(child, targetPackage, filesToWrite);
+    }
   }
   
   public void generateComponentRegistry(
@@ -99,12 +131,11 @@ public class Generator
     content.append("  {\n");
     for (Map.Entry<String, Component> entry : componentMap.entrySet())
     {
-      String componentName = entry.getKey();
       Component component = entry.getValue();
       ComponentGenerator componentGenerator = componentGeneratorMap.get(component.getClass());
-      String componentClassName = componentGenerator.getReferencableClassName(componentName, component, targetPackage);
-      content.append("    components.put(\"").append(componentName)
-          .append("\", new ").append(componentClassName).append("(null));\n");
+      JavaClassName componentClassName = componentGenerator.getReferencableClassName(component, targetPackage);
+      content.append("    components.put(\"").append(componentClassName.getSimpleName())
+          .append("\", new ").append(componentClassName.getSimpleName()).append("(null));\n");
     }
     content.append("  }\n");
     content.append("}\n");

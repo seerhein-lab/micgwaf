@@ -1,39 +1,29 @@
 package com.seitenbau.sicgwaf.generator;
 
-import java.util.Map;
-
 import javax.servlet.http.HttpServletRequest;
 
 import com.seitenbau.sicgwaf.component.Component;
 import com.seitenbau.sicgwaf.component.HtmlElementComponent;
-import com.seitenbau.sicgwaf.component.InputComponent;
 
 public class InputComponentGenerator extends HtmlElementComponentGenerator
 {
-  public String getClassName(
-      String componentName,
-      Component rawComponent,
+  @Override
+  public JavaClassName getClassName(
+      Component component,
       String targetPackage)
   {
-    if (componentName != null)
-    {
-      return toJavaName(componentName);
-    }
-    return InputComponent.class.getSimpleName();
+    return toJavaClassName(component.id, targetPackage);
   }
   
-  public void generate(
-      String componentName,
+  @Override
+  public String generate(
       Component component,
-      String targetPackage,
-      Map<String, String> filesToWrite)
+      String targetPackage)
   {
-    super.generate(componentName, component, targetPackage, filesToWrite);
+    String rootContent = super.generate(component, targetPackage);
 
     HtmlElementComponent htmlElementCompont = (HtmlElementComponent) component;
-    String className = getClassName(componentName, component, targetPackage);
     StringBuilder fileContent = new StringBuilder();
-    String rootContent = filesToWrite.get(className);
     
     // remove last "}"
     rootContent = rootContent.substring(0,  rootContent.lastIndexOf("}") -1);
@@ -56,18 +46,17 @@ public class InputComponentGenerator extends HtmlElementComponentGenerator
     fileContent.append("  }\n");
     fileContent.append("}\n");
     
-    filesToWrite.put(className, fileContent.toString());
+    return fileContent.toString();
   }
 
-  public void generateExtension(
-      String componentName,
+  @Override
+  public String generateExtension(
       Component component,
-      String targetPackage,
-      Map<String, String> filesToWrite)
+      String targetPackage)
   {
-    InputComponent inputComponent = (InputComponent) component;
-    String className = getClassName(componentName, component, targetPackage);
-    String extensionClassName = getExtensionClassName(componentName, component, targetPackage);
+    String className = getClassName(component, targetPackage).getSimpleName();
+    String extensionClassName = getExtensionClassName(component, targetPackage).getSimpleName();
+
     StringBuilder fileContent = new StringBuilder();
     fileContent.append("package ").append(targetPackage).append(";\n\n");
     fileContent.append("\n");
@@ -82,6 +71,6 @@ public class InputComponentGenerator extends HtmlElementComponentGenerator
     fileContent.append("    super(parent);\n");
     fileContent.append("  }\n");
     fileContent.append("}\n");
-    filesToWrite.put(extensionClassName, fileContent.toString());
+    return fileContent.toString();
   }
 }

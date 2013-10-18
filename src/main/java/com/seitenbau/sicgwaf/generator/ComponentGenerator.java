@@ -1,87 +1,109 @@
 package com.seitenbau.sicgwaf.generator;
 
 import java.util.List;
-import java.util.Map;
 
 import com.seitenbau.sicgwaf.component.Component;
 
 public abstract class ComponentGenerator
 {
-  public abstract String getClassName(
-      String componentName,
+  /**
+   * Returns the class name of the component which will represent the parsed component
+   * in the generated code. This can either be a generated component, or a component
+   * supplied in some Library.
+   * Also there may be an extension class containing user modifications to the generating class,
+   * in which case the extension class should be used in references instead of this class.
+   * 
+   * @param component the component to be represented, not null.
+   * @param targetPackage the base target package for the generated classes, not null.
+   * 
+   * @return the class name, not null.
+   */
+  public abstract JavaClassName getClassName(
       Component component,
       String targetPackage);
 
-  public abstract String getExtensionClassName(
-      String componentName,
-      Component component,
-      String targetPackage);
-  
-  public String getReferencableClassName(
-      String componentName,
+  /**
+   * Returns the class name of the  extension class containing user modifications to the generating class.
+   * 
+   * @param component the component to be represented, not null.
+   * @param targetPackage the base target package for the generated classes, not null.
+   * 
+   * @return the class name of the extension class. 
+   *         May return null if generateExtensionClass() returns null for the component.
+   */
+  public JavaClassName getExtensionClassName(
       Component component,
       String targetPackage)
   {
-    String result = getExtensionClassName(componentName, component, targetPackage);
-    if (result != null)
+    String className = getClassName(component, targetPackage).getSimpleName();
+    return new JavaClassName(className + "Extension", targetPackage);
+  }
+  
+  /**
+   * Returns whether an extension class should be generated for the component.
+   * 
+   * @param component the component to check, not null.
+   * 
+   * @return true if an extension class should be generated, false otherwise.
+   */
+  public abstract boolean generateExtensionClass(Component component);
+  
+  /**
+   * Returns the class name of the class by which this component can be referenced in generated code.
+   * 
+   * @param component the component to be represented, not null.
+   * @param targetPackage the base target package for the generated classes, not null.
+   * 
+   * @return the class name of the extension class. 
+   *         May return null if generateExtensionClass() returns null for the component.
+   */
+  public JavaClassName getReferencableClassName(
+      Component component,
+      String targetPackage)
+  {
+    if (generateExtensionClass(component))
     {
-      return result;
+      return getExtensionClassName(component, targetPackage);
     }
-    return getClassName(componentName, component, targetPackage);
+    return getClassName(component, targetPackage);
   }
 
-  public abstract void generate(
-      String componentName,
+  /**
+   * Generates the component class representing the component.
+   * 
+   * @param component the component for which code should be generated, not null.
+   * @param targetPackage the base target package for the generated classes, not null.
+   * 
+   * @return the code for the generated class, or null if no class should be generated.
+   */
+  public abstract String generate(
       Component component,
-      String targetPackage,
-      Map<String, String> filesToWrite);
+      String targetPackage);
   
+  /**
+   * Generates the component extension class representing the component.
+   * The extension class contains user-specific extensions to the generated class.
+   * 
+   * @param component the component for which code should be generated, not null.
+   * @param targetPackage the base target package for the generated classes, not null.
+   * 
+   * @return the code for the generated extension class, or null if no extension class should be generated.
+   */
+  public abstract String generateExtension(
+      Component component,
+      String targetPackage);
+
   public abstract String generateInitializer(
       String componentField,
       Component component,
       String targetPackage,
-      int indent,
-      Map<String, String> filesToWrite);
+      int indent);
   
-  public abstract void generateExtension(
-      String componentName,
-      Component component,
-      String targetPackage,
-      Map<String, String> filesToWrite);
-  
-  /**
-   * 
-   * @param componentName
-   * @param component
-   * @param targetPackage
-   * @return null if inline code should be created for the component,
-   *         the name of the component if a new component class should be created. 
-   */
-  public abstract String generateNewComponent(
-      String componentName,
-      Component component,
-      String targetPackage);
-  
-  /**
-   * Retuns the name of a new extension component to generate, or null not to generate an extension class
-   * (beware: this also disables generating extension classes for children), or "" to generate extension
-   * classes not for this component but for the children.
-   * 
-   * @param componentName
-   * @param component
-   * @param targetPackage
-   * @return null if inline code should be created for the component,
-   *         the name of the component if a new component class should be created. 
-   */
-  public abstract String generateNewExtensionComponent(
-      String componentName,
-      Component component,
-      String targetPackage);
-  
-  public String toJavaName(String componentName)
+  public JavaClassName toJavaClassName(String componentName, String packageName)
   {
-    return componentName.substring(0, 1).toUpperCase()
+    String simpleName = componentName.substring(0, 1).toUpperCase()
         + componentName.substring(1);
+    return new JavaClassName(simpleName, packageName);
   }
   
   public String asConstant(String string)
@@ -93,32 +115,21 @@ public abstract class ComponentGenerator
     return "\"" + result + "\"";
   }
 
-  public void generateFieldFromComponent(
+  public void generateFieldOrVariableFromComponent(
       Component component,
       String targetPackage, 
       StringBuilder result,
       String modifier,
       String fieldName,
-      int indent,
-      Map<String, String> filesToWrite)
+      int indent)
   {
     String indentString = getIndentString(indent);
     ComponentGenerator generator = Generator.getGenerator(component);
-    String newComponentName = generator.generateNewComponent(fieldName, component, targetPackage);
-    if (newComponentName == null)
-    {
-      String className = generator.getReferencableClassName(null, component, targetPackage);
-      result.append(indentString).append(className).append(" ").append(fieldName)
-          .append(" = new ").append(className).append("(this);\n");
-      result.append(generator.generateInitializer(fieldName, component, targetPackage, indent, filesToWrite));
-    }
-    else
-    {
-      generator.generate(component.id, component, targetPackage, filesToWrite);
-      String componentClassName = generator.getReferencableClassName(component.id, component, targetPackage);
-      result.append(indentString).append(modifier).append(componentClassName).append(" ").append(fieldName)
-          .append(" = new ").append(componentClassName).append("(this);\n\n");
-    }
+    JavaClassName componentClassName = generator.getReferencableClassName(component, targetPackage);
+    result.append(indentString).append(modifier).append(componentClassName.getSimpleName())
+        .append(" ").append(fieldName)
+        .append(" = new ").append(componentClassName.getSimpleName()).append("(this);\n\n");
+    result.append(generator.generateInitializer(fieldName, component, targetPackage, indent));
   }
 
 
@@ -127,8 +138,7 @@ public abstract class ComponentGenerator
       String targetPackage,
       StringBuilder result,
       String componentField,
-      int indent,
-      Map<String, String> filesToWrite)
+      int indent)
   {
     List<? extends Component> children = component.getChildren();
     if (children.isEmpty())
@@ -149,7 +159,7 @@ public abstract class ComponentGenerator
       {
         fieldName = getChildName(componentField, counter);
       }
-      generateFieldFromComponent(child, targetPackage, result, "public", fieldName, indent + 2, filesToWrite);
+      generateFieldOrVariableFromComponent(child, targetPackage, result, "", fieldName, indent + 2);
       result.append(indentString).append("  ").append(componentField).append(".children.add(")
           .append(fieldName).append(");\n");
 

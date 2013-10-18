@@ -1,67 +1,54 @@
 package com.seitenbau.sicgwaf.generator;
 
-import java.util.Map;
-
 import com.seitenbau.sicgwaf.component.Component;
+import com.seitenbau.sicgwaf.component.EmptyComponent;
 
 public class EmptyComponentGenerator extends ComponentGenerator
 {
-  public String getClassName(
-      String componentName,
+  @Override
+  public JavaClassName getClassName(
+      Component component,
+      String targetPackage)
+  {
+    return new JavaClassName(EmptyComponent.class);
+  }
+  
+  @Override
+  public JavaClassName getExtensionClassName(
       Component component,
       String targetPackage)
   {
     return null;
   }
   
-  public String getExtensionClassName(
-      String componentName,
-      Component component,
-      String targetPackage)
+  @Override
+  public boolean generateExtensionClass(Component component)
+  {
+    return false;
+  }
+  
+  @Override
+  public String generate(
+        Component component,
+        String targetPackage)
   {
     return null;
   }
   
-  public void generate(
-        String componentName,
-        Component rawComponent,
-        String targetPackage,
-        Map<String, String> filesToWrite)
-  {
-    throw new UnsupportedOperationException();
-  }
-  
-  public void generateExtension(
-        String componentName,
-        Component rawComponent,
-        String targetPackage,
-        Map<String, String> filesToWrite)
-  {
-    throw new UnsupportedOperationException();
-  }
-
-  public String generateNewComponent(
-      String componentName,
-      Component component,
-      String targetPackage)
+  @Override
+  public String generateExtension(
+        Component component,
+        String targetPackage)
   {
     return null;
   }
 
-  public String generateNewExtensionComponent(
-      String componentName,
-      Component component,
-      String targetPackage)
-  {
-    return null;
-  }
-
+  @Override
   public String generateInitializer(
       String componentField,
       Component rawComponent,
       String targetPackage,
-      int indent,
-      Map<String, String> filesToWrite)
+      int indent)
   {
     return "";
   }

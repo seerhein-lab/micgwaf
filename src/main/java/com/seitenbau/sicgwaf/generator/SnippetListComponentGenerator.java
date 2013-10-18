@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import com.seitenbau.sicgwaf.component.ChildListComponent;
 import com.seitenbau.sicgwaf.component.Component;
@@ -13,54 +12,29 @@ import com.seitenbau.sicgwaf.component.SnippetListComponent;
 
 public class SnippetListComponentGenerator extends ComponentGenerator
 {
-  public String getClassName(
-      String componentName,
-      Component rawComponent,
-      String targetPackage)
-  {
-    if (componentName != null)
-    {
-      return toJavaName(componentName);
-    }
-    return SnippetListComponent.class.getName();
-  }
-  
-  public String getExtensionClassName(
-      String componentName,
-      Component rawComponent,
-      String targetPackage)
-  {
-    if (componentName != null)
-    {
-      return toJavaName(componentName) + "Extension";
-    }
-    return null;
-  }
-  
-  public String generateNewComponent(
-      String componentName,
+  @Override
+  public JavaClassName getClassName(
       Component component,
       String targetPackage)
   {
-    return null;
+    if (component.id != null)
+    {
+      return toJavaClassName(component.id, targetPackage);
+    }
+    return new JavaClassName(SnippetListComponent.class);
   }
-
-  public String generateNewExtensionComponent(
-      String componentName,
-      Component component,
-      String targetPackage)
-  {
-    return null;
-  }
-
-  public void generate(
-        String componentName,
+  
+  @Override
+  public String generate(
         Component component,
-        String targetPackage,
-        Map<String, String> filesToWrite)
+        String targetPackage)
   {
+    if (component.id == null)
+    {
+      return null;
+    }
     SnippetListComponent snippetListComponent = (SnippetListComponent) component;
-    String className = getClassName(componentName, component, targetPackage);
+    String className = getClassName(component, targetPackage).getSimpleName();
     StringBuilder fileContent = new StringBuilder();
     fileContent.append("package ").append(targetPackage).append(";\n\n");
     fileContent.append("import ").append(Component.class.getName()).append(";\n");
@@ -89,28 +63,14 @@ public class SnippetListComponentGenerator extends ComponentGenerator
       {
         String componentField = getComponentFieldName(part.component, componentCounter);
         ComponentGenerator generator = Generator.getGenerator(part.component);
-        String newComponentName = generator.generateNewComponent(componentField, part.component, targetPackage);
-        if (newComponentName == null)
-        {
-          String componentClassName = generator.getReferencableClassName(null, part.component, targetPackage);
-          fileContent.append("  public ").append(componentClassName).append(" ").append(componentField)
-              .append(" = new ").append(componentClassName).append("(this);\n\n");
-          fileContent.append(generator.generateInitializer(componentField, part.component, targetPackage, 2, filesToWrite));
-        }
-        else
-        {
-          generator.generate(part.component.id, part.component, targetPackage, filesToWrite);
-          String componentClassName = generator.getReferencableClassName(part.component.id, part.component, targetPackage);
-          fileContent.append("  public ").append(componentClassName).append(" ").append(componentField)
-              .append(" = new ").append(componentClassName).append("(this);\n\n");
-        }
+        generator.generateFieldOrVariableFromComponent(part.component, targetPackage, fileContent, "public ", componentField, 2);
         componentCounter++;          
       }
     }
     
     fileContent.append("  public ").append(className).append("(Component parent)\n");
     fileContent.append("  {\n");
-    fileContent.append("    super(\"").append(componentName).append("\", parent);\n");
+    fileContent.append("    super(\"").append(component.id).append("\", parent);\n");
     fileContent.append("  }\n\n");
     
     fileContent.append("  @Override\n");
@@ -157,18 +117,16 @@ public class SnippetListComponentGenerator extends ComponentGenerator
     }
     fileContent.append("  }\n");
     fileContent.append("}\n");
-    filesToWrite.put(className,  fileContent.toString());
+    return fileContent.toString();
   }
 
-  public void generateExtension(
-      String componentName,
+  @Override
+  public String generateExtension(
       Component component,
-      String targetPackage,
-      Map<String, String> filesToWrite)
+      String targetPackage)
   {
-    SnippetListComponent snippetListComponent = (SnippetListComponent) component;
-    String className = getClassName(componentName, component, targetPackage);
-    String extensionClassName = getExtensionClassName(componentName, component, targetPackage);
+    String className = getClassName(component, targetPackage).getSimpleName();
+    String extensionClassName = getExtensionClassName(component, targetPackage).getSimpleName();
     StringBuilder fileContent = new StringBuilder();
     fileContent.append("package ").append(targetPackage).append(";\n\n");
     fileContent.append("\n");
@@ -184,30 +142,15 @@ public class SnippetListComponentGenerator extends ComponentGenerator
     fileContent.append("  }\n");
     fileContent.append("}\n");
 
-    int componentCounter = 1;
-    for (ComponentPart part : snippetListComponent.parts)
-    {
-      if (part.component != null)
-      {
-        String componentField = getComponentFieldName(part.component, componentCounter);
-        ComponentGenerator generator = Generator.getGenerator(part.component);
-        String newComponentName = generator.generateNewExtensionComponent(componentField, part.component, targetPackage);
-        if (newComponentName != null)
-        {
-          generator.generateExtension(part.component.id, part.component, targetPackage, filesToWrite);
-        }
-        componentCounter++;          
-      }
-    }
-    filesToWrite.put(extensionClassName, fileContent.toString());
+    return fileContent.toString();
   }
 
+  @Override
   public String generateInitializer(
       String componentField,
       Component component,
       String targetPackage,
-      int indent,
-      Map<String, String> filesToWrite)
+      int indent)
   {
     String indentString = getIndentString(indent);
     SnippetListComponent snippetListComponent = (SnippetListComponent) component;
@@ -219,7 +162,7 @@ public class SnippetListComponentGenerator extends ComponentGenerator
       if (part.component != null)
       {
         String fieldName = getChildName(componentField, counter);
-        generateFieldFromComponent(part.component, targetPackage, result, "", fieldName, indent + 2, filesToWrite);
+        generateFieldOrVariableFromComponent(part.component, targetPackage, result, "", fieldName, indent + 2);
         result.append(indentString).append("  ").append(componentField)
             .append(".parts.add(ComponentPart.fromComponent(")
             .append(fieldName).append("));\n");
@@ -235,5 +178,11 @@ public class SnippetListComponentGenerator extends ComponentGenerator
     }
     result.append(indentString).append("}\n");
     return result.toString();
+  }
+
+  @Override
+  public boolean generateExtensionClass(Component component)
+  {
+    return component.id != null;
   }  
 }

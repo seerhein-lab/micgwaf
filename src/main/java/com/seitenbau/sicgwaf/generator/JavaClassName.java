@@ -11,7 +11,7 @@ public class JavaClassName
 
   private String simpleName;
   
-  public JavaClassName(String packageName, String simpleName)
+  public JavaClassName(String simpleName, String packageName)
   {
     assertNotNull(packageName, "packageName");
     assertNotNull(simpleName, "simpleName");

@@ -15,38 +15,27 @@ import com.seitenbau.sicgwaf.component.SnippetListComponent;
 
 public class HtmlElementComponentGenerator extends ComponentGenerator
 {
-  public String getClassName(
-      String componentName,
-      Component rawComponent,
+  @Override
+  public JavaClassName getClassName(
+      Component component,
       String targetPackage)
   {
-    if (componentName != null)
-    {
-      return toJavaName(componentName);
-    }
-    return HtmlElementComponent.class.getName();
+    return toJavaClassName(component.id, targetPackage);
   }
   
-  public String getExtensionClassName(
-      String componentName,
-      Component rawComponent,
-      String targetPackage)
+  @Override
+  public boolean generateExtensionClass(Component component)
   {
-    if (componentName != null)
-    {
-      return toJavaName(componentName) + "Extension";
-    }
-    return null;
+    return true;
   }
   
-  public void generate(
-        String componentName,
+  @Override
+  public String generate(
         Component component,
-        String targetPackage,
-        Map<String, String> filesToWrite)
+        String targetPackage)
   {
     HtmlElementComponent htmlElementCompont = (HtmlElementComponent) component;
-    String className = getClassName(componentName, component, targetPackage);
+    String className = getClassName(component, targetPackage).getSimpleName();
     StringBuilder fileContent = new StringBuilder();
     fileContent.append("package ").append(targetPackage).append(";\n\n");
     fileContent.append("import ").append(Component.class.getName()).append(";\n");
@@ -78,7 +67,7 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
           String componentField = getComponentFieldName(part.component, componentCounter);
           if (part.component != null)
           {
-            generateFieldFromComponent(part.component, targetPackage, fileContent, "public ", componentField, 2, filesToWrite);
+            generateFieldOrVariableFromComponent(part.component, targetPackage, fileContent, "public ", componentField, 2);
           }
           else
           {
@@ -91,22 +80,7 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
         continue;
       }
       String componentField = getComponentFieldName(child, componentCounter);
-      ComponentGenerator generator = Generator.getGenerator(child);
-      String newComponentName = generator.generateNewComponent(componentField, child, targetPackage);
-      if (newComponentName == null)
-      {
-        String componentClassName = generator.getReferencableClassName(null, child, targetPackage);
-        fileContent.append("  public ").append(componentClassName).append(" ").append(componentField)
-            .append(" = new ").append(componentClassName).append("(this);\n\n");
-        fileContent.append(generator.generateInitializer(componentField, child, targetPackage, 2, filesToWrite));
-      }
-      else
-      {
-        generator.generate(child.id, child, targetPackage, filesToWrite);
-        String componentClassName = generator.getReferencableClassName(child.id, child, targetPackage);
-        fileContent.append("  public ").append(componentClassName).append(" ").append(componentField)
-            .append(" = new ").append(componentClassName).append("(this);\n\n");
-      }
+      generateFieldOrVariableFromComponent(child, targetPackage, fileContent, "public ", componentField, 2);
       componentCounter++;          
     }
     fileContent.append("  ").append("{\n");
@@ -146,18 +120,16 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
     fileContent.append("  }\n");
 
     fileContent.append("}\n");
-    filesToWrite.put(className, fileContent.toString());
+    return fileContent.toString();
   }
   
-  public void generateExtension(
-      String componentName,
+  @Override
+  public String generateExtension(
       Component component,
-      String targetPackage,
-      Map<String, String> filesToWrite)
+      String targetPackage)
   {
-    HtmlElementComponent htmlElementCompont = (HtmlElementComponent) component;
-    String className = getClassName(componentName, component, targetPackage);
-    String extensionClassName = getExtensionClassName(componentName, component, targetPackage);
+    String className = getClassName(component, targetPackage).getSimpleName();
+    String extensionClassName = getExtensionClassName(component, targetPackage).getSimpleName();
     StringBuilder fileContent = new StringBuilder();
     fileContent.append("package ").append(targetPackage).append(";\n\n");
     fileContent.append("\n");
@@ -172,81 +144,34 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
     fileContent.append("    super(parent);\n");
     fileContent.append("  }\n");
     fileContent.append("}\n");
-    int componentCounter = 1;
-    for (Component child : htmlElementCompont.children)
-    {
-      if (child instanceof SnippetListComponent)
-      {
-        SnippetListComponent snippetListChild = (SnippetListComponent) child;
-        for (ComponentPart part : snippetListChild.parts)
-        {
-          String componentField = getComponentFieldName(part.component, componentCounter);
-          if (part.component != null)
-          {
-            ComponentGenerator generator = Generator.getGenerator(part.component);
-            String newComponentName = generator.generateNewExtensionComponent(componentField, part.component, targetPackage);
-            if (newComponentName != null)
-            {
-              generator.generateExtension(part.component.id, part.component, targetPackage, filesToWrite);
-            }
-          }
-          componentCounter++;                      
-        }
-        continue;
-      }
-      String componentField = getComponentFieldName(child, componentCounter);
-      ComponentGenerator generator = Generator.getGenerator(child);
-      String newComponentName = generator.generateNewComponent(componentField, child, targetPackage);
-      if (newComponentName != null)
-      {
-        generator.generateExtension(child.id, child, targetPackage, filesToWrite);
-      }
-      componentCounter++;          
-    }
-    filesToWrite.put(extensionClassName, fileContent.toString());
+    return fileContent.toString();
   }
 
-  public String generateNewComponent(
-      String componentName,
-      Component component,
-      String targetPackage)
-  {
-    HtmlElementComponent htmlElementCompont = (HtmlElementComponent) component;
-    return htmlElementCompont.id;
-  }
-
-  public String generateNewExtensionComponent(
-      String componentName,
-      Component component,
-      String targetPackage)
-  {
-    HtmlElementComponent htmlElementCompont = (HtmlElementComponent) component;
-    return htmlElementCompont.id;
-  }
-
+  @Override
   public String generateInitializer(
       String componentField,
       Component component,
       String targetPackage,
-      int indent,
-      Map<String, String> filesToWrite)
+      int indent)
   {
-    String indentString = getIndentString(indent);
-    HtmlElementComponent htmlElementCompont = (HtmlElementComponent) component;
-    StringBuilder result = new StringBuilder();
-    result.append(indentString).append("{\n");
-    result.append(indentString).append("  ").append(componentField)
-        .append(".elementName = \"").append(htmlElementCompont.elementName).append("\";\n");
-    result.append(indentString).append("  ").append(componentField)
-        .append(".id = \"").append(htmlElementCompont.id).append("\";\n");
-    for (Map.Entry<String, String> attributeEnty : htmlElementCompont.attributes.entrySet())
-    {
-      result.append(indentString).append("  ").append(componentField)
-          .append(".attributes.put(\"").append(attributeEnty.getKey())
-          .append("\", \"").append(attributeEnty.getValue()).append("\");\n");
-    }
-    generateInitChildren(component, targetPackage, result, componentField, indent + 2, filesToWrite);
-    result.append(indentString).append("}\n");
-    return result.toString();
+    return "";
+    // TODO following code should be not necessary as initialisation is done in generation of class
+//    String indentString = getIndentString(indent);
+//    HtmlElementComponent htmlElementCompont = (HtmlElementComponent) component;
+//    StringBuilder result = new StringBuilder();
+//    result.append(indentString).append("{\n");
+//    result.append(indentString).append("  ").append(componentField)
+//        .append(".elementName = \"").append(htmlElementCompont.elementName).append("\";\n");
+//    result.append(indentString).append("  ").append(componentField)
+//        .append(".id = \"").append(htmlElementCompont.id).append("\";\n");
+//    for (Map.Entry<String, String> attributeEnty : htmlElementCompont.attributes.entrySet())
+//    {
+//      result.append(indentString).append("  ").append(componentField)
+//          .append(".attributes.put(\"").append(attributeEnty.getKey())
+//          .append("\", \"").append(attributeEnty.getValue()).append("\");\n");
+//    }
+//    generateInitChildren(component, targetPackage, result, componentField, indent + 2);
+//    result.append(indentString).append("}\n");
+//    return result.toString();
   }
 }
