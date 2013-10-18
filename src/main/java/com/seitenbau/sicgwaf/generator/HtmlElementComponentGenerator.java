@@ -118,9 +118,45 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
     }
     fileContent.append("    return result;\n");
     fileContent.append("  }\n");
-
+    generateConvenienceMethods(htmlElementCompont, fileContent);
     fileContent.append("}\n");
     return fileContent.toString();
+  }
+  
+  protected void generateConvenienceMethods(
+      HtmlElementComponent htmlElementComponent, 
+      StringBuilder stringBuilder)
+  {
+    if (htmlElementComponent.children.size() == 1)
+    {
+      Component child = htmlElementComponent.children.get(0);
+      String componentField = getComponentFieldName(child, 1);
+      if (child instanceof SnippetListComponent)
+      {
+        SnippetListComponent snippetListComponent = (SnippetListComponent) child;
+        if (snippetListComponent.parts.size() == 1)
+        {
+          ComponentPart part = snippetListComponent.parts.get(0);
+          if (part.htmlSnippet != null)
+          {
+            if (part.htmlSnippet.contains("<"))
+            {
+              stringBuilder.append("\n").append("  public void setInnerContent(String innerContent)\n")
+                  .append("  {\n")
+                  .append("    ").append(componentField).append(".snippet = innerContent;\n")
+                  .append("  }\n");
+            }
+            else
+            {
+              stringBuilder.append("\n").append("  public void setTextContent(String text)\n")
+                  .append("  {\n")
+                  .append("    ").append(componentField).append(".snippet = text;\n")
+                  .append("  }\n");
+            }
+          }
+        }
+      }
+    }
   }
   
   @Override
