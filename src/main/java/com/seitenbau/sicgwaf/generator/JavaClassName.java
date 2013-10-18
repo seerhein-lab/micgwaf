@@ -19,6 +19,12 @@ public class JavaClassName
     this.simpleName = simpleName;
   }
   
+  public JavaClassName(Class<?> clazz)
+  {
+    assertNotNull(clazz, "clazz");
+    this.packageName = clazz.getPackage().getName();
+    this.simpleName = clazz.getSimpleName();
+  }
   /**
    * Returns the package of the java class.
    * 
@@ -51,5 +57,34 @@ public class JavaClassName
       return packageName + "." + simpleName;
     }
     return simpleName;
+  }
+
+  @Override
+  public int hashCode()
+  {
+    return packageName.hashCode() * 31 + simpleName.hashCode();
+  }
+
+  @Override
+  public boolean equals(Object obj)
+  {
+    if (this == obj)
+    {
+      return true;
+    }
+    if (obj == null)
+    {
+      return false;
+    }
+    if (getClass() != obj.getClass())
+    {
+      return false;
+    }
+    JavaClassName other = (JavaClassName) obj;
+    if (!packageName.equals(other.packageName))
+    {
+      return false;
+    }
+    return simpleName.equals(other.simpleName);
   }
 }
