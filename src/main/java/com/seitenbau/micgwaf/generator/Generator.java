@@ -46,23 +46,26 @@ public class Generator
     for (Map.Entry<String, Component> entry : componentMap.entrySet())
     {
       Component component = entry.getValue();
+      File componentTargetDirectory = new File(targetDirectory, component.id);
+      File componentExtensionsTargetDirectory = new File(extensionsTargetDirectory, component.id);
+      String componentPackage = targetPackage + "." + component.id;
       
       Map<JavaClassName, String> componentFilesToWrite = new HashMap<>();
       Map<JavaClassName, String> extensionFilesToWrite = new HashMap<>();
-      generate(component, targetPackage, componentFilesToWrite);
-      generateExtension(component, targetPackage, extensionFilesToWrite);
-      if (!componentFilesToWrite.isEmpty() && !targetDirectory.exists())
+      generate(component, componentPackage, componentFilesToWrite);
+      generateExtension(component, componentPackage, extensionFilesToWrite);
+      if (!componentFilesToWrite.isEmpty() && !componentTargetDirectory.exists())
       {
-        if (!targetDirectory.mkdirs())
+        if (!componentTargetDirectory.mkdirs())
         {
-          throw new IOException("Could not create directory " + targetDirectory.getAbsolutePath());
+          throw new IOException("Could not create directory " + componentTargetDirectory.getAbsolutePath());
         }
       }
       for (Map.Entry<JavaClassName, String> fileToWriteEntry : componentFilesToWrite.entrySet())
       {
         // TODO use package information
         File targetFile = new File(
-            targetDirectory,
+            componentTargetDirectory,
             fileToWriteEntry.getKey().getSimpleName() + ".java");
         FileUtils.writeStringToFile(
             targetFile, 
@@ -73,7 +76,7 @@ public class Generator
       {
         // TODO use package information
         File targetFile = new File(
-            extensionsTargetDirectory,
+            componentExtensionsTargetDirectory,
             fileToWriteEntry.getKey().getSimpleName() + ".java");
         if (!targetFile.exists())
         {
