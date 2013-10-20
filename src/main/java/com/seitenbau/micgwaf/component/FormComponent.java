@@ -16,10 +16,12 @@ public class FormComponent extends HtmlElementComponent
     super(elementName, id, parent);
   }
 
-  public void processRequest(HttpServletRequest request)
+  @Override
+  public Component processRequest(HttpServletRequest request)
   {
-    super.processRequest(request);
+    Component result = super.processRequest(request);
     checkSubmitted(this);
+    return result;
   }
   
   public void checkSubmitted(Component component)

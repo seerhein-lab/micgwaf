@@ -42,8 +42,12 @@ public class WebappFilter implements Filter
   {
     PrintWriter writer = response.getWriter();
     Component homePage = application.getHomePage();
-    homePage.processRequest((HttpServletRequest) request);
-    homePage.render(writer);
+    Component toRender = homePage.processRequest((HttpServletRequest) request);
+    if (toRender == null)
+    {
+      toRender = homePage;
+    }
+    toRender.render(writer);
     writer.close();
   }
 

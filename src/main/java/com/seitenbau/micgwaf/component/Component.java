@@ -34,12 +34,23 @@ public abstract class Component
   
   public abstract void render(Writer writer) throws IOException;
   
-  public void processRequest(HttpServletRequest request)
+  /**
+   * Processes the HTTP request and executes any actions triggered by the request.
+   * 
+   * @param request the request to process, not null.
+   * 
+   * @return the page to render after processing, or null if this component does not wish another
+   *         page to be rendered.
+   *         note: if more than one child component wishes to redirect to another page, 
+   *         the last component wins.
+   */
+  public Component processRequest(HttpServletRequest request)
   {
+    Component toRedirectTo = null;
     for (Component child : getChildren())
     {
-      child.processRequest(request);
+      toRedirectTo = child.processRequest(request);
     }
-    
+    return toRedirectTo;
   }
 }

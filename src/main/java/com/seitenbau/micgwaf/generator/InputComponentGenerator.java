@@ -23,7 +23,6 @@ public class InputComponentGenerator extends HtmlElementComponentGenerator
   {
     String rootContent = super.generate(component, targetPackage);
 
-    InputComponent inputCompont = (InputComponent) component;
     StringBuilder fileContent = new StringBuilder();
     
     // replace inheritance
@@ -40,21 +39,21 @@ public class InputComponentGenerator extends HtmlElementComponentGenerator
         .append("import ").append(InputComponent.class.getName()).append(";\n")
         .append(rootContent.substring(indexOfImport));
 
-    if (inputCompont.isButton())
-    {
-      fileContent.append("\n\n  @Override\n");
-      fileContent.append("  public void processRequest(HttpServletRequest request)\n");
-      fileContent.append("  {\n");
-      fileContent.append("    super.processRequest(request);\n");
-      fileContent.append("    if (submitted)\n");
-      fileContent.append("    {\n");
-      fileContent.append("      onSubmit();\n");
-      fileContent.append("    }\n");
-      fileContent.append("  }\n\n");
-      fileContent.append("  public void onSubmit()\n");
-      fileContent.append("  {\n");
-      fileContent.append("  }\n");
-    }
+//    if (inputCompont.isButton())
+//    {
+//      fileContent.append("\n\n  @Override\n");
+//      fileContent.append("  public void processRequest(HttpServletRequest request)\n");
+//      fileContent.append("  {\n");
+//      fileContent.append("    super.processRequest(request);\n");
+//      fileContent.append("    if (submitted)\n");
+//      fileContent.append("    {\n");
+//      fileContent.append("      onSubmit();\n");
+//      fileContent.append("    }\n");
+//      fileContent.append("  }\n\n");
+//      fileContent.append("  public void onSubmit()\n");
+//      fileContent.append("  {\n");
+//      fileContent.append("  }\n");
+//    }
     fileContent.append("}\n");
     
     return fileContent.toString();

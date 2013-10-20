@@ -18,7 +18,8 @@ public class InputComponent extends HtmlElementComponent
     super(elementName, id, parent);
   }
 
-  public void processRequest(HttpServletRequest request)
+  @Override
+  public Component processRequest(HttpServletRequest request)
   {
     System.out.println(request.getParameterMap());
     String nameAttr = attributes.get("name");
@@ -30,7 +31,7 @@ public class InputComponent extends HtmlElementComponent
         submitted = true;
       }
     }
-    super.processRequest(request);
+    return super.processRequest(request);
   }
   
   public boolean isButton()

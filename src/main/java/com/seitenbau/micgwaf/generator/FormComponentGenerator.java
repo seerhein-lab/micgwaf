@@ -51,8 +51,9 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
     for (InputComponent button : buttons)
     {
       fileContent.append("\n\n");
-      fileContent.append("  public void ").append(button.id).append("Pressed()\n");
+      fileContent.append("  public Component ").append(button.id).append("Pressed()\n");
           fileContent.append("  {\n");
+          fileContent.append("    return null;\n");
           fileContent.append("  }\n");
     }
     
@@ -71,9 +72,9 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
     fileContent.append("  {\n");
     fileContent.append("  }\n\n");
     fileContent.append("  @Override\n");
-    fileContent.append("  public void processRequest(HttpServletRequest request)\n");
+    fileContent.append("  public Component processRequest(HttpServletRequest request)\n");
     fileContent.append("  {\n");
-    fileContent.append("    super.processRequest(request);\n");
+    fileContent.append("    Component result = super.processRequest(request);\n");
     fileContent.append("    if (submitted)\n");
     fileContent.append("    {\n");
     fileContent.append("      onSubmit();\n");
@@ -81,10 +82,11 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
     {
       fileContent.append("      if (").append(button.id).append(".submitted)\n");
       fileContent.append("      {\n");
-      fileContent.append("        ").append(button.id).append("Pressed();\n");
+      fileContent.append("        result = ").append(button.id).append("Pressed();\n");
       fileContent.append("      }\n");
     }
     fileContent.append("    }\n");
+    fileContent.append("    return result;\n");
     fileContent.append("  }\n");
     fileContent.append("}\n");
     
