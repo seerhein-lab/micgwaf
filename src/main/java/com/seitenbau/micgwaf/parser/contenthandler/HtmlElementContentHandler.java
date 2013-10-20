@@ -50,20 +50,29 @@ public class HtmlElementContentHandler extends ContentHandler
     for (int i = 0; i < attributes.getLength(); ++i)
     {
       String attributeUri = attributes.getURI(i);
-      String attributeLocalName = attributes.getLocalName(i);
+      String attributeName = attributes.getLocalName(i);
+      if ("".equals(attributeName)) 
+      {
+        attributeName = attributes.getQName(i);
+      }
       String value = attributes.getValue(i);
-      if (Constants.XML_NAMESPACE.equals(attributeUri) && ID_ATTR.equals(attributeLocalName))
+      if (attributeName.startsWith("xmlns:") && Constants.XML_NAMESPACE.equals(value))
+      {
+        // do not output definition of our own namespace
+        continue;
+      }
+      if (Constants.XML_NAMESPACE.equals(attributeUri) && ID_ATTR.equals(attributeName))
       {
         id = value;
       }
       else if (Constants.XML_NAMESPACE.equals(attributeUri) 
-          && ContentHandlerRegistry.MULTIPLE_ATTR.equals(attributeLocalName))
+          && ContentHandlerRegistry.MULTIPLE_ATTR.equals(attributeName))
       {
         multiple = true;
       }
       else if (attributeUri == null || "".equals(attributeUri))
       {
-        attributeValues.put(attributeLocalName, value);
+        attributeValues.put(attributeName, value);
       }
     }
     if (id == null || "".equals(id.trim()))
