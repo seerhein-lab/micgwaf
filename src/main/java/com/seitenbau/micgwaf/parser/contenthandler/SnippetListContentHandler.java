@@ -37,7 +37,7 @@ public class SnippetListContentHandler extends ContentHandler
         String attributeValue = attributes.getValue(i);
         if (attributeName.startsWith("xmlns:") && Constants.XML_NAMESPACE.equals(attributeValue))
         {
-          // do not output our own namespace
+          // do not output definition of our own namespace
           continue;
         }
         currentStringPart.append(" ")

@@ -29,10 +29,10 @@ public class DelegatingContentHandler extends DefaultHandler
   
   public int contentDepth = -1;
   
-  public Component rootComponent;
+  public Component currentResult;
   
   {
-    currentDelegate = new DelegateReference(-1, new SnippetListContentHandler(), false);
+    // currentDelegate = new DelegateReference(-1, new SnippetListContentHandler(), false);
   }
   
   @Override
@@ -54,7 +54,10 @@ public class DelegatingContentHandler extends DefaultHandler
         throw new SAXException("unknown element " + localName);
       }
       ContentHandler contentHandler = factory.create(uri, localName, qName, attributes);
-      delegateList.add(currentDelegate);
+      if (currentDelegate != null)
+      {
+        delegateList.add(currentDelegate);
+      }
       currentDelegate = new DelegateReference(contentDepth, contentHandler, false);
       newHandlerFound = true;
     }
@@ -77,16 +80,23 @@ public class DelegatingContentHandler extends DefaultHandler
             throw new SAXException("unknown attribute " + attributeName);
           }
           ContentHandler contentHandler = factory.create(uri, localName, qName, attributes);
-          delegateList.add(currentDelegate);
+          if (currentDelegate != null)
+          {
+            delegateList.add(currentDelegate);
+          }
           currentDelegate = new DelegateReference(contentDepth, contentHandler, false);
           newHandlerFound = true;
         }
       }
     }
-    if (!newHandlerFound && !(currentDelegate.contentHandler instanceof SnippetListContentHandler))
+    if (!newHandlerFound 
+        && ((currentDelegate == null) || !(currentDelegate.contentHandler instanceof SnippetListContentHandler)))
     {
       ContentHandler contentHandler = new SnippetListContentHandler();
-      delegateList.add(currentDelegate);
+      if (currentDelegate != null)
+      {
+        delegateList.add(currentDelegate);
+      }
       currentDelegate = new DelegateReference(contentDepth, contentHandler, false);
       newHandlerFound = true;      
     }
@@ -105,17 +115,17 @@ public class DelegatingContentHandler extends DefaultHandler
       currentDelegate.contentHandler.endElement(uri, localName, qName);
       endElementCalled = true;
     }
-    while (contentDepth == currentDelegate.startDepth && contentDepth != -1)
+    while (contentDepth == currentDelegate.startDepth && !delegateList.isEmpty())
     {
-      Component result = currentDelegate.contentHandler.finished();
-      for (Component child : result.getChildren())
+      currentResult = currentDelegate.contentHandler.finished();
+      for (Component child : currentResult.getChildren())
       {
-        child.parent = result;
+        child.parent = currentResult;
       }
       currentDelegate = delegateList.remove(delegateList.size() - 1);
-      if (!(result instanceof EmptyComponent))
+      if (!(currentResult instanceof EmptyComponent))
       {
-        currentDelegate.contentHandler.child(result);
+        currentDelegate.contentHandler.child(currentResult);
       }
       if (!endElementCalled)
       {
@@ -127,13 +137,22 @@ public class DelegatingContentHandler extends DefaultHandler
   
   public void startDocument() throws SAXException
   {
-    currentDelegate.contentHandler.startDocument();
+    // do nothing
   }
 
   public void endDocument() throws SAXException
   {
-    currentDelegate.contentHandler.endDocument();
-    rootComponent = currentDelegate.contentHandler.finished();
+//    currentDelegate.contentHandler.endDocument();
+//    for (int i = delegateList.size() - 1; i > 0; i--)
+//    {
+//      currentDelegate.contentHandler.finished();
+//      currentDelegate = delegateList.remove(delegateList.size() - 1);
+//    }
+    currentResult = currentDelegate.contentHandler.finished();
+    for (Component child : currentResult.getChildren())
+    {
+      child.parent = currentResult;
+    }
   }
 
   public void characters (char[] ch, int start, int length)

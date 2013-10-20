@@ -16,7 +16,7 @@ import com.seitenbau.micgwaf.parser.HtmlParser;
 public class ParseAndRenderTest
 {
   @Test
-  public void testRenderSnippets() throws Exception
+  public void testRenderPage() throws Exception
   {
     File componentDir = new File("src/test/resources/com/seitenbau/micgwaf/page");
     Map<String, Component> components 
@@ -35,6 +35,22 @@ public class ParseAndRenderTest
     assertEquals(expected, stringWriter.toString());
   }
   
+  @Test
+  public void testRenderForm() throws Exception
+  {
+    File componentDir = new File("src/test/resources/com/seitenbau/micgwaf/parser");
+    Map<String, Component> components 
+        = new HtmlParser().readComponents(componentDir);
+    assertEquals(1, components.size());
+    StringWriter stringWriter = new StringWriter();
+    components.get("form").render(stringWriter);
+    String actual = stringWriter.toString();
+    actual = actual.replace("\r\n", "\n");
+    String expected = FileUtils.readFileToString(new File(componentDir, "expected/formExpected.xhtml"));
+    expected = expected.replace("\r\n", "\n");
+    assertEquals(expected, stringWriter.toString());
+  }
+
   @Test
   @Ignore
   public void testChildAndParentReferences() throws Exception

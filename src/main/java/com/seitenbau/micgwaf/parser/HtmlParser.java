@@ -84,6 +84,6 @@ public class HtmlParser
     xmlReader.setErrorHandler(handler);
     xmlReader.setFeature(SAX_NAMESPACE_FEATURE_NAME, true);
     xmlReader.parse(new InputSource(inputStream)); 
-    return handler.rootComponent;
+    return handler.currentResult;
   }
 }
