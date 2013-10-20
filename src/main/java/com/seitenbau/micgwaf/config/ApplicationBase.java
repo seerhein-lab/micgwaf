@@ -1,11 +1,14 @@
 package com.seitenbau.micgwaf.config;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
 import com.seitenbau.micgwaf.component.Component;
+import com.seitenbau.micgwaf.component.SnippetComponent;
 
 public abstract class ApplicationBase
 {
@@ -43,5 +46,25 @@ public abstract class ApplicationBase
     }
     throw new IllegalStateException("Component of class " + componentClass.getName() 
         + " has noc constructor with a single Component parameter");
+  }
+  
+  /**
+   * This handler is called whenever an Exception is not caught by the components.
+   * This implementation returns the co
+   * 
+   * @param component the page in which the error occured 
+   * @param exception the exception which was caught 
+   * @param onRender true if the exception was caught on rendering, false if not.
+   * 
+   * @return the component to display as error page.
+   */
+  public Component handleException(Component component, Exception exception, boolean onRender)
+  {
+    SnippetComponent result = new SnippetComponent(null);
+    StringWriter writer = new StringWriter();
+    writer.write("An error occurred\n");
+    exception.printStackTrace(new PrintWriter(writer));
+    result.snippet = writer.toString();
+    return result;
   }
 }

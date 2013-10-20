@@ -53,13 +53,30 @@ public class WebappFilter implements Filter
       chain.doFilter(httpServletRequest, response);
       return;
     }
-    Component toRender = toProcess.processRequest(httpServletRequest);
-    if (toRender == null)
+    Component toRender = null;
+    try
     {
-      toRender = toProcess;
+      toRender = toProcess.processRequest(httpServletRequest);
+      if (toRender == null)
+      {
+        toRender = toProcess;
+      }
+    }
+    catch (Exception e)
+    {
+      toRender = application.handleException(toProcess, e, false);
     }
     PrintWriter writer = response.getWriter();
-    toRender.render(writer);
+    try
+    {
+      toRender.render(writer);
+    }
+    catch (Exception e)
+    {
+      response.reset();
+      toRender = application.handleException(toProcess, e, false);
+      toRender.render(writer);
+    }
     writer.close();
     httpServletRequest.getSession().setAttribute("page", toRender);
     httpServletRequest.getSession().setAttribute("path", path);
