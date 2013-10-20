@@ -1,13 +1,14 @@
 package com.seitenbau.micgwaf.component;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.io.Writer;
 import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
-public abstract class Component
+public abstract class Component implements Serializable
 {
   public String id;
   

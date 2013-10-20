@@ -42,7 +42,12 @@ public class WebappFilter implements Filter
   {
     HttpServletRequest httpServletRequest = (HttpServletRequest) request;
     String path = httpServletRequest.getServletPath();
-    Component toProcess = application.getComponent(path);
+    String pathFromSession = (String) httpServletRequest.getSession().getAttribute("path");
+    Component toProcess = (Component) httpServletRequest.getSession().getAttribute("page");
+    if (toProcess == null || !path.equals(pathFromSession))
+    {
+      toProcess = application.getComponent(path);
+    }
     if (toProcess == null)
     {
       chain.doFilter(httpServletRequest, response);
@@ -56,11 +61,12 @@ public class WebappFilter implements Filter
     PrintWriter writer = response.getWriter();
     toRender.render(writer);
     writer.close();
+    httpServletRequest.getSession().setAttribute("page", toRender);
+    httpServletRequest.getSession().setAttribute("path", path);
   }
 
   @Override
   public void destroy()
   {
   }
-
 }
