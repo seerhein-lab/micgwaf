@@ -51,8 +51,7 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
     for (InputComponent button : buttons)
     {
       fileContent.append("\n\n");
-      fileContent.append("  public void on").append(button.id.substring(0, 1).toUpperCase())
-          .append(button.id.substring(1)).append("Pressed()\n");
+      fileContent.append("  public void ").append(button.id).append("Pressed()\n");
           fileContent.append("  {\n");
           fileContent.append("  }\n");
     }
@@ -82,8 +81,7 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
     {
       fileContent.append("      if (").append(button.id).append(".submitted)\n");
       fileContent.append("      {\n");
-      fileContent.append("        on").append(button.id.substring(0, 1).toUpperCase())
-          .append(button.id.substring(1)).append("Pressed();\n");
+      fileContent.append("        ").append(button.id).append("Pressed();\n");
       fileContent.append("      }\n");
     }
     fileContent.append("    }\n");
