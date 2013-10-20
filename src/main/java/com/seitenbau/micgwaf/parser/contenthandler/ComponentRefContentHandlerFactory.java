@@ -1,0 +1,15 @@
+package com.seitenbau.micgwaf.parser.contenthandler;
+
+import org.xml.sax.Attributes;
+
+public class ComponentRefContentHandlerFactory implements ContentHandlerFactory
+{
+
+  @Override
+  public ContentHandler create(String uri, String localName,
+      String qName, Attributes attributes)
+  {
+    return new ComponentRefContentHandler();
+  }
+
+}
