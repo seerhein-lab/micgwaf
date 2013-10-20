@@ -40,13 +40,20 @@ public class WebappFilter implements Filter
         FilterChain chain) 
       throws IOException, ServletException
   {
-    PrintWriter writer = response.getWriter();
-    Component homePage = application.getHomePage();
-    Component toRender = homePage.processRequest((HttpServletRequest) request);
+    HttpServletRequest httpServletRequest = (HttpServletRequest) request;
+    String path = httpServletRequest.getServletPath();
+    Component toProcess = application.getComponent(path);
+    if (toProcess == null)
+    {
+      chain.doFilter(httpServletRequest, response);
+      return;
+    }
+    Component toRender = toProcess.processRequest(httpServletRequest);
     if (toRender == null)
     {
-      toRender = homePage;
+      toRender = toProcess;
     }
+    PrintWriter writer = response.getWriter();
     toRender.render(writer);
     writer.close();
   }
