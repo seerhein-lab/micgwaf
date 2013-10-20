@@ -12,6 +12,7 @@ import org.xml.sax.SAXException;
 
 import com.seitenbau.micgwaf.component.ChildListComponent;
 import com.seitenbau.micgwaf.component.Component;
+import com.seitenbau.micgwaf.component.FormComponent;
 import com.seitenbau.micgwaf.component.HtmlElementComponent;
 import com.seitenbau.micgwaf.component.InputComponent;
 import com.seitenbau.micgwaf.util.Constants;
@@ -22,10 +23,13 @@ public class HtmlElementContentHandler extends ContentHandler
   
   public static final Set<String> inputElements = new HashSet<>();
   
+  public static final Set<String> formElements = new HashSet<>();
+
   static
   {
     inputElements.add("input");
     inputElements.add("button");
+    formElements.add("form");
   }
   
   public String elementName;
@@ -96,6 +100,10 @@ public class HtmlElementContentHandler extends ContentHandler
     if (inputElements.contains(elementName))
     {
       htmlElementComponent = new InputComponent(elementName, id, null);
+    }
+    else if (formElements.contains(elementName))
+    {
+      htmlElementComponent = new FormComponent(elementName, id, null);
     }
     else
     {

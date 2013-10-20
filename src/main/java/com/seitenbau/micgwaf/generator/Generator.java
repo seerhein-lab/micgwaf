@@ -11,6 +11,7 @@ import com.seitenbau.micgwaf.component.ChildListComponent;
 import com.seitenbau.micgwaf.component.Component;
 import com.seitenbau.micgwaf.component.ComponentRegistry;
 import com.seitenbau.micgwaf.component.EmptyComponent;
+import com.seitenbau.micgwaf.component.FormComponent;
 import com.seitenbau.micgwaf.component.HtmlElementComponent;
 import com.seitenbau.micgwaf.component.InputComponent;
 import com.seitenbau.micgwaf.component.RefComponent;
@@ -26,6 +27,7 @@ public class Generator
     componentGeneratorMap.put(SnippetListComponent.class, new SnippetListComponentGenerator());
     componentGeneratorMap.put(HtmlElementComponent.class, new HtmlElementComponentGenerator());
     componentGeneratorMap.put(InputComponent.class, new InputComponentGenerator());
+    componentGeneratorMap.put(FormComponent.class, new FormComponentGenerator());
     componentGeneratorMap.put(RefComponent.class, new RefComponentGenerator());
     componentGeneratorMap.put(ChildListComponent.class, new ChildListComponentGenerator());
     componentGeneratorMap.put(EmptyComponent.class, new EmptyComponentGenerator());

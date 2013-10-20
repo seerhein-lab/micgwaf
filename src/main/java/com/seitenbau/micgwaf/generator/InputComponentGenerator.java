@@ -23,7 +23,7 @@ public class InputComponentGenerator extends HtmlElementComponentGenerator
   {
     String rootContent = super.generate(component, targetPackage);
 
-    HtmlElementComponent htmlElementCompont = (HtmlElementComponent) component;
+    InputComponent inputCompont = (InputComponent) component;
     StringBuilder fileContent = new StringBuilder();
     
     // replace inheritance
@@ -40,7 +40,7 @@ public class InputComponentGenerator extends HtmlElementComponentGenerator
         .append("import ").append(InputComponent.class.getName()).append(";\n")
         .append(rootContent.substring(indexOfImport));
 
-    if (isButton(htmlElementCompont))
+    if (inputCompont.isButton())
     {
       fileContent.append("\n\n  @Override\n");
       fileContent.append("  public void processRequest(HttpServletRequest request)\n");
@@ -58,17 +58,6 @@ public class InputComponentGenerator extends HtmlElementComponentGenerator
     fileContent.append("}\n");
     
     return fileContent.toString();
-  }
-
-  private boolean isButton(HtmlElementComponent htmlElementCompont)
-  {
-    if ("button".equals(htmlElementCompont.elementName) 
-        || ("input".equals(htmlElementCompont.elementName) 
-            && "submit".equals(htmlElementCompont.attributes.get("type"))))
-    {
-      return true;
-    }
-    return false;
   }
 
   @Override

@@ -32,4 +32,15 @@ public class InputComponent extends HtmlElementComponent
     }
     super.processRequest(request);
   }
+  
+  public boolean isButton()
+  {
+    if ("button".equals(elementName) 
+        || ("input".equals(elementName) 
+            && "submit".equals(attributes.get("type"))))
+    {
+      return true;
+    }
+    return false;
+  }
 }
