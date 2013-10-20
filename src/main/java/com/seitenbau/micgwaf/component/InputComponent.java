@@ -23,7 +23,7 @@ public class InputComponent extends HtmlElementComponent
   {
     System.out.println(request.getParameterMap());
     String nameAttr = attributes.get("name");
-    if (value != null)
+    if (nameAttr != null)
     {
       value = request.getParameter(nameAttr);
       if (value != null)
