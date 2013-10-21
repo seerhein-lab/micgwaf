@@ -19,6 +19,15 @@ public abstract class ApplicationBase
     components.put(path, component);
   }
   
+  /**
+   * Returns the component which is responsible for rendering a request with a given reuqest path
+   *  
+   * @param path the request path, not null.
+   * 
+   * @return the component, or null if no component is associated with the path
+   * 
+   * @throws RuntimeException if the component cannot be constructed.
+   */
   public Component getComponent(String path)
   {
     Class<? extends Component> componentClass = components.get(path);
@@ -45,7 +54,7 @@ public abstract class ApplicationBase
       }
     }
     throw new IllegalStateException("Component of class " + componentClass.getName() 
-        + " has noc constructor with a single Component parameter");
+        + " has no constructor with a single Component parameter");
   }
   
   /**
