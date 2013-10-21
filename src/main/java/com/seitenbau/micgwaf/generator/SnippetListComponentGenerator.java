@@ -8,6 +8,7 @@ import java.util.List;
 import com.seitenbau.micgwaf.component.ChildListComponent;
 import com.seitenbau.micgwaf.component.Component;
 import com.seitenbau.micgwaf.component.ComponentPart;
+import com.seitenbau.micgwaf.component.RefComponent;
 import com.seitenbau.micgwaf.component.SnippetListComponent;
 
 public class SnippetListComponentGenerator extends ComponentGenerator
@@ -34,9 +35,10 @@ public class SnippetListComponentGenerator extends ComponentGenerator
       return null;
     }
     SnippetListComponent snippetListComponent = (SnippetListComponent) component;
+    JavaClassName javaClassName = getClassName(component, targetPackage);
     String className = getClassName(component, targetPackage).getSimpleName();
     StringBuilder fileContent = new StringBuilder();
-    fileContent.append("package ").append(targetPackage).append(";\n\n");
+    fileContent.append("package ").append(javaClassName.getPackage()).append(";\n\n");
     fileContent.append("import ").append(Component.class.getName()).append(";\n");
     fileContent.append("import ").append(IOException.class.getName()).append(";\n");
     fileContent.append("import ").append(Writer.class.getName()).append(";\n");
@@ -44,6 +46,19 @@ public class SnippetListComponentGenerator extends ComponentGenerator
     fileContent.append("import ").append(ArrayList.class.getName()).append(";\n");
     fileContent.append("import ").append(ComponentPart.class.getName()).append(";\n");
     fileContent.append("import ").append(ChildListComponent.class.getName()).append(";\n");
+    for (ComponentPart part : snippetListComponent.parts)
+    {
+      if (part.component != null)
+      {
+        ComponentGenerator generator = Generator.getGenerator(part.component);
+        JavaClassName componentClass = generator.getReferencableClassName(part.component, targetPackage);
+        if (part.component instanceof RefComponent 
+            && !javaClassName.getPackage().equals(componentClass.getPackage()))
+        {
+          fileContent.append("import ").append(componentClass.getName()).append(";\n");
+        }
+      }
+    }
     fileContent.append("\n");
     fileContent.append("public class ").append(className)
         .append(" extends ").append(Component.class.getSimpleName())

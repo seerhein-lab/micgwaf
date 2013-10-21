@@ -46,48 +46,44 @@ public class Generator
     for (Map.Entry<String, Component> entry : componentMap.entrySet())
     {
       Component component = entry.getValue();
-      File componentTargetDirectory = new File(targetDirectory, component.id);
-      File componentExtensionsTargetDirectory = new File(extensionsTargetDirectory, component.id);
       String componentPackage = targetPackage + "." + component.id;
       
       Map<JavaClassName, String> componentFilesToWrite = new HashMap<>();
       Map<JavaClassName, String> extensionFilesToWrite = new HashMap<>();
       generate(component, componentPackage, componentFilesToWrite);
       generateExtension(component, componentPackage, extensionFilesToWrite);
-      if (!componentFilesToWrite.isEmpty() && !componentTargetDirectory.exists())
-      {
-        if (!componentTargetDirectory.mkdirs())
-        {
-          throw new IOException("Could not create directory " + componentTargetDirectory.getAbsolutePath());
-        }
-      }
       for (Map.Entry<JavaClassName, String> fileToWriteEntry : componentFilesToWrite.entrySet())
       {
-        // TODO use package information
         File targetFile = new File(
-            componentTargetDirectory,
-            fileToWriteEntry.getKey().getSimpleName() + ".java");
-        FileUtils.writeStringToFile(
-            targetFile, 
-            fileToWriteEntry.getValue(), 
-            "ISO-8859-1");
+            targetDirectory,
+            fileToWriteEntry.getKey().getSourceFile());
+        writeFile(targetFile, fileToWriteEntry.getValue());
       }
       for (Map.Entry<JavaClassName, String> fileToWriteEntry : extensionFilesToWrite.entrySet())
       {
-        // TODO use package information
         File targetFile = new File(
-            componentExtensionsTargetDirectory,
-            fileToWriteEntry.getKey().getSimpleName() + ".java");
-        if (!targetFile.exists())
-        {
-          FileUtils.writeStringToFile(
-              targetFile, 
-              fileToWriteEntry.getValue(), 
-              "ISO-8859-1");
-        }
+            extensionsTargetDirectory,
+            fileToWriteEntry.getKey().getSourceFile());
+        writeFile(targetFile, fileToWriteEntry.getValue());
       }
     }
     generateComponentRegistry(componentMap, targetDirectory, targetPackage);
+  }
+
+  private void writeFile(File targetFile, String content) throws IOException
+  {
+    File targetDir = targetFile.getParentFile();
+    if (!targetDir.exists())
+    {
+      if (!targetDir.mkdirs())
+      {
+        throw new IOException("Could not create directory " + targetDir.getAbsolutePath());
+      }
+    }
+    if (!targetFile.exists())
+    {
+      FileUtils.writeStringToFile(targetFile,  content,  "ISO-8859-1");
+    }
   }
   
   public void generate(Component component, String targetPackage, Map<JavaClassName, String> filesToWrite)
@@ -123,10 +119,19 @@ public class Generator
       File targetDirectory,
       String targetPackage) throws IOException
   {
-    String className = "ComponentRegistryImpl";
+    JavaClassName javaClassName = new JavaClassName("ComponentRegistryImpl", targetPackage);
+    String className = javaClassName.getSimpleName();
     StringBuilder content = new StringBuilder();
     content.append("package ").append(targetPackage).append(";\n\n");
     content.append("import ").append(ComponentRegistry.class.getName()).append(";\n");
+    for (Map.Entry<String, Component> entry : componentMap.entrySet())
+    {
+      Component component = entry.getValue();
+      ComponentGenerator componentGenerator = componentGeneratorMap.get(component.getClass());
+      String componentPackage = targetPackage + "." + component.id;
+      JavaClassName componentClassName = componentGenerator.getReferencableClassName(component, componentPackage);
+      content.append("import ").append(componentClassName.getName()).append(";\n");
+    }
     content.append("\n");
     content.append("public class ").append(className)
         .append(" extends ").append(ComponentRegistry.class.getSimpleName())
@@ -138,17 +143,16 @@ public class Generator
     {
       Component component = entry.getValue();
       ComponentGenerator componentGenerator = componentGeneratorMap.get(component.getClass());
-      JavaClassName componentClassName = componentGenerator.getReferencableClassName(component, targetPackage);
+      String componentPackage = targetPackage + "." + component.id;
+      JavaClassName componentClassName 
+          = componentGenerator.getReferencableClassName(component, componentPackage);
       content.append("    components.put(\"").append(componentClassName.getSimpleName())
           .append("\", new ").append(componentClassName.getSimpleName()).append("(null));\n");
     }
     content.append("  }\n");
     content.append("}\n");
-    File targetFile = new File(targetDirectory, className + ".java");
-    FileUtils.writeStringToFile(
-        targetFile, 
-        content.toString(), 
-        "ISO-8859-1");
+    File targetFile = new File(targetDirectory, javaClassName.getSourceFile());
+    writeFile(targetFile, content.toString());
   }
   
   public static ComponentGenerator getGenerator(Component component)

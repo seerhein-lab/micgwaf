@@ -1,6 +1,8 @@
 package com.seitenbau.micgwaf.generator;
 
-import static com.seitenbau.micgwaf.util.Assertions.*;
+import static com.seitenbau.micgwaf.util.Assertions.assertNotNull;
+
+import java.io.File;
 
 /**
  * The fully qualified name of a java class.
@@ -57,6 +59,18 @@ public class JavaClassName
       return packageName + "." + simpleName;
     }
     return simpleName;
+  }
+  
+  /**
+   * Converts the class name to the name of the java source file.
+   * 
+   * @return the name of the java source file, relative to the root package directory, not null.
+   */
+  public String getSourceFile()
+  {
+    String qualifiedName = getName();
+    String result = qualifiedName.replace(".", "/") + ".java";
+    return result;
   }
 
   @Override

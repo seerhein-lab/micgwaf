@@ -10,8 +10,10 @@ public class RefComponentGenerator extends ComponentGenerator
       Component component,
       String targetPackage)
   {
+    // remove last package part and add own
+    String basePackage = targetPackage.substring(0, targetPackage.lastIndexOf('.'));
     RefComponent refComponent = (RefComponent) component;
-    return toJavaClassName(refComponent.refid, targetPackage);
+    return toJavaClassName(refComponent.refid, basePackage + "." + refComponent.refid);
   }
   
   @Override

@@ -15,8 +15,8 @@ public class GeneratorTest
   public void testGenerate() throws Exception
   {
     File componentDir = new File("src/test/resources/com/seitenbau/micgwaf/page");
-    File generatedSourcesDir = new File("target/generated-sources/com/sb/test");
-    File generatedExtensionsDir = new File("target/generated-extension-sources/com/sb/test");
+    File generatedSourcesDir = new File("target/generated-sources");
+    File generatedExtensionsDir = new File("target/generated-extension-sources");
     
     FileUtils.deleteDirectory(generatedSourcesDir);
     FileUtils.deleteDirectory(generatedExtensionsDir);

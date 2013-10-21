@@ -8,7 +8,7 @@ import java.io.StringWriter;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
-import com.sb.test.Root;
+import com.sb.test.root.Root;
 
 public class GeneratedSourcesTest
 {
