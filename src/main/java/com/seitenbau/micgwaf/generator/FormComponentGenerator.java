@@ -62,9 +62,19 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
       fileContent.append("\n\n");
       fileContent.append("  public String get").append(input.id.substring(0, 1).toUpperCase())
           .append(input.id.substring(1)).append("()\n");
-          fileContent.append("  {\n");
-          fileContent.append("    return ").append(input.id).append(".value;\n");
-          fileContent.append("  }\n");
+      fileContent.append("  {\n");
+      String pathToComponent = input.id;
+      Component parent = input.parent;
+      while (parent != component)
+      {
+        if (parent.id != null)
+        {
+          pathToComponent = parent.id + "." + pathToComponent;
+        }
+        parent = parent.parent;
+      }
+      fileContent.append("    return ").append(pathToComponent).append(".value;\n");
+      fileContent.append("  }\n");
     }
     
     fileContent.append("\n");
