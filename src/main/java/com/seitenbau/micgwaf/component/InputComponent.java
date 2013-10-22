@@ -21,7 +21,6 @@ public class InputComponent extends HtmlElementComponent
   @Override
   public Component processRequest(HttpServletRequest request)
   {
-    System.out.println(request.getParameterMap());
     String nameAttr = attributes.get("name");
     if (nameAttr != null)
     {
