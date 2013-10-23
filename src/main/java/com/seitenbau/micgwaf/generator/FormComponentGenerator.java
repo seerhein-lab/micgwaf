@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.seitenbau.micgwaf.component.ChildListComponent;
 import com.seitenbau.micgwaf.component.Component;
 import com.seitenbau.micgwaf.component.FormComponent;
 import com.seitenbau.micgwaf.component.HtmlElementComponent;
@@ -139,6 +140,11 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
         buttons.add(inputComponent);
       }
     }
+    if (component instanceof ChildListComponent)
+    {
+      // do not consider buttons in loops
+      return;
+    }
     for (Component child : component.getChildren())
     {
       getButtons(child, buttons);
@@ -154,6 +160,11 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
       {
         inputs.add(inputComponent);
       }
+    }
+    if (component instanceof ChildListComponent)
+    {
+      // do not consider buttons in loops
+      return;
     }
     for (Component child : component.getChildren())
     {
