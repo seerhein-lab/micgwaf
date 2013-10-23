@@ -208,7 +208,7 @@ public abstract class ComponentGenerator
     String componentField;
     if (component != null && component.id != null)
     {
-      componentField = component.id;
+      componentField = removeLoopPartFromId(component.id);
     }
     else
     {

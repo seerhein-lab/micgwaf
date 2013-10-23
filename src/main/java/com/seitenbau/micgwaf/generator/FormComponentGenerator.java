@@ -51,7 +51,7 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
     for (InputComponent button : buttons)
     {
       fileContent.append("\n\n");
-      fileContent.append("  public Component ").append(button.id).append("Pressed()\n");
+      fileContent.append("  public Component ").append(removeLoopPartFromId(button.id)).append("Pressed()\n");
           fileContent.append("  {\n");
           fileContent.append("    return null;\n");
           fileContent.append("  }\n");
@@ -60,16 +60,17 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
     for (InputComponent input : inputs)
     {
       fileContent.append("\n\n");
-      fileContent.append("  public String get").append(input.id.substring(0, 1).toUpperCase())
-          .append(input.id.substring(1)).append("()\n");
+      String normalizedInputId = removeLoopPartFromId(input.id);
+      fileContent.append("  public String get").append(normalizedInputId.substring(0, 1).toUpperCase())
+          .append(normalizedInputId.substring(1)).append("()\n");
       fileContent.append("  {\n");
-      String pathToComponent = input.id;
+      String pathToComponent = normalizedInputId;
       Component parent = input.parent;
       while (parent != component)
       {
         if (parent.id != null)
         {
-          pathToComponent = parent.id + "." + pathToComponent;
+          pathToComponent = removeLoopPartFromId(parent.id) + "." + pathToComponent;
         }
         parent = parent.parent;
       }
@@ -90,9 +91,9 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
     fileContent.append("      onSubmit();\n");
     for (InputComponent button : buttons)
     {
-      fileContent.append("      if (").append(button.id).append(".submitted)\n");
+      fileContent.append("      if (").append(removeLoopPartFromId(button.id)).append(".submitted)\n");
       fileContent.append("      {\n");
-      fileContent.append("        result = ").append(button.id).append("Pressed();\n");
+      fileContent.append("        result = ").append(removeLoopPartFromId(button.id)).append("Pressed();\n");
       fileContent.append("      }\n");
     }
     fileContent.append("    }\n");
