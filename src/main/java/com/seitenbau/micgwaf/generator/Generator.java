@@ -57,20 +57,20 @@ public class Generator
         File targetFile = new File(
             targetDirectory,
             fileToWriteEntry.getKey().getSourceFile());
-        writeFile(targetFile, fileToWriteEntry.getValue());
+        writeFile(targetFile, fileToWriteEntry.getValue(), true);
       }
       for (Map.Entry<JavaClassName, String> fileToWriteEntry : extensionFilesToWrite.entrySet())
       {
         File targetFile = new File(
             extensionsTargetDirectory,
             fileToWriteEntry.getKey().getSourceFile());
-        writeFile(targetFile, fileToWriteEntry.getValue());
+        writeFile(targetFile, fileToWriteEntry.getValue(), false);
       }
     }
     generateComponentRegistry(componentMap, targetDirectory, targetPackage);
   }
 
-  private void writeFile(File targetFile, String content) throws IOException
+  private void writeFile(File targetFile, String content, boolean overwrite) throws IOException
   {
     File targetDir = targetFile.getParentFile();
     if (!targetDir.exists())
@@ -80,7 +80,7 @@ public class Generator
         throw new IOException("Could not create directory " + targetDir.getAbsolutePath());
       }
     }
-    if (!targetFile.exists())
+    if (overwrite || !targetFile.exists())
     {
       FileUtils.writeStringToFile(targetFile,  content,  "ISO-8859-1");
     }
@@ -152,7 +152,7 @@ public class Generator
     content.append("  }\n");
     content.append("}\n");
     File targetFile = new File(targetDirectory, javaClassName.getSourceFile());
-    writeFile(targetFile, content.toString());
+    writeFile(targetFile, content.toString(), true);
   }
   
   public static ComponentGenerator getGenerator(Component component)
