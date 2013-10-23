@@ -27,6 +27,10 @@ public class HtmlElementComponent extends Component
   
   public final List<Component> children = new ArrayList<Component>();
   
+  public boolean renderSelf = true;
+  
+  public boolean renderChildren = true;
+  
   public HtmlElementComponent(Component parent)
   {
     super(null, parent);
@@ -46,25 +50,34 @@ public class HtmlElementComponent extends Component
   @Override
   public void render(Writer writer) throws IOException
   {
-    writer.write(ELEMENT_OPEN_CHAR);
-    writer.write(elementName);
-    for (Map.Entry<String, String> attributeEntry : attributes.entrySet())
+    if (renderSelf)
     {
-      writer.write(SPACE_CHAR);
-      writer.write(attributeEntry.getKey());
-      writer.write(EQUALS_CHAR);
-      writer.write(QUOT_CHAR);
-      writer.write(attributeEntry.getValue());
-      writer.write(QUOT_CHAR);
+      writer.write(ELEMENT_OPEN_CHAR);
+      writer.write(elementName);
+      for (Map.Entry<String, String> attributeEntry : attributes.entrySet())
+      {
+        writer.write(SPACE_CHAR);
+        writer.write(attributeEntry.getKey());
+        writer.write(EQUALS_CHAR);
+        writer.write(QUOT_CHAR);
+        writer.write(attributeEntry.getValue());
+        writer.write(QUOT_CHAR);
+      }
+      writer.write(ELEMENT_CLOSE_CHAR);
     }
-    writer.write(ELEMENT_CLOSE_CHAR);
-    for (Component child : getChildren())
+    if (renderChildren)
     {
-      child.render(writer);
+      for (Component child : getChildren())
+      {
+        child.render(writer);
+      }
     }
-    writer.write(ELEMENT_OPEN_CHAR);
-    writer.write(ELEMENT_END_CHAR);
-    writer.write(elementName);
-    writer.write(ELEMENT_CLOSE_CHAR);
+    if (renderSelf)
+    {
+      writer.write(ELEMENT_OPEN_CHAR);
+      writer.write(ELEMENT_END_CHAR);
+      writer.write(elementName);
+      writer.write(ELEMENT_CLOSE_CHAR);
+    }
   }
 }
