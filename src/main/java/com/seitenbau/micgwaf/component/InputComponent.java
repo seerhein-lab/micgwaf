@@ -28,6 +28,11 @@ public class InputComponent extends HtmlElementComponent
       if (value != null)
       {
         submitted = true;
+        if (!isButton())
+        {
+          // in case this component is re-rendered
+          attributes.put("value", value);
+        }
       }
     }
     return super.processRequest(request);
