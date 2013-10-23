@@ -33,6 +33,18 @@ public abstract class Component implements Serializable
     }
   }
   
+  public void inLoop(int loopIndex)
+  {
+    if (id != null)
+    {
+      id = id + ":" + loopIndex;
+    }
+    for (Component child : getChildren())
+    {
+      child.inLoop(loopIndex);
+    }
+  }
+  
   public abstract void render(Writer writer) throws IOException;
   
   /**
