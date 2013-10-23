@@ -8,7 +8,6 @@ import java.util.Map;
 
 import com.seitenbau.micgwaf.component.ChildListComponent;
 import com.seitenbau.micgwaf.component.Component;
-import com.seitenbau.micgwaf.component.ComponentPart;
 import com.seitenbau.micgwaf.component.HtmlElementComponent;
 import com.seitenbau.micgwaf.component.SnippetComponent;
 import com.seitenbau.micgwaf.component.SnippetListComponent;
@@ -42,7 +41,6 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
     fileContent.append("import ").append(HtmlElementComponent.class.getName()).append(";\n");
     fileContent.append("import ").append(SnippetComponent.class.getName()).append(";\n");
     fileContent.append("import ").append(ChildListComponent.class.getName()).append(";\n");
-    fileContent.append("import ").append(ComponentPart.class.getName()).append(";\n");
     fileContent.append("import ").append(IOException.class.getName()).append(";\n");
     fileContent.append("import ").append(Writer.class.getName()).append(";\n");
     fileContent.append("import ").append(List.class.getName()).append(";\n");
@@ -62,7 +60,7 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
       if (child instanceof SnippetListComponent)
       {
         SnippetListComponent snippetListChild = (SnippetListComponent) child;
-        for (ComponentPart part : snippetListChild.parts)
+        for (SnippetListComponent.ComponentPart part : snippetListChild.parts)
         {
           String componentField = getComponentFieldName(part.component, componentCounter);
           if (part.component != null)
@@ -104,7 +102,7 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
       if (child instanceof SnippetListComponent)
       {
         SnippetListComponent snippetListChild = (SnippetListComponent) child;
-        for (ComponentPart part : snippetListChild.parts)
+        for (SnippetListComponent.ComponentPart part : snippetListChild.parts)
         {
           String componentField = getComponentFieldName(part.component, componentCounter);
           fileContent.append("    result.add(").append(componentField).append(");\n");
@@ -136,7 +134,7 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
         SnippetListComponent snippetListComponent = (SnippetListComponent) child;
         if (snippetListComponent.parts.size() == 1)
         {
-          ComponentPart part = snippetListComponent.parts.get(0);
+          SnippetListComponent.ComponentPart part = snippetListComponent.parts.get(0);
           if (part.htmlSnippet != null)
           {
             if (part.htmlSnippet.contains("<"))

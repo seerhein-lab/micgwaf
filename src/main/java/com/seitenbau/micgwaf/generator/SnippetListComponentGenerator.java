@@ -7,7 +7,6 @@ import java.util.List;
 
 import com.seitenbau.micgwaf.component.ChildListComponent;
 import com.seitenbau.micgwaf.component.Component;
-import com.seitenbau.micgwaf.component.ComponentPart;
 import com.seitenbau.micgwaf.component.RefComponent;
 import com.seitenbau.micgwaf.component.SnippetListComponent;
 
@@ -44,9 +43,8 @@ public class SnippetListComponentGenerator extends ComponentGenerator
     fileContent.append("import ").append(Writer.class.getName()).append(";\n");
     fileContent.append("import ").append(List.class.getName()).append(";\n");
     fileContent.append("import ").append(ArrayList.class.getName()).append(";\n");
-    fileContent.append("import ").append(ComponentPart.class.getName()).append(";\n");
     fileContent.append("import ").append(ChildListComponent.class.getName()).append(";\n");
-    for (ComponentPart part : snippetListComponent.parts)
+    for (SnippetListComponent.ComponentPart part : snippetListComponent.parts)
     {
       if (part.component != null)
       {
@@ -66,7 +64,7 @@ public class SnippetListComponentGenerator extends ComponentGenerator
     fileContent.append("{\n");
     int snippetCounter = 1;
     int componentCounter = 1;
-    for (ComponentPart part : snippetListComponent.parts)
+    for (SnippetListComponent.ComponentPart part : snippetListComponent.parts)
     {
       if (part.htmlSnippet != null)
       {
@@ -93,7 +91,7 @@ public class SnippetListComponentGenerator extends ComponentGenerator
     fileContent.append("  {\n");
     fileContent.append("    List<Component> result = new ArrayList<>();\n");
     componentCounter = 1;
-    for (ComponentPart part : snippetListComponent.parts)
+    for (SnippetListComponent.ComponentPart part : snippetListComponent.parts)
     {
       if (part.component != null)
       {
@@ -111,7 +109,7 @@ public class SnippetListComponentGenerator extends ComponentGenerator
     
     snippetCounter = 1;
     componentCounter = 1;
-    for (ComponentPart part : snippetListComponent.parts)
+    for (SnippetListComponent.ComponentPart part : snippetListComponent.parts)
     {
       if (part.htmlSnippet != null)
       {
@@ -172,7 +170,7 @@ public class SnippetListComponentGenerator extends ComponentGenerator
     StringBuilder result = new StringBuilder();
     result.append(indentString).append("{\n");
     int counter = 1;
-    for (ComponentPart part : snippetListComponent.parts)
+    for (SnippetListComponent.ComponentPart part : snippetListComponent.parts)
     {
       if (part.component != null)
       {

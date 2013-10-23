@@ -4,7 +4,6 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 import com.seitenbau.micgwaf.component.Component;
-import com.seitenbau.micgwaf.component.ComponentPart;
 import com.seitenbau.micgwaf.component.SnippetListComponent;
 import com.seitenbau.micgwaf.util.Constants;
 
@@ -78,15 +77,15 @@ public class SnippetListContentHandler extends ContentHandler
   @Override
   public void child(Component child)
   {
-    component.parts.add(ComponentPart.fromHtmlSnippet(currentStringPart.toString()));
+    component.parts.add(SnippetListComponent.ComponentPart.fromHtmlSnippet(currentStringPart.toString()));
     currentStringPart = new StringBuilder();
-    component.parts.add(ComponentPart.fromComponent(child));
+    component.parts.add(SnippetListComponent.ComponentPart.fromComponent(child));
   }
 
   @Override
   public SnippetListComponent finished() throws SAXException
   {
-    component.parts.add(ComponentPart.fromHtmlSnippet(currentStringPart.toString()));
+    component.parts.add(SnippetListComponent.ComponentPart.fromHtmlSnippet(currentStringPart.toString()));
     return component;
   }
 }
