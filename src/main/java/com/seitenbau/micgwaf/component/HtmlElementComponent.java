@@ -47,14 +47,32 @@ public class HtmlElementComponent extends Component
     return children;
   }
 
+  /**
+   * Returns the attributes to be used for rendering.
+   * This implementation adds the id of the component as id attribute, if not null.
+   * This method may be overwritten in subclasses.
+   * 
+   * @return the attributes for rendering, in a map with a defined iteration order, not null.
+   */
+  public Map<String, String> getRenderedAttributes()
+  {
+    Map<String, String> renderedAttributes = new LinkedHashMap<>(attributes);
+    if (renderedAttributes.get("id") == null && id != null)
+    {
+      renderedAttributes.put("id", id);
+    }
+    return renderedAttributes;
+  }
+  
   @Override
   public void render(Writer writer) throws IOException
   {
+    Map<String, String> renderedAttributes = getRenderedAttributes(); 
     if (renderSelf)
     {
       writer.write(ELEMENT_OPEN_CHAR);
       writer.write(elementName);
-      for (Map.Entry<String, String> attributeEntry : attributes.entrySet())
+      for (Map.Entry<String, String> attributeEntry : renderedAttributes.entrySet())
       {
         writer.write(SPACE_CHAR);
         writer.write(attributeEntry.getKey());

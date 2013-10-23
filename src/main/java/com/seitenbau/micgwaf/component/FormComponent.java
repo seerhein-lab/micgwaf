@@ -1,5 +1,8 @@
 package com.seitenbau.micgwaf.component;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
 public class FormComponent extends HtmlElementComponent
@@ -9,8 +12,6 @@ public class FormComponent extends HtmlElementComponent
   public FormComponent(Component parent)
   {
     super(parent);
-    // TODO: check whether this should be set by the PRG handler and not fixed in the component
-    attributes.put("method", "POST");
   }
 
   public FormComponent(String elementName, String id, Component parent)
@@ -26,6 +27,15 @@ public class FormComponent extends HtmlElementComponent
     return result;
   }
   
+  @Override
+  public Map<String, String> getRenderedAttributes()
+  {
+    Map<String, String> renderedAttributes = super.getRenderedAttributes();
+    // TODO: check whether this should be set by the PRG handler and not fixed in the component
+    renderedAttributes.put("method", "POST");
+    return renderedAttributes;
+  }
+
   public void checkSubmitted(Component component)
   {
     if (submitted)
