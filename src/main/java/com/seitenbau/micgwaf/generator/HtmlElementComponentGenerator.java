@@ -84,7 +84,7 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
     fileContent.append("  ").append("{\n");
     fileContent.append("    ").append("elementName = \"").append(htmlElementCompont.elementName)
         .append("\";\n");
-    fileContent.append("    ").append("id = \"").append(htmlElementCompont.id).append("\";\n");
+    fileContent.append("    ").append("id = \"").append(removeLoopPartFromId(htmlElementCompont.id)).append("\";\n");
     for (Map.Entry<String, String> attributeEnty : htmlElementCompont.attributes.entrySet())
     {
       fileContent.append("    ").append("attributes.put(\"").append(attributeEnty.getKey())

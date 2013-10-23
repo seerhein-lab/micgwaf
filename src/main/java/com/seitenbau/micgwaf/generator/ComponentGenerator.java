@@ -99,10 +99,11 @@ public abstract class ComponentGenerator
       String targetPackage,
       int indent);
   
-  public JavaClassName toJavaClassName(String componentName, String packageName)
+  public JavaClassName toJavaClassName(String componentId, String packageName)
   {
-    String simpleName = componentName.substring(0, 1).toUpperCase()
-        + componentName.substring(1);
+    String normalizedId = removeLoopPartFromId(componentId);
+    String simpleName = normalizedId.substring(0, 1).toUpperCase()
+        + normalizedId.substring(1);
     return new JavaClassName(simpleName, packageName);
   }
   
@@ -153,7 +154,7 @@ public abstract class ComponentGenerator
       String fieldName;
       if (child.id != null)
       {
-        fieldName = child.id;
+        fieldName = removeLoopPartFromId(child.id);
       }
       else
       {
@@ -166,6 +167,20 @@ public abstract class ComponentGenerator
       counter++;
     }
     result.append(indentString).append("}\n");
+  }
+  
+  public String removeLoopPartFromId(String id)
+  {
+    if (id == null)
+    {
+      return null;
+    }
+    int indexOfColon = id.indexOf(':');
+    if (indexOfColon == -1)
+    {
+      return id;
+    }
+    return id.substring(0, indexOfColon);
   }
   
   public String getIndentString(int indent)
