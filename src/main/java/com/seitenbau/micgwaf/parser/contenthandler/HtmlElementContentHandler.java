@@ -118,6 +118,10 @@ public class HtmlElementContentHandler extends ContentHandler
     }
     htmlElementComponent.attributes.putAll(attributeValues);
     htmlElementComponent.children.addAll(children);
+    for (Component child : htmlElementComponent.children)
+    {
+      child.parent = htmlElementComponent;
+    }
     if (inputElements.contains(elementName) && attributeValues.get("name") == null)
     {
       htmlElementComponent.attributes.put("name", id);
