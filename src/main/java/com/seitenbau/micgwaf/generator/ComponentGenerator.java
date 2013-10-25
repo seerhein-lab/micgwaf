@@ -101,7 +101,7 @@ public abstract class ComponentGenerator
   
   public JavaClassName toJavaClassName(String componentId, String packageName)
   {
-    String normalizedId = removeLoopPartFromId(componentId);
+    String normalizedId = removeLoopPart(componentId);
     String simpleName = normalizedId.substring(0, 1).toUpperCase()
         + normalizedId.substring(1);
     return new JavaClassName(simpleName, packageName);
@@ -154,7 +154,7 @@ public abstract class ComponentGenerator
       String fieldName;
       if (child.id != null)
       {
-        fieldName = removeLoopPartFromId(child.id);
+        fieldName = removeLoopPart(child.id);
       }
       else
       {
@@ -169,7 +169,7 @@ public abstract class ComponentGenerator
     result.append(indentString).append("}\n");
   }
   
-  public String removeLoopPartFromId(String id)
+  public String removeLoopPart(String id)
   {
     if (id == null)
     {
@@ -208,7 +208,7 @@ public abstract class ComponentGenerator
     String componentField;
     if (component != null && component.id != null)
     {
-      componentField = removeLoopPartFromId(component.id);
+      componentField = removeLoopPart(component.id);
     }
     else
     {

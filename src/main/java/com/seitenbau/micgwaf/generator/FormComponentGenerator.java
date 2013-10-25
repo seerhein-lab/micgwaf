@@ -1,7 +1,9 @@
 package com.seitenbau.micgwaf.generator;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -46,22 +48,40 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
 
     List<InputComponent> buttons = new ArrayList<>();
     getButtons(component, buttons);
+    Map<InputComponent, Component> buttonsInLoops = new HashMap<>();
+    getButtonsInLoops(component, buttonsInLoops);
     List<InputComponent> inputs = new ArrayList<>();
     getInputs(component, inputs);
     
     for (InputComponent button : buttons)
     {
       fileContent.append("\n\n");
-      fileContent.append("  public Component ").append(removeLoopPartFromId(button.id)).append("Pressed()\n");
-          fileContent.append("  {\n");
-          fileContent.append("    return null;\n");
-          fileContent.append("  }\n");
+      fileContent.append("  public Component ").append(removeLoopPart(button.id)).append("Pressed()\n");
+      fileContent.append("  {\n");
+      fileContent.append("    return null;\n");
+      fileContent.append("  }\n");
+    }
+    
+    for (Map.Entry<InputComponent, Component> buttonEntry : buttonsInLoops.entrySet())
+    {
+      InputComponent button = buttonEntry.getKey();
+      Component loopComponent = buttonEntry.getValue();
+      fileContent.append("\n\n");
+      ComponentGenerator loopComponentGenerator = Generator.getGenerator(loopComponent);
+      JavaClassName loopComponentReferencableClassName 
+          = loopComponentGenerator.getReferencableClassName(loopComponent, targetPackage);
+      fileContent.append("  public Component ").append(removeLoopPart(button.id)).append("Pressed(")
+          .append(loopComponentReferencableClassName.getSimpleName()).append(" ")
+          .append(removeLoopPart(loopComponent.id)).append(")\n");
+      fileContent.append("  {\n");
+      fileContent.append("    return null;\n");
+      fileContent.append("  }\n");
     }
     
     for (InputComponent input : inputs)
     {
       fileContent.append("\n\n");
-      String normalizedInputId = removeLoopPartFromId(input.id);
+      String normalizedInputId = removeLoopPart(input.id);
       fileContent.append("  public String get").append(normalizedInputId.substring(0, 1).toUpperCase())
           .append(normalizedInputId.substring(1)).append("()\n");
       fileContent.append("  {\n");
@@ -71,7 +91,7 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
       {
         if (parent.id != null)
         {
-          pathToComponent = removeLoopPartFromId(parent.id) + "." + pathToComponent;
+          pathToComponent = removeLoopPart(parent.id) + "." + pathToComponent;
         }
         parent = parent.parent;
       }
@@ -92,9 +112,25 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
     fileContent.append("      onSubmit();\n");
     for (InputComponent button : buttons)
     {
-      fileContent.append("      if (").append(removeLoopPartFromId(button.id)).append(".submitted)\n");
+      fileContent.append("      if (").append(removeLoopPart(button.id)).append(".submitted)\n");
       fileContent.append("      {\n");
-      fileContent.append("        result = ").append(removeLoopPartFromId(button.id)).append("Pressed();\n");
+      fileContent.append("        result = ").append(removeLoopPart(button.id)).append("Pressed();\n");
+      fileContent.append("      }\n");
+    }
+    for (Map.Entry<InputComponent, Component> buttonEntry : buttonsInLoops.entrySet())
+    {
+      InputComponent button = buttonEntry.getKey();
+      Component loopComponent = buttonEntry.getValue();
+      ComponentGenerator loopComponentGenerator = Generator.getGenerator(loopComponent);
+      JavaClassName loopComponentReferencableClassName 
+          = loopComponentGenerator.getReferencableClassName(loopComponent, targetPackage);
+      fileContent.append("      for (").append(loopComponentReferencableClassName.getSimpleName())
+          .append(" loopComponent : ").append(removeLoopPart(loopComponent.parent.id)).append(".children)\n");
+      fileContent.append("      {\n");
+      fileContent.append("        if (loopComponent.").append(removeLoopPart(button.id)).append(".submitted)\n");
+      fileContent.append("        {\n");
+      fileContent.append("          result = ").append(removeLoopPart(button.id)).append("Pressed(loopComponent);\n");
+      fileContent.append("        }\n");
       fileContent.append("      }\n");
     }
     fileContent.append("    }\n");
@@ -151,6 +187,27 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
     }
   }
 
+  public void getButtonsInLoops(Component component, Map<InputComponent, Component> buttons)
+  {
+    if (component instanceof InputComponent)
+    {
+      InputComponent inputComponent = (InputComponent) component;
+      ChildListComponent<?> childListParent = component.getParent(ChildListComponent.class);
+      if (childListParent == null)
+      {
+        return;
+      }
+      if (inputComponent.isButton())
+      {
+        buttons.put(inputComponent, childListParent.getChildren().get(0));
+      }
+    }
+    for (Component child : component.getChildren())
+    {
+      getButtonsInLoops(child, buttons);
+    }
+  }
+  
   public void getInputs(Component component, List<InputComponent> inputs)
   {
     if (component instanceof InputComponent)

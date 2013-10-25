@@ -21,6 +21,8 @@ public class InputComponentGenerator extends HtmlElementComponentGenerator
       Component component,
       String targetPackage)
   {
+    InputComponent inputComponent = (InputComponent) component;
+    inputComponent.attributes.put("name", removeLoopPart(inputComponent.attributes.get("name")));
     String rootContent = super.generate(component, targetPackage);
 
     StringBuilder fileContent = new StringBuilder();
