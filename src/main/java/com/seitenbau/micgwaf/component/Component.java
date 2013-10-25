@@ -66,4 +66,20 @@ public abstract class Component implements Serializable
     }
     return toRedirectTo;
   }
+  
+  @SuppressWarnings("unchecked")
+  public <T extends Component> T getParent(Class<T> classOfParent)
+  {
+   if (parent == null)
+   {
+     return null;
+   }
+   if (parent.getClass().equals(classOfParent))
+   {
+     return (T) parent;
+   }
+   return parent.getParent(classOfParent);
+  }
+
+
 }
