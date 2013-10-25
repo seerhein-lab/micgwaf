@@ -35,6 +35,14 @@ public class ChildListComponentGenerator extends ComponentGenerator
   }
   
   @Override
+  public JavaClassName getReferencableClassName(
+      Component component,
+      String targetPackage)
+  {
+    return getExtensionClassName(component, targetPackage);
+  }
+  
+  @Override
   public String generate(
         Component component,
         String targetPackage)
