@@ -109,12 +109,14 @@ private static final String REQUEST_PARAM = "step";
     try
     {
       toRender.render(writer);
+      toRender.afterRender();
     }
     catch (Exception e)
     {
       response.reset();
       toRender = application.handleException(toRender, e, false);
       toRender.render(writer);
+      toRender.afterRender();
     }
     writer.close();
     request.getSession().setAttribute("toProcess", toRender);

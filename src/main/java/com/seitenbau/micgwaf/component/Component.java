@@ -47,6 +47,14 @@ public abstract class Component implements Serializable
   
   public abstract void render(Writer writer) throws IOException;
   
+  public void afterRender()
+  {
+    for (Component child : getChildren())
+    {
+      child.afterRender();
+    }
+  }
+
   /**
    * Processes the HTTP request and executes any actions triggered by the request.
    * 
