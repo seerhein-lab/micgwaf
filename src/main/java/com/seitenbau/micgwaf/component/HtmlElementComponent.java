@@ -64,6 +64,12 @@ public class HtmlElementComponent extends Component
     return renderedAttributes;
   }
   
+  public void setRender(boolean render)
+  {
+    renderSelf = render;
+    renderChildren = render;
+  }
+  
   @Override
   public void render(Writer writer) throws IOException
   {
