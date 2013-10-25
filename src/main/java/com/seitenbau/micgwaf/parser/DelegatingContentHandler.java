@@ -70,8 +70,10 @@ public class DelegatingContentHandler extends DefaultHandler
         if (Constants.XML_NAMESPACE.equals(attributeNamespace))
         {
           String attributeName = attributes.getLocalName(i);
-          if (ContentHandlerRegistry.MULTIPLE_ATTR.equals(attributeName))
+          if (ContentHandlerRegistry.MULTIPLE_ATTR.equals(attributeName) 
+              || ContentHandlerRegistry.DEFAULT_RENDERED_ATTR.equals(attributeName))
           {
+            // these attributes define the behaviour of a handler and are irrelevant for choosing a handler
             continue;
           }
           ContentHandlerFactory factory = ContentHandlerRegistry.attributeHandlerMap.get(attributeName);

@@ -53,6 +53,14 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
     fileContent.append("  public " + className + "(Component parent)");
     fileContent.append("  {\n");
     fileContent.append("    super(parent);\n");
+    if (htmlElementCompont.renderChildren == false)
+    {
+      fileContent.append("    renderChildren = false;\n");
+    }
+    if (htmlElementCompont.renderSelf == false)
+    {
+      fileContent.append("    renderSelf = false;\n");
+    }
     fileContent.append("  }\n");
     int componentCounter = 1;
     for (Component child : htmlElementCompont.children)

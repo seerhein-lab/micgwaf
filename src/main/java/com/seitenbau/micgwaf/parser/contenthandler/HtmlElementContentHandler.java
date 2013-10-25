@@ -41,6 +41,8 @@ public class HtmlElementContentHandler extends ContentHandler
   public Map<String, String> attributeValues = new LinkedHashMap<>();
   
   public List<Component> children = new ArrayList<>();
+  
+  public boolean rendered = true;
 
   @Override
   public void startElement(
@@ -73,6 +75,11 @@ public class HtmlElementContentHandler extends ContentHandler
           && ContentHandlerRegistry.MULTIPLE_ATTR.equals(attributeName))
       {
         multiple = true;
+      }
+      else if (Constants.XML_NAMESPACE.equals(attributeUri) 
+          && ContentHandlerRegistry.DEFAULT_RENDERED_ATTR.equals(attributeName))
+      {
+        rendered = Boolean.parseBoolean(value);
       }
       else if (attributeUri == null || "".equals(attributeUri))
       {
@@ -115,6 +122,7 @@ public class HtmlElementContentHandler extends ContentHandler
     {
       htmlElementComponent.attributes.put("name", id);
     }
+    htmlElementComponent.setRender(rendered);
     if (multiple)
     {
       Component result = new ChildListComponent<HtmlElementComponent>(
