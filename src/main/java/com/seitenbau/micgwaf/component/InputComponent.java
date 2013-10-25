@@ -4,6 +4,9 @@ import javax.servlet.http.HttpServletRequest;
 
 public class InputComponent extends HtmlElementComponent
 {
+  /** Serial Version UID */
+  private static final long serialVersionUID = 1L;
+
   public boolean submitted;
   
   public String value;
@@ -36,6 +39,13 @@ public class InputComponent extends HtmlElementComponent
       }
     }
     return super.processRequest(request);
+  }
+  
+  @Override
+  public void inLoop(int loopIndex)
+  {
+    super.inLoop(loopIndex);
+    attributes.put("name", attributes.get("name") + ":" + loopIndex);
   }
   
   public boolean isButton()
