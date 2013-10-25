@@ -48,6 +48,15 @@ public class InputComponent extends HtmlElementComponent
     attributes.put("name", attributes.get("name") + ":" + loopIndex);
   }
   
+  @Override
+  public void afterRender()
+  {
+    super.afterRender();
+    this.submitted = false;
+    this.value = null;
+  }
+
+  
   public boolean isButton()
   {
     if ("button".equals(elementName) 
