@@ -91,6 +91,7 @@ public class ChildListComponent<T extends Component> extends Component
     {
       // Currently there is no way to shift the index
       // this would lead to gaps in the index variables, so disallow
+      // TODO check whether this is a necessary restriction
       throw new UnsupportedOperationException(
           "Currently the index of child components in a ChildListComponent cannot be changed");
     }
@@ -100,6 +101,7 @@ public class ChildListComponent<T extends Component> extends Component
     {
       // Currently there is no way to shift the index
       // this would lead to gaps in the index variables, so disallow
+      // TODO check whether this is a necessary restriction
       throw new UnsupportedOperationException(
           "Currently the index of child components in a ChildListComponent cannot be changed");
     }
@@ -109,6 +111,7 @@ public class ChildListComponent<T extends Component> extends Component
     {
       // Currently there is no way to shift the index
       // this would lead to gaps in the index variables, so disallow
+      // TODO check whether this is a necessary restriction
       throw new UnsupportedOperationException(
           "Currently the index of child components in a ChildListComponent cannot be changed");
     }
@@ -118,6 +121,7 @@ public class ChildListComponent<T extends Component> extends Component
     {
       // Currently there is no way to shift the index
       // this would lead to gaps in the index variables, so disallow
+      // TODO check whether this is a necessary restriction
       throw new UnsupportedOperationException(
           "Currently the index of child components in a ChildListComponent cannot be changed");
     }
