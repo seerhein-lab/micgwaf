@@ -147,6 +147,10 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
           {
             if (part.htmlSnippet.contains("<"))
             {
+              stringBuilder.append("\n").append("  public String getInnerContent()\n")
+                  .append("  {\n")
+                  .append("    return ").append(componentField).append(".snippet;\n")
+                  .append("  }\n");
               stringBuilder.append("\n").append("  public void setInnerContent(String innerContent)\n")
                   .append("  {\n")
                   .append("    ").append(componentField).append(".snippet = innerContent;\n")
@@ -154,6 +158,10 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
             }
             else
             {
+              stringBuilder.append("\n").append("  public String getTextContent()\n")
+                  .append("  {\n")
+                  .append("    return ").append(componentField).append(".snippet;\n")
+                  .append("  }\n");
               stringBuilder.append("\n").append("  public void setTextContent(String text)\n")
                   .append("  {\n")
                   .append("    ").append(componentField).append(".snippet = text;\n")
