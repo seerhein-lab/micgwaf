@@ -21,6 +21,7 @@ private static final String REQUEST_PARAM = "step";
   public boolean handle(HttpServletRequest request, HttpServletResponse response, ApplicationBase application)
       throws IOException
   {
+    response.setCharacterEncoding("UTF-8");
     boolean processed = false;
     if ("POST".equals(request.getMethod()))
     {
