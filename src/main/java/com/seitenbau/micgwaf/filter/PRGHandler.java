@@ -91,13 +91,17 @@ private static final String REQUEST_PARAM = "step";
       request.getSession().setAttribute("components", componentList);
     }
 
-    Component toRender;
+    Component toRender = null;
     if (request.getParameter(REQUEST_PARAM) != null)
     {
       Integer param = Integer.parseInt(request.getParameter(REQUEST_PARAM));
-      toRender = componentList.get(param);
+      if (param < componentList.size()) // if not assume stale index and treat as new
+      {
+        toRender = componentList.get(param);
+      }
+      
     }
-    else
+    if (toRender == null)
     {
       toRender = application.getComponent(path);
     }
