@@ -51,6 +51,15 @@ public class ChildListComponent<T extends Component> extends Component
     /** serial Version UID. */
     private static final long serialVersionUID = 1L;
 
+    public ChildList()
+    {
+    }
+    
+    public ChildList(Collection<? extends C> toCopy)
+    {
+      addAll(toCopy);
+    }
+    
     @Override
     public boolean add(C component)
     {
@@ -131,6 +140,11 @@ public class ChildListComponent<T extends Component> extends Component
     {
       component.inLoop(size());
       return super.set(index, component);
+    }
+    
+    public ChildList<C> copy()
+    {
+      return new ChildList<C>(this);
     }
   }
 }

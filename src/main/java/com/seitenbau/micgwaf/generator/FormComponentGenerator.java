@@ -125,7 +125,7 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
       JavaClassName loopComponentReferencableClassName 
           = loopComponentGenerator.getReferencableClassName(loopComponent, targetPackage);
       fileContent.append("      for (").append(loopComponentReferencableClassName.getSimpleName())
-          .append(" loopComponent : ").append(removeLoopPart(loopComponent.parent.id)).append(".children)\n");
+          .append(" loopComponent : ").append(removeLoopPart(loopComponent.parent.id)).append(".children.copy())\n");
       fileContent.append("      {\n");
       fileContent.append("        if (loopComponent.").append(removeLoopPart(button.id)).append(".submitted)\n");
       fileContent.append("        {\n");
