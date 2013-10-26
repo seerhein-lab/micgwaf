@@ -55,4 +55,12 @@ public class FormComponent extends HtmlElementComponent
       checkSubmitted(child);
     }
   }
+  
+  @Override
+  public void afterRender()
+  {
+    super.afterRender();
+    submitted = false;
+  }
+
 }
