@@ -1,11 +1,9 @@
 package com.seitenbau.micgwaf.parser.contenthandler; 
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -21,14 +19,6 @@ import com.seitenbau.micgwaf.util.Constants;
 public class HtmlElementContentHandler extends ContentHandler
 {
   public static final String ID_ATTR = "id";
-  
-  public static final Set<String> inputElements = new HashSet<>();
-  
-  static
-  {
-    inputElements.add("input");
-    inputElements.add("button");
-  }
   
   public String elementName;
 
@@ -109,9 +99,15 @@ public class HtmlElementContentHandler extends ContentHandler
   public Component finished() throws SAXException
   {
     HtmlElementComponent htmlElementComponent;
-    if (inputElements.contains(elementName))
+    if (InputComponent.INPUT_ELEM.equals(elementName)
+        || InputComponent.BUTTON_ELEM.equals(elementName))
     {
       htmlElementComponent = new InputComponent(elementName, id, null);
+      // use id as name attribute if not set.
+      if (attributeValues.get(InputComponent.NAME_ATTR) == null)
+      {
+        htmlElementComponent.attributes.put(InputComponent.NAME_ATTR, id);
+      }
     }
     else if (FormComponent.FORM_ELEM.equals(elementName))
     {
@@ -132,10 +128,6 @@ public class HtmlElementContentHandler extends ContentHandler
     for (Component child : htmlElementComponent.children)
     {
       child.parent = htmlElementComponent;
-    }
-    if (inputElements.contains(elementName) && attributeValues.get("name") == null)
-    {
-      htmlElementComponent.attributes.put("name", id);
     }
     htmlElementComponent.setRender(rendered);
     if (multiple)
