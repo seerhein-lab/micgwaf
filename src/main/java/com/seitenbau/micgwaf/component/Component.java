@@ -113,19 +113,24 @@ public abstract class Component implements Serializable
     return toRedirectTo;
   }
   
+  /**
+   * Returns the nearest ancestor of the component with the given class.
+   * 
+   * @param classOfAncestor the class of the ancestor, not null.
+   * 
+   * @return the nearest ancestor, or null if no such ancestor exists.
+   */
   @SuppressWarnings("unchecked")
-  public <T extends Component> T getParent(Class<T> classOfParent)
+  public <T extends Component> T getAncestor(Class<T> classOfAncestor)
   {
    if (parent == null)
    {
      return null;
    }
-   if (parent.getClass().equals(classOfParent))
+   if (parent.getClass().equals(classOfAncestor))
    {
      return (T) parent;
    }
-   return parent.getParent(classOfParent);
+   return parent.getAncestor(classOfAncestor);
   }
-
-
 }

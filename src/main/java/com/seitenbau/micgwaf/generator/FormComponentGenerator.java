@@ -192,7 +192,7 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
     if (component instanceof InputComponent)
     {
       InputComponent inputComponent = (InputComponent) component;
-      ChildListComponent<?> childListParent = component.getParent(ChildListComponent.class);
+      ChildListComponent<?> childListParent = component.getAncestor(ChildListComponent.class);
       if (childListParent == null)
       {
         return;
