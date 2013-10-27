@@ -153,6 +153,14 @@ public class SnippetListComponentGenerator extends ComponentGenerator
     fileContent.append("  {\n");
     fileContent.append("    super(parent);\n");
     fileContent.append("  }\n");
+    // add no-arg constructor for standalone pages
+    if (component.id == null)
+    {
+      fileContent.append("  \npublic " + extensionClassName + "()\n");
+      fileContent.append("  {\n");
+      fileContent.append("    super(null);\n");
+      fileContent.append("  }\n");
+    }
     fileContent.append("}\n");
 
     return fileContent.toString();
