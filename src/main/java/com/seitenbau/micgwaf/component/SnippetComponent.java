@@ -26,9 +26,9 @@ public class SnippetComponent extends Component
     this.snippet = snippet;
   }
   
-  public void bind(Map<String, ? extends Component> allComponents)
+  public void resolveComponentReferences(Map<String, ? extends Component> allComponents)
   {
-    super.bind(allComponents);
+    super.resolveComponentReferences(allComponents);
   }
   
   public List<Component> getChildren()

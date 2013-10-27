@@ -10,31 +10,56 @@ import javax.servlet.http.HttpServletRequest;
 
 public abstract class Component implements Serializable
 {
+  /** Serial Version UID. */
+  private static final long serialVersionUID = 1L;
+
+  /** The component id. Can be null, but if set, it should be unique in a the current context (e.g. page). */
   public String id;
   
+  /** The parent of the component, or null if this is a standalone component (e.g. a page). */ 
   public Component parent;
   
+  /** Parameters used for generation. Not used during runtime. */
   public GenerationParameters generationParameters;
   
+  /**
+   * Constructor. 
+   * @param id the id of the component, may be null. 
+   *        If set, it should be unique in the current context (e.g. page).
+   * @param parent the parent component, or null if this is a standalone component (e.g. a page)
+   */
   public Component(String id, Component parent)
   {
     this.id = id;
     this.parent = parent;
   }
   
+  /**
+   * Returns the lsit of children of this component.
+   * 
+   * @return the list of children, not null.
+   */
   public abstract List<? extends Component> getChildren();
   
   /**
-   * Binds other components to this component
+   * Binds other components to this component, i.e. resolves component references.
+   * 
+   * @param allComponents all known standalone components, keyed by their id, not null.
    */
-  public void bind(Map<String, ? extends Component> allComponents)
+  public void resolveComponentReferences(Map<String, ? extends Component> allComponents)
   {
     for (Component child : getChildren())
     {
-      child.bind(allComponents);
+      child.resolveComponentReferences(allComponents);
     }
   }
   
+  /**
+   * Marks this component as being the loopIndex'th part in a loop.
+   * May be called repetitively if several loops surround the component.
+   * 
+   * @param loopIndex the number of the component in a loop, 0 based.
+   */
   public void inLoop(int loopIndex)
   {
     if (id != null)
@@ -47,8 +72,19 @@ public abstract class Component implements Serializable
     }
   }
   
+  /** 
+   * Renders the component. 
+   * 
+   * @param writer the writer to render to, not null.
+   * 
+   * @throws IOException if the writer does not accept the rendered output.
+   */
   public abstract void render(Writer writer) throws IOException;
   
+  /**
+   * Hook method which is called after a component tree has been rendered.
+   * Typically used to reset state which should only be retained for one rendering.
+   */
   public void afterRender()
   {
     for (Component child : getChildren())

@@ -25,9 +25,9 @@ public class RefComponent extends Component
 
   
   @Override
-  public void bind(Map<String, ? extends Component> allComponents)
+  public void resolveComponentReferences(Map<String, ? extends Component> allComponents)
   {
-    super.bind(allComponents);
+    super.resolveComponentReferences(allComponents);
     referencedComponent = allComponents.get(refid);
     if (referencedComponent == null)
     {

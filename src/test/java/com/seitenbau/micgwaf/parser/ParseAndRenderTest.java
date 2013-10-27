@@ -24,7 +24,7 @@ public class ParseAndRenderTest
     assertEquals(3, components.size());
     for (Component component : components.values())
     {
-      component.bind(components);
+      component.resolveComponentReferences(components);
     }
     StringWriter stringWriter = new StringWriter();
     components.get("root").render(stringWriter);

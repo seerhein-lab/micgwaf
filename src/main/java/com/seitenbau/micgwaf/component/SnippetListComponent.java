@@ -26,14 +26,14 @@ public class SnippetListComponent extends Component
     this.parts = parts;
   }
   
-  public void bind(Map<String, ? extends Component> allComponents)
+  public void resolveComponentReferences(Map<String, ? extends Component> allComponents)
   {
-    super.bind(allComponents);
+    super.resolveComponentReferences(allComponents);
     for (ComponentPart part : parts)
     {
       if (part.component != null)
       {
-        part.component.bind(allComponents);
+        part.component.resolveComponentReferences(allComponents);
       }
     }
   }
