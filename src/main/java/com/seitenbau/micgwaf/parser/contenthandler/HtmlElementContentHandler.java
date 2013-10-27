@@ -24,13 +24,10 @@ public class HtmlElementContentHandler extends ContentHandler
   
   public static final Set<String> inputElements = new HashSet<>();
   
-  public static final Set<String> formElements = new HashSet<>();
-
   static
   {
     inputElements.add("input");
     inputElements.add("button");
-    formElements.add("form");
   }
   
   public String elementName;
@@ -116,9 +113,9 @@ public class HtmlElementContentHandler extends ContentHandler
     {
       htmlElementComponent = new InputComponent(elementName, id, null);
     }
-    else if (formElements.contains(elementName))
+    else if (FormComponent.FORM_ELEM.equals(elementName))
     {
-      htmlElementComponent = new FormComponent(elementName, id, null);
+      htmlElementComponent = new FormComponent(id, null);
       if (generationParameters.generateExtensionClass == null)
       {
         // per default generate extension class for forms
