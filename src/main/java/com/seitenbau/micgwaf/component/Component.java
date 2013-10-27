@@ -28,6 +28,7 @@ public abstract class Component implements Serializable
   
   /**
    * Constructor. 
+   * 
    * @param id the id of the component, may be null. 
    *        If set, it should be unique in the current context (e.g. page).
    * @param parent the parent component, or null if this is a standalone component (e.g. a page)
