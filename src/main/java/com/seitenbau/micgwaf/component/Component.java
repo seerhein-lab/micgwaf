@@ -8,6 +8,10 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
+/**
+ * Base class of all components.
+ * A component is a part of a HTML page that knows how to render itself and how to process HTTP requests.
+ */
 public abstract class Component implements Serializable
 {
   /** Serial Version UID. */
