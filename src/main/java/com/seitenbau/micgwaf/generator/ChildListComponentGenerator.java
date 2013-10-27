@@ -24,7 +24,7 @@ public class ChildListComponentGenerator extends ComponentGenerator
   {
     Component child = component.getChildren().get(0);
     ComponentGenerator delegate = Generator.getGenerator(child);
-    String delegateClassName = delegate.getExtensionClassName(child, targetPackage).getSimpleName();
+    String delegateClassName = delegate.getReferencableClassName(child, targetPackage).getSimpleName();
     if (delegateClassName == null)
     {
       return null;
