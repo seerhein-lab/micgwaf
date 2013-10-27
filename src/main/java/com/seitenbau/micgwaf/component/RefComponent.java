@@ -8,6 +8,9 @@ import java.util.Map;
 
 public class RefComponent extends Component
 {
+  /** Serial Version UID. */
+  private static final long serialVersionUID = 1L;
+
   public String refid;
   
   public Component referencedComponent;

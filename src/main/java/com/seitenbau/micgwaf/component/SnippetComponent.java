@@ -12,6 +12,9 @@ import java.util.Map;
  */
 public class SnippetComponent extends Component
 {
+  /** Serial Version UID. */
+  private static final long serialVersionUID = 1L;
+
   /** The referenced snippet. */
   public String snippet;
   

@@ -7,10 +7,13 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A component from a HTML file.
+ * A component representing a list of HTML snippets.
  */
 public class SnippetListComponent extends Component
 {
+  /** Serial Version UID. */
+  private static final long serialVersionUID = 1L;
+
   /** Unmodifiable list of parts. */
   public final List<ComponentPart> parts;
   

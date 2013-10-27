@@ -7,8 +7,14 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * A component for a single HTML element.
+ */
 public class HtmlElementComponent extends Component
 {
+  /** Serial Version UID. */
+  private static final long serialVersionUID = 1L;
+
   public static final char ELEMENT_OPEN_CHAR = '<';
   
   public static final char ELEMENT_CLOSE_CHAR = '>';
