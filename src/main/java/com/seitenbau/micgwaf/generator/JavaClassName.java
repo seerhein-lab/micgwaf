@@ -2,8 +2,6 @@ package com.seitenbau.micgwaf.generator;
 
 import static com.seitenbau.micgwaf.util.Assertions.assertNotNull;
 
-import java.io.File;
-
 /**
  * The fully qualified name of a java class.
  */
