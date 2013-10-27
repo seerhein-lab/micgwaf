@@ -119,6 +119,11 @@ public class HtmlElementContentHandler extends ContentHandler
     else if (formElements.contains(elementName))
     {
       htmlElementComponent = new FormComponent(elementName, id, null);
+      if (generationParameters.generateExtensionClass == null)
+      {
+        // per default generate extension class for forms
+        generationParameters.generateExtensionClass = true;
+      }
     }
     else
     {

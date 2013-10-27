@@ -25,7 +25,8 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
   @Override
   public boolean generateExtensionClass(Component component)
   {
-    if (component.generationParameters != null)
+    if (component.generationParameters != null 
+        && component.generationParameters.generateExtensionClass != null)
     {
       return component.generationParameters.generateExtensionClass;
     }

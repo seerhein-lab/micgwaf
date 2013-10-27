@@ -9,5 +9,5 @@ public class GenerationParameters implements Serializable
    * If false, only one class should be generated.
    * Currently only supported by HtmlElement component.
    */
-  public boolean generateExtensionClass = false;
+  public Boolean generateExtensionClass;
 }
