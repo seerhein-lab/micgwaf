@@ -107,4 +107,20 @@ public class InputComponent extends HtmlElementComponent
     }
     return false;
   }
+  
+  /**
+   * Sets the value of the "value" attribute.
+   * Note: this does not affect the submittedValue property of this component.
+   * 
+   * @param value the new value of the "value" attribute, or null to remove the value attribute.
+   */
+  public void setValue(String value)
+  {
+    if (value == null)
+    {
+      attributes.remove(VALUE_ATTR);
+      return;
+    }
+    attributes.put(VALUE_ATTR, value);
+  }
 }
