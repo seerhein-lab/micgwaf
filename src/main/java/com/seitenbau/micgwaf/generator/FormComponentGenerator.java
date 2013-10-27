@@ -95,7 +95,7 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
         }
         parent = parent.parent;
       }
-      fileContent.append("    return ").append(pathToComponent).append(".value;\n");
+      fileContent.append("    return ").append(pathToComponent).append(".submittedValue;\n");
       fileContent.append("  }\n");
     }
     
