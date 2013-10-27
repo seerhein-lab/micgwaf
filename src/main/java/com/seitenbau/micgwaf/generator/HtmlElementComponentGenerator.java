@@ -9,6 +9,7 @@ import java.util.Map;
 import com.seitenbau.micgwaf.component.ChildListComponent;
 import com.seitenbau.micgwaf.component.Component;
 import com.seitenbau.micgwaf.component.HtmlElementComponent;
+import com.seitenbau.micgwaf.component.RefComponent;
 import com.seitenbau.micgwaf.component.SnippetComponent;
 import com.seitenbau.micgwaf.component.SnippetListComponent;
 
@@ -42,7 +43,8 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
         String targetPackage)
   {
     HtmlElementComponent htmlElementCompont = (HtmlElementComponent) component;
-    String className = getClassName(component, targetPackage).getSimpleName();
+    JavaClassName javaClassName = getClassName(component, targetPackage);
+    String className = javaClassName.getSimpleName();
     StringBuilder fileContent = new StringBuilder();
     fileContent.append("package ").append(targetPackage).append(";\n\n");
     fileContent.append("import ").append(Component.class.getName()).append(";\n");
@@ -53,6 +55,35 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
     fileContent.append("import ").append(Writer.class.getName()).append(";\n");
     fileContent.append("import ").append(List.class.getName()).append(";\n");
     fileContent.append("import ").append(ArrayList.class.getName()).append(";\n");
+    for (Component child : htmlElementCompont.getChildren())
+    {
+      if (child instanceof RefComponent)
+      {
+        ComponentGenerator generator = Generator.getGenerator(child);
+        JavaClassName componentClass = generator.getReferencableClassName(child, targetPackage);
+        if (!javaClassName.getPackage().equals(componentClass.getPackage()))
+        {
+          fileContent.append("import ").append(componentClass.getName()).append(";\n");
+        }
+      }
+      else if (child instanceof SnippetListComponent)
+      {
+        SnippetListComponent snippetListChild = (SnippetListComponent) child;
+        for (SnippetListComponent.ComponentPart part : snippetListChild.parts)
+        {
+          if (part.component != null)
+          {
+            ComponentGenerator generator = Generator.getGenerator(part.component);
+            JavaClassName componentClass = generator.getReferencableClassName(part.component, targetPackage);
+            if (part.component instanceof RefComponent 
+                && !javaClassName.getPackage().equals(componentClass.getPackage()))
+            {
+              fileContent.append("import ").append(componentClass.getName()).append(";\n");
+            }
+          }
+        }
+      }
+    }
     fileContent.append("\n");
     fileContent.append("public class ").append(className)
         .append(" extends ").append(HtmlElementComponent.class.getSimpleName())
