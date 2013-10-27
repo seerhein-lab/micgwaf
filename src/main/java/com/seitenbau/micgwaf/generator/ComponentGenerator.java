@@ -3,6 +3,7 @@ package com.seitenbau.micgwaf.generator;
 import java.util.List;
 
 import com.seitenbau.micgwaf.component.Component;
+import com.seitenbau.micgwaf.component.RefComponent;
 
 public abstract class ComponentGenerator
 {
@@ -205,16 +206,16 @@ public abstract class ComponentGenerator
 
   public String getComponentFieldName(Component component, int componentCounter)
   {
-    String componentField;
     if (component != null && component.id != null)
     {
-      componentField = removeLoopPart(component.id);
+      return removeLoopPart(component.id);
     }
-    else
+    else if (component instanceof RefComponent)
     {
-      componentField= "component" + componentCounter;
+      RefComponent refComponent = (RefComponent) component;
+      return refComponent.refid;
     }
-    return componentField;
+    return  "component" + componentCounter;
   }
 
 }
