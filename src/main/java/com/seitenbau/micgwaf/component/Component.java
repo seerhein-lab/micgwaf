@@ -14,6 +14,8 @@ public abstract class Component implements Serializable
   
   public Component parent;
   
+  public GenerationParameters generationParameters;
+  
   public Component(String id, Component parent)
   {
     this.id = id;

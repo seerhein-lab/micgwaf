@@ -1,4 +1,4 @@
-package com.seitenbau.micgwaf.parser.contenthandler;
+package com.seitenbau.micgwaf.parser.contenthandler; 
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -13,6 +13,7 @@ import org.xml.sax.SAXException;
 import com.seitenbau.micgwaf.component.ChildListComponent;
 import com.seitenbau.micgwaf.component.Component;
 import com.seitenbau.micgwaf.component.FormComponent;
+import com.seitenbau.micgwaf.component.GenerationParameters;
 import com.seitenbau.micgwaf.component.HtmlElementComponent;
 import com.seitenbau.micgwaf.component.InputComponent;
 import com.seitenbau.micgwaf.util.Constants;
@@ -43,6 +44,8 @@ public class HtmlElementContentHandler extends ContentHandler
   public List<Component> children = new ArrayList<>();
   
   public boolean rendered = true;
+  
+  public GenerationParameters generationParameters = new GenerationParameters();
 
   @Override
   public void startElement(
@@ -75,6 +78,11 @@ public class HtmlElementContentHandler extends ContentHandler
           && ContentHandlerRegistry.MULTIPLE_ATTR.equals(attributeName))
       {
         multiple = true;
+      }
+      else if (Constants.XML_NAMESPACE.equals(attributeUri) 
+          && ContentHandlerRegistry.GENRATE_EXTENSION_CLASS_ATTR.equals(attributeName))
+     {
+        generationParameters.generateExtensionClass = Boolean.parseBoolean(value);
       }
       else if (Constants.XML_NAMESPACE.equals(attributeUri) 
           && ContentHandlerRegistry.DEFAULT_RENDERED_ATTR.equals(attributeName))
@@ -116,6 +124,7 @@ public class HtmlElementContentHandler extends ContentHandler
     {
       htmlElementComponent = new HtmlElementComponent(elementName, id, null);
     }
+    htmlElementComponent.generationParameters = generationParameters;
     htmlElementComponent.attributes.putAll(attributeValues);
     htmlElementComponent.children.addAll(children);
     for (Component child : htmlElementComponent.children)

@@ -10,7 +10,9 @@ public class ContentHandlerRegistry
   
   public static final String DEFAULT_RENDERED_ATTR = "defaultRendered";
   
-  public static final String REMOVE_ELEMENT_NAME = "remove";
+  public static final String REMOVE_ELEM = "remove";
+  
+  public static final String GENRATE_EXTENSION_CLASS_ATTR = "generateExtensionClass";
 
   /**
    * Key is name of attribute in our namespace, value is handler.
