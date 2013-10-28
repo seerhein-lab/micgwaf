@@ -46,6 +46,7 @@ public class GeneratedSourcesTest
     compiler.run(null, null, null, 
         "-g", 
         "-d", compileRootDir.getAbsolutePath(),
+        "-verbose",
         "-sourcepath", generatedSourcesDir.getAbsolutePath() + ";" + generatedExtensionsDir.getAbsolutePath(),
         generatedExtensionsDir.getAbsolutePath() + "/com/seitenbau/micgwaf/test/generated/root/RootExtension.java");
   }
