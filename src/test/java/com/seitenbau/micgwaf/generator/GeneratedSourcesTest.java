@@ -17,8 +17,6 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.seitenbau.micgwaf.test.generated.root.RootExtension;
-
 public class GeneratedSourcesTest
 {
   File compileRootDir = new File("target/manually-compiled-classes");
@@ -59,7 +57,10 @@ public class GeneratedSourcesTest
     URLClassLoader classLoader = URLClassLoader.newInstance(
         new URL[] { compileRootDir.toURI().toURL(), new File("target/classes").toURI().toURL() }, 
         null );
-    Class<?> cls = Class.forName(RootExtension.class.getName(), true, classLoader);
+    Class<?> cls = Class.forName(
+        "com.seitenbau.micgwaf.test.generated.root.RootExtension",
+        true, 
+        classLoader);
     Constructor<?> rootConstructor = cls.getConstructors()[0];
     Object root = rootConstructor.newInstance(new Object[] {null});
     StringWriter stringWriter = new StringWriter();
