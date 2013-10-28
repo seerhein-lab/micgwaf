@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.seitenbau.micgwaf.component.ChildListComponent;
 import com.seitenbau.micgwaf.component.Component;
+import com.seitenbau.micgwaf.component.GenerationParameters;
 import com.seitenbau.micgwaf.component.HtmlElementComponent;
 import com.seitenbau.micgwaf.component.RefComponent;
 import com.seitenbau.micgwaf.component.SnippetComponent;
@@ -20,17 +21,18 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
       Component component,
       String targetPackage)
   {
-    return toJavaClassName(component.id, targetPackage);
+    return toJavaClassName(component.getId(), targetPackage);
   }
   
   @Override
   public boolean generateExtensionClass(Component component)
   {
-    if (component.generationParameters != null)
+    final GenerationParameters generationParameters = component.getGenerationParameters();
+    if (generationParameters != null)
     {
-      if (component.generationParameters.generateExtensionClass != null)
+      if (generationParameters.generateExtensionClass != null)
       {
-        return component.generationParameters.generateExtensionClass;
+        return generationParameters.generateExtensionClass;
       }
       return false;
     }
@@ -131,7 +133,8 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
     fileContent.append("  ").append("{\n");
     fileContent.append("    ").append("elementName = \"").append(htmlElementCompont.elementName)
         .append("\";\n");
-    fileContent.append("    ").append("id = \"").append(removeLoopPart(htmlElementCompont.id)).append("\";\n");
+    fileContent.append("    ").append("id = \"")
+        .append(removeLoopPart(htmlElementCompont.getId())).append("\";\n");
     for (Map.Entry<String, String> attributeEnty : htmlElementCompont.attributes.entrySet())
     {
       fileContent.append("    ").append("attributes.put(\"").append(attributeEnty.getKey())

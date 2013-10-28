@@ -20,7 +20,7 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
       Component component,
       String targetPackage)
   {
-    return toJavaClassName(component.id, targetPackage);
+    return toJavaClassName(component.getId(), targetPackage);
   }
   
   @Override
@@ -56,7 +56,7 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
     for (InputComponent button : buttons)
     {
       fileContent.append("\n\n");
-      fileContent.append("  public Component ").append(removeLoopPart(button.id)).append("Pressed()\n");
+      fileContent.append("  public Component ").append(removeLoopPart(button.getId())).append("Pressed()\n");
       fileContent.append("  {\n");
       fileContent.append("    return null;\n");
       fileContent.append("  }\n");
@@ -70,9 +70,9 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
       ComponentGenerator loopComponentGenerator = Generator.getGenerator(loopComponent);
       JavaClassName loopComponentReferencableClassName 
           = loopComponentGenerator.getReferencableClassName(loopComponent, targetPackage);
-      fileContent.append("  public Component ").append(removeLoopPart(button.id)).append("Pressed(")
+      fileContent.append("  public Component ").append(removeLoopPart(button.getId())).append("Pressed(")
           .append(loopComponentReferencableClassName.getSimpleName()).append(" ")
-          .append(removeLoopPart(loopComponent.id)).append(")\n");
+          .append(removeLoopPart(loopComponent.getId())).append(")\n");
       fileContent.append("  {\n");
       fileContent.append("    return null;\n");
       fileContent.append("  }\n");
@@ -81,19 +81,19 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
     for (InputComponent input : inputs)
     {
       fileContent.append("\n\n");
-      String normalizedInputId = removeLoopPart(input.id);
+      String normalizedInputId = removeLoopPart(input.getId());
       fileContent.append("  public String get").append(normalizedInputId.substring(0, 1).toUpperCase())
           .append(normalizedInputId.substring(1)).append("()\n");
       fileContent.append("  {\n");
       String pathToComponent = normalizedInputId;
-      Component parent = input.parent;
+      Component parent = input.getParent();
       while (parent != component)
       {
-        if (parent.id != null)
+        if (parent.getId() != null)
         {
-          pathToComponent = removeLoopPart(parent.id) + "." + pathToComponent;
+          pathToComponent = removeLoopPart(parent.getId()) + "." + pathToComponent;
         }
-        parent = parent.parent;
+        parent = parent.getParent();
       }
       fileContent.append("    return ").append(pathToComponent).append(".submittedValue;\n");
       fileContent.append("  }\n");
@@ -112,9 +112,9 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
     fileContent.append("      onSubmit();\n");
     for (InputComponent button : buttons)
     {
-      fileContent.append("      if (").append(removeLoopPart(button.id)).append(".submitted)\n");
+      fileContent.append("      if (").append(removeLoopPart(button.getId())).append(".submitted)\n");
       fileContent.append("      {\n");
-      fileContent.append("        result = ").append(removeLoopPart(button.id)).append("Pressed();\n");
+      fileContent.append("        result = ").append(removeLoopPart(button.getId())).append("Pressed();\n");
       fileContent.append("      }\n");
     }
     for (Map.Entry<InputComponent, Component> buttonEntry : buttonsInLoops.entrySet())
@@ -125,11 +125,12 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
       JavaClassName loopComponentReferencableClassName 
           = loopComponentGenerator.getReferencableClassName(loopComponent, targetPackage);
       fileContent.append("      for (").append(loopComponentReferencableClassName.getSimpleName())
-          .append(" loopComponent : ").append(removeLoopPart(loopComponent.parent.id)).append(".children.copy())\n");
+          .append(" loopComponent : ").append(removeLoopPart(loopComponent.getParent().getId()))
+          .append(".children.copy())\n");
       fileContent.append("      {\n");
-      fileContent.append("        if (loopComponent.").append(removeLoopPart(button.id)).append(".submitted)\n");
+      fileContent.append("        if (loopComponent.").append(removeLoopPart(button.getId())).append(".submitted)\n");
       fileContent.append("        {\n");
-      fileContent.append("          result = ").append(removeLoopPart(button.id)).append("Pressed(loopComponent);\n");
+      fileContent.append("          result = ").append(removeLoopPart(button.getId())).append("Pressed(loopComponent);\n");
       fileContent.append("        }\n");
       fileContent.append("      }\n");
     }

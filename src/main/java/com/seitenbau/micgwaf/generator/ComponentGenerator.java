@@ -153,9 +153,9 @@ public abstract class ComponentGenerator
     for (Component child : children)
     {
       String fieldName;
-      if (child.id != null)
+      if (child.getId() != null)
       {
-        fieldName = removeLoopPart(child.id);
+        fieldName = removeLoopPart(child.getId());
       }
       else
       {
@@ -206,9 +206,9 @@ public abstract class ComponentGenerator
 
   public String getComponentFieldName(Component component, int componentCounter)
   {
-    if (component != null && component.id != null)
+    if (component != null && component.getId() != null)
     {
-      return removeLoopPart(component.id);
+      return removeLoopPart(component.getId());
     }
     else if (component instanceof RefComponent)
     {

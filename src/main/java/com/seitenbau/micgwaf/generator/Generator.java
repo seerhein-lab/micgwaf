@@ -46,7 +46,7 @@ public class Generator
     for (Map.Entry<String, Component> entry : componentMap.entrySet())
     {
       Component component = entry.getValue();
-      String componentPackage = targetPackage + "." + component.id;
+      String componentPackage = targetPackage + "." + component.getId();
       
       Map<JavaClassName, String> componentFilesToWrite = new HashMap<>();
       Map<JavaClassName, String> extensionFilesToWrite = new HashMap<>();
@@ -128,7 +128,7 @@ public class Generator
     {
       Component component = entry.getValue();
       ComponentGenerator componentGenerator = componentGeneratorMap.get(component.getClass());
-      String componentPackage = targetPackage + "." + component.id;
+      String componentPackage = targetPackage + "." + component.getId();
       JavaClassName componentClassName = componentGenerator.getReferencableClassName(component, componentPackage);
       content.append("import ").append(componentClassName.getName()).append(";\n");
     }
@@ -143,7 +143,7 @@ public class Generator
     {
       Component component = entry.getValue();
       ComponentGenerator componentGenerator = componentGeneratorMap.get(component.getClass());
-      String componentPackage = targetPackage + "." + component.id;
+      String componentPackage = targetPackage + "." + component.getId();
       JavaClassName componentClassName 
           = componentGenerator.getReferencableClassName(component, componentPackage);
       content.append("    components.put(\"").append(componentClassName.getSimpleName())

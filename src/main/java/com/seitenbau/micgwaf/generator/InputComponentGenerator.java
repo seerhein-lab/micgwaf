@@ -13,7 +13,7 @@ public class InputComponentGenerator extends HtmlElementComponentGenerator
       Component component,
       String targetPackage)
   {
-    return toJavaClassName(component.id, targetPackage);
+    return toJavaClassName(component.getId(), targetPackage);
   }
   
   @Override

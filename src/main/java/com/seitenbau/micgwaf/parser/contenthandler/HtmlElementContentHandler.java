@@ -122,12 +122,12 @@ public class HtmlElementContentHandler extends ContentHandler
     {
       htmlElementComponent = new HtmlElementComponent(elementName, id, null);
     }
-    htmlElementComponent.generationParameters = generationParameters;
+    htmlElementComponent.setGenerationParameters(generationParameters);
     htmlElementComponent.attributes.putAll(attributeValues);
     htmlElementComponent.children.addAll(children);
     for (Component child : htmlElementComponent.children)
     {
-      child.parent = htmlElementComponent;
+      child.setParent(htmlElementComponent);
     }
     htmlElementComponent.setRender(rendered);
     if (multiple)
@@ -136,7 +136,7 @@ public class HtmlElementContentHandler extends ContentHandler
           id + "List",
           null, 
           htmlElementComponent);
-      htmlElementComponent.parent = result;
+      htmlElementComponent.setParent(result);
       return result;
     }
     return htmlElementComponent;

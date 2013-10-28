@@ -18,13 +18,13 @@ public abstract class Component implements Serializable
   private static final long serialVersionUID = 1L;
 
   /** The component id. Can be null, but if set, it should be unique in a the current context (e.g. page). */
-  public String id;
+  protected String id;
   
   /** The parent of the component, or null if this is a standalone component (e.g. a page). */ 
-  public Component parent;
+  protected Component parent;
   
   /** Parameters used for generation. Not used during runtime. */
-  public GenerationParameters generationParameters;
+  protected GenerationParameters generationParameters;
   
   /**
    * Constructor. 
@@ -40,7 +40,7 @@ public abstract class Component implements Serializable
   }
   
   /**
-   * Returns the lsit of children of this component.
+   * Returns the list of children of this component.
    * 
    * @return the list of children, not null.
    */
@@ -128,14 +128,75 @@ public abstract class Component implements Serializable
   @SuppressWarnings("unchecked")
   public <T extends Component> T getAncestor(Class<T> classOfAncestor)
   {
-   if (parent == null)
-   {
-     return null;
-   }
-   if (parent.getClass().equals(classOfAncestor))
-   {
-     return (T) parent;
-   }
-   return parent.getAncestor(classOfAncestor);
+    if (parent == null)
+    {
+      return null;
+    }
+    if (parent.getClass().equals(classOfAncestor))
+    {
+      return (T) parent;
+    }
+    return parent.getAncestor(classOfAncestor);
+  }
+  
+  /**
+   * Returns the component's parent.
+   * 
+   * @return the parent component, or null if the component is standalone (e.g. a page)
+   */
+  public Component getParent()
+  {
+    return parent;
+  }
+  
+  /**
+   * Sets the component's parent.
+   * 
+   * @param parent the parent component, or null if the component is standalone (e.g. a page)
+   */
+  public void setParent(Component parent)
+  {
+    this.parent = parent;
+  }
+  
+  /**
+   * Returns the component id. 
+   * If set, it should be unique in a the current context (e.g. page), but this is not enforced.
+   * 
+   * @return the component id, or null.
+   */
+  public String getId()
+  {
+    return id;
+  }
+
+  /**
+   * Sets the component id. If set, the id should be unique in a the current context (e.g. page).
+   * 
+   * @param id the component id, or null.
+   */
+  public void setId(String id)
+  {
+    this.id = id;
+  }
+  
+  /**
+   * Returns the parameters used for generation.
+   * 
+   * @return the parameters for generation, null if not set or in the runtime.
+   */
+  public GenerationParameters getGenerationParameters()
+  {
+    return generationParameters;
+  }
+
+  /**
+   * Sets the parameters used for generation.
+   * 
+   * @param generationParameters the parameters for generation, or null.
+   */
+  public void setGenerationParameters(GenerationParameters generationParameters)
+  {
+    this.generationParameters = generationParameters;
   }
 }

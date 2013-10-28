@@ -123,7 +123,7 @@ public class DelegatingContentHandler extends DefaultHandler
       currentResult = currentDelegate.contentHandler.finished();
       for (Component child : currentResult.getChildren())
       {
-        child.parent = currentResult;
+        child.setParent(currentResult);
       }
       currentDelegate = delegateList.remove(delegateList.size() - 1);
       if (!(currentResult instanceof EmptyComponent))
@@ -154,7 +154,7 @@ public class DelegatingContentHandler extends DefaultHandler
     currentResult = currentDelegate.contentHandler.finished();
     for (Component child : currentResult.getChildren())
     {
-      child.parent = currentResult;
+      child.setParent(currentResult);
     }
   }
 

@@ -17,9 +17,9 @@ public class SnippetListComponentGenerator extends ComponentGenerator
       Component component,
       String targetPackage)
   {
-    if (component.id != null)
+    if (component.getId() != null)
     {
-      return toJavaClassName(component.id, targetPackage);
+      return toJavaClassName(component.getId(), targetPackage);
     }
     return new JavaClassName(SnippetListComponent.class);
   }
@@ -29,7 +29,7 @@ public class SnippetListComponentGenerator extends ComponentGenerator
         Component component,
         String targetPackage)
   {
-    if (component.id == null)
+    if (component.getId() == null)
     {
       return null;
     }
@@ -83,7 +83,7 @@ public class SnippetListComponentGenerator extends ComponentGenerator
     
     fileContent.append("  public ").append(className).append("(Component parent)\n");
     fileContent.append("  {\n");
-    fileContent.append("    super(\"").append(component.id).append("\", parent);\n");
+    fileContent.append("    super(\"").append(component.getId()).append("\", parent);\n");
     fileContent.append("  }\n\n");
     
     fileContent.append("  @Override\n");
@@ -196,6 +196,6 @@ public class SnippetListComponentGenerator extends ComponentGenerator
   @Override
   public boolean generateExtensionClass(Component component)
   {
-    return component.id != null;
+    return component.getId() != null;
   }  
 }

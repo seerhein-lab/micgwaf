@@ -42,11 +42,11 @@ public class HtmlParser
         {
           FileInputStream inputStream = new FileInputStream(file);
           Component component = parse(inputStream);
-          if (component.id == null)
+          if (component.getId() == null)
           {
-            component.id = fileName.substring(0, fileName.length() - 6);
+            component.setId(fileName.substring(0, fileName.length() - 6));
           }
-          result.put(component.id, component);
+          result.put(component.getId(), component);
         }
         catch (FileNotFoundException e)
         {
