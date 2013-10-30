@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.seitenbau.micgwaf.component.Component;
 import com.seitenbau.micgwaf.component.RefComponent;
+import com.seitenbau.micgwaf.component.SnippetListComponent;
 
 public abstract class ComponentGenerator
 {
@@ -261,4 +262,24 @@ public abstract class ComponentGenerator
     return  "component" + componentCounter;
   }
 
+  public String getComponentFieldName(SnippetListComponent.ComponentPart part, int componentCounter)
+  {
+    if (part.component != null)
+    {
+      return getComponentFieldName(part.component, componentCounter);
+    }
+    return  "snippet" + componentCounter;
+  }
+
+  /**
+   * Generates code for the serialVersionUID constant for serializable classes.
+   * 
+   * @param fileContent the StringBuilder to which the code should be appended.
+   */
+  public void generateSerialVersionUid(StringBuilder toAppendTo)
+  {
+    // SerialversionUID
+    toAppendTo.append("  /** Serial Version UID. */\n");
+    toAppendTo.append("  private static final long serialVersionUID = 1L;\n\n");
+  }
 }
