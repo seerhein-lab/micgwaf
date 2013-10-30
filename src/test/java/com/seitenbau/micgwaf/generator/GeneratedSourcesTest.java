@@ -9,6 +9,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.util.Collection;
 
 import javax.tools.JavaCompiler;
 import javax.tools.ToolProvider;
@@ -41,15 +42,26 @@ public class GeneratedSourcesTest
         generatedExtensionsDir,
         "com.seitenbau.micgwaf.test.generated");
 
+    Collection<File> files = FileUtils.listFiles(generatedSourcesDir, new String[] {"java"}, true);
+    files.addAll(FileUtils.listFiles(generatedExtensionsDir, new String[] {"java"}, true));
+    String[] args = new String[files.size() + 6];
+    int i = 6;
+    for (File file : files)
+    {
+      args[i] = file.getAbsolutePath();
+      ++i;
+    }
+    args[0] = "-g";
+    args[1] = "-d";
+    args[2] = compileRootDir.getAbsolutePath();
+    args[3] = "-verbose";
+    args[4] = "-sourcepath";
+    args[5] = generatedSourcesDir.getAbsolutePath() + ";" + generatedExtensionsDir.getAbsolutePath();
+
     compileRootDir.mkdirs();
     JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-    compiler.run(null, null, null, 
-        "-g", 
-        "-d", compileRootDir.getAbsolutePath(),
-        "-verbose",
-        "-sourcepath", generatedSourcesDir.getAbsolutePath() + ";" + generatedExtensionsDir.getAbsolutePath(),
-        generatedExtensionsDir.getAbsolutePath() + "/com/seitenbau/micgwaf/test/generated/root/RootExtension.java");
-  }
+    compiler.run(null, null, null, args);
+}
   
   
   @Test
