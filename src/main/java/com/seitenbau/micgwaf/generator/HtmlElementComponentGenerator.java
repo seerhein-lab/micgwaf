@@ -233,12 +233,13 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
             {
               stringBuilder.append("\n  /**\n");
               stringBuilder.append("   * Returns the text content of this HTML element.\n");
+              stringBuilder.append("   * HTML entities are resoved in the returned text.\n");
               stringBuilder.append("   *\n");
               stringBuilder.append("   * @return the text content, not null.\n");
               stringBuilder.append("   */\n");
               stringBuilder.append("  public String getTextContent()\n")
                   .append("  {\n")
-                  .append("    return ").append(componentField).append(".snippet;\n")
+                  .append("    return resolveEntities(").append(componentField).append(".snippet);\n")
                   .append("  }\n");
               stringBuilder.append("\n  /**\n");
               stringBuilder.append("   * Sets the text content of this HTML element.\n");
