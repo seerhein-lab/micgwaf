@@ -94,12 +94,34 @@ public abstract class ComponentGenerator
       Component component,
       String targetPackage);
 
+  /**
+   * Generates an initializer which initializes this component if this component is constructed
+   * and assigned to a field.
+   * If this component does not need to be initialized, the empty string can be returned.
+   * 
+   * @param componentField the name of the field the component is assigned to, not null.
+   * @param component the component to generate the initializer for, not null.
+   * @param targetPackage the target package of the component, not null.
+   * @param indent how many spaces to indent, not null.
+   * 
+   * @return the initializer java code, of the empty string if no initilaizer code is needed; not null.
+   */
   public abstract String generateInitializer(
       String componentField,
       Component component,
       String targetPackage,
       int indent);
   
+  /**
+   * Converts a component id and a package into a java class name.
+   * Any loop part suffies (starting with a colon :) are removed, 
+   * and the first character is converted to upper case.
+   * 
+   * @param componentId the component id, not null.
+   * @param packageName TODO
+   * 
+   * @return the java class name for the componentid/package pair.
+   */
   public JavaClassName toJavaClassName(String componentId, String packageName)
   {
     String normalizedId = removeLoopPart(componentId);
@@ -108,6 +130,15 @@ public abstract class ComponentGenerator
     return new JavaClassName(simpleName, packageName);
   }
   
+  /**
+   * Returns a string in a form which can be used as string constant in a java source file.
+   * The String is surrounded with double quotes, and backslashes, carriage returns and newlines
+   * are replaced with the appropriate escape sequences.
+   *  
+   * @param string the string to be converted to a string constant, not null.
+   * 
+   * @return the string constant, not null.
+   */
   public String asConstant(String string)
   {
     String result = string.replace("\\", "\\\\");
@@ -117,10 +148,22 @@ public abstract class ComponentGenerator
     return "\"" + result + "\"";
   }
 
+  /**
+   * Generates a field or a local variable from a component. 
+   * The component is constructed using the constructor with the parent argument, assigned to
+   * the local variable and field, and afterwards is initialized using the initializer.
+   * 
+   * @param component The component to create the package name for, not null.
+   * @param targetPackage TODO
+   * @param toAppendTo the String builder to which the generated code should be appended, not null.
+   * @param modifier any modifier to the variable or field, e.g "public " or "final ".
+   * @param fieldName the name of the field or variable
+   * @param indent how many spaces the generated code should be indented.
+   */
   public void generateFieldOrVariableFromComponent(
       Component component,
       String targetPackage, 
-      StringBuilder result,
+      StringBuilder toAppendTo,
       String modifier,
       String fieldName,
       int indent)
@@ -128,10 +171,10 @@ public abstract class ComponentGenerator
     String indentString = getIndentString(indent);
     ComponentGenerator generator = Generator.getGenerator(component);
     JavaClassName componentClassName = generator.getReferencableClassName(component, targetPackage);
-    result.append(indentString).append(modifier).append(componentClassName.getSimpleName())
+    toAppendTo.append(indentString).append(modifier).append(componentClassName.getSimpleName())
         .append(" ").append(fieldName)
         .append(" = new ").append(componentClassName.getSimpleName()).append("(this);\n\n");
-    result.append(generator.generateInitializer(fieldName, component, targetPackage, indent));
+    toAppendTo.append(generator.generateInitializer(fieldName, component, targetPackage, indent));
   }
 
 
