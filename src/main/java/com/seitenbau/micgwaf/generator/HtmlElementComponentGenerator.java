@@ -90,7 +90,47 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
     fileContent.append("public class ").append(className)
         .append(" extends ").append(HtmlElementComponent.class.getSimpleName())
         .append("\n");
-    fileContent.append("{\n\n");
+    fileContent.append("{\n");
+    
+    generateSerialVersionUid(fileContent);
+    
+    // fields
+    int componentCounter = 1;
+    for (Component child : htmlElementCompont.children)
+    {
+      if (child instanceof SnippetListComponent)
+      {
+        SnippetListComponent snippetListChild = (SnippetListComponent) child;
+        for (SnippetListComponent.ComponentPart part : snippetListChild.parts)
+        {
+          String componentField = getComponentFieldName(part, componentCounter);
+          if (part.component != null)
+          {
+            generateFieldOrVariableFromComponent(part.component, targetPackage, fileContent, "public ", componentField, 2);
+          }
+          else
+          {
+            fileContent.append("  public ").append(SnippetComponent.class.getSimpleName())
+                    .append(" snippet").append(componentCounter)
+                    .append(" = new ").append(SnippetComponent.class.getSimpleName())
+                    .append("(null, ").append(asConstant(part.htmlSnippet)).append(", this);\n\n");
+          }
+          componentCounter++;                      
+        }
+        continue;
+      }
+      String componentField = getComponentFieldName(child, componentCounter);
+      generateFieldOrVariableFromComponent(child, targetPackage, fileContent, "public ", componentField, 2);
+      componentCounter++;          
+    }
+
+    // Constructor
+    fileContent.append("  /**\n");
+    fileContent.append("  * Constructor. \n");
+    fileContent.append("  *\n");
+    fileContent .append("  * @param parent the parent component,")
+        .append(" or null if this is a standalone component (e.g. a page)\n");
+    fileContent.append("  */\n");
     fileContent.append("  public " + className + "(Component parent)");
     fileContent.append("  {\n");
     fileContent.append("    super(parent);\n");
@@ -102,35 +142,6 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
     {
       fileContent.append("    renderSelf = false;\n");
     }
-    fileContent.append("  }\n");
-    int componentCounter = 1;
-    for (Component child : htmlElementCompont.children)
-    {
-      if (child instanceof SnippetListComponent)
-      {
-        SnippetListComponent snippetListChild = (SnippetListComponent) child;
-        for (SnippetListComponent.ComponentPart part : snippetListChild.parts)
-        {
-          String componentField = getComponentFieldName(part.component, componentCounter);
-          if (part.component != null)
-          {
-            generateFieldOrVariableFromComponent(part.component, targetPackage, fileContent, "public ", componentField, 2);
-          }
-          else
-          {
-            fileContent.append("  public ").append(SnippetComponent.class.getSimpleName()).append(" ")
-                    .append(componentField).append(" = new ").append(SnippetComponent.class.getSimpleName())
-                    .append("(null, ").append(asConstant(part.htmlSnippet)).append(", this);\n\n");
-          }
-          componentCounter++;                      
-        }
-        continue;
-      }
-      String componentField = getComponentFieldName(child, componentCounter);
-      generateFieldOrVariableFromComponent(child, targetPackage, fileContent, "public ", componentField, 2);
-      componentCounter++;          
-    }
-    fileContent.append("  ").append("{\n");
     fileContent.append("    ").append("elementName = \"").append(htmlElementCompont.elementName)
         .append("\";\n");
     fileContent.append("    ").append("id = \"")
@@ -140,8 +151,17 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
       fileContent.append("    ").append("attributes.put(\"").append(attributeEnty.getKey())
           .append("\", \"").append(attributeEnty.getValue()).append("\");\n");
     }
-    fileContent.append("  ").append("}\n");
+    fileContent.append("  }\n\n");
 
+    // getChildren()
+    fileContent.append("  /**\n");
+    fileContent.append("   * Returns the list of children of this component.\n");
+    fileContent.append("   * The returned list is modifiable, but changes in the list\n");
+    fileContent.append("   * (i.e. adding and removing components) are not written back\n");
+    fileContent.append("   * to this component. Changes in the components DO affect this component.\n");
+    fileContent.append("   *\n");
+    fileContent.append("   * @return the list of children, not null.\n");
+    fileContent.append("   */\n");
     fileContent.append("  @Override\n");
     fileContent.append("  public List<Component> getChildren()\n");
     fileContent.append("  {\n");
@@ -154,7 +174,7 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
         SnippetListComponent snippetListChild = (SnippetListComponent) child;
         for (SnippetListComponent.ComponentPart part : snippetListChild.parts)
         {
-          String componentField = getComponentFieldName(part.component, componentCounter);
+          String componentField = getComponentFieldName(part, componentCounter);
           fileContent.append("    result.add(").append(componentField).append(");\n");
           componentCounter++;
         }
@@ -170,7 +190,7 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
     fileContent.append("}\n");
     return fileContent.toString();
   }
-  
+
   protected void generateConvenienceMethods(
       HtmlElementComponent htmlElementComponent, 
       StringBuilder stringBuilder)
@@ -185,14 +205,25 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
         if (snippetListComponent.parts.size() == 1)
         {
           SnippetListComponent.ComponentPart part = snippetListComponent.parts.get(0);
+          componentField = getComponentFieldName(part, 1);
           if (part.htmlSnippet != null)
           {
             if (part.htmlSnippet.contains("<"))
             {
+              stringBuilder.append("  /**\n");
+              stringBuilder.append("   * Returns the HTML snippet which is the inner content of this HTML element.\n");
+              stringBuilder.append("   *\n");
+              stringBuilder.append("   * @return the inner HTML, not null.\n");
+              stringBuilder.append("   */\n");
               stringBuilder.append("\n").append("  public String getInnerContent()\n")
                   .append("  {\n")
                   .append("    return ").append(componentField).append(".snippet;\n")
                   .append("  }\n");
+              stringBuilder.append("  /**\n");
+              stringBuilder.append("   * Sets the HTML snippet which is the inner content of this HTML element.\n");
+              stringBuilder.append("   *\n");
+              stringBuilder.append("   * @param innerContent the new inner HTML, not null.\n");
+              stringBuilder.append("   */\n");
               stringBuilder.append("\n").append("  public void setInnerContent(String innerContent)\n")
                   .append("  {\n")
                   .append("    ").append(componentField).append(".snippet = innerContent;\n")
@@ -200,13 +231,24 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
             }
             else
             {
-              stringBuilder.append("\n").append("  public String getTextContent()\n")
+              stringBuilder.append("\n  /**\n");
+              stringBuilder.append("   * Returns the text content of this HTML element.\n");
+              stringBuilder.append("   *\n");
+              stringBuilder.append("   * @return the text content, not null.\n");
+              stringBuilder.append("   */\n");
+              stringBuilder.append("  public String getTextContent()\n")
                   .append("  {\n")
                   .append("    return ").append(componentField).append(".snippet;\n")
                   .append("  }\n");
-              stringBuilder.append("\n").append("  public void setTextContent(String text)\n")
+              stringBuilder.append("\n  /**\n");
+              stringBuilder.append("   * Sets the text content of this HTML element.\n");
+              stringBuilder.append("   * HTML special characters are escaped in the rendered text.\n");
+              stringBuilder.append("   *\n");
+              stringBuilder.append("   * @param text the text content, not null.\n");
+              stringBuilder.append("   */\n");
+              stringBuilder.append("  public void setTextContent(String text)\n")
                   .append("  {\n")
-                  .append("    ").append(componentField).append(".snippet = text;\n")
+                  .append("    ").append(componentField).append(".snippet = escapeHtml(text);\n")
                   .append("  }\n");
             }
           }
@@ -247,23 +289,5 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
       int indent)
   {
     return "";
-    // TODO following code should be not necessary as initialisation is done in generation of class
-//    String indentString = getIndentString(indent);
-//    HtmlElementComponent htmlElementCompont = (HtmlElementComponent) component;
-//    StringBuilder result = new StringBuilder();
-//    result.append(indentString).append("{\n");
-//    result.append(indentString).append("  ").append(componentField)
-//        .append(".elementName = \"").append(htmlElementCompont.elementName).append("\";\n");
-//    result.append(indentString).append("  ").append(componentField)
-//        .append(".id = \"").append(htmlElementCompont.id).append("\";\n");
-//    for (Map.Entry<String, String> attributeEnty : htmlElementCompont.attributes.entrySet())
-//    {
-//      result.append(indentString).append("  ").append(componentField)
-//          .append(".attributes.put(\"").append(attributeEnty.getKey())
-//          .append("\", \"").append(attributeEnty.getValue()).append("\");\n");
-//    }
-//    generateInitChildren(component, targetPackage, result, componentField, indent + 2);
-//    result.append(indentString).append("}\n");
-//    return result.toString();
   }
 }

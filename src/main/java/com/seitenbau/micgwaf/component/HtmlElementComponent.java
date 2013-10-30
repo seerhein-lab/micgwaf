@@ -110,4 +110,25 @@ public class HtmlElementComponent extends Component
       writer.write(ELEMENT_CLOSE_CHAR);
     }
   }
+  
+  /**
+   * Replaces XML special characters by their respective entities.
+   * 
+   * @param toEscape the string to escape.
+   * 
+   * @return the escaped string, or null if null is passed in.
+   */
+  public String escapeHtml(String toEscape)
+  {
+    if (toEscape == null)
+    {
+      return null;
+    }
+    String result = toEscape.replace("<", "&lt;");
+    result = result.replace(">", "&gt;");
+    result = result.replace("&", "&amp;");
+    result = result.replace("'", "&apo;");
+    result = result.replace("\"", "&quot;");
+    return result;
+  }
 }
