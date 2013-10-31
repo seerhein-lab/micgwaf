@@ -20,7 +20,10 @@ import com.seitenbau.micgwaf.parser.HtmlParser;
 
 public class Generator
 {
-  public static final Map<Class<? extends Component>, ComponentGenerator> componentGeneratorMap = new HashMap<>();
+  public static final Map<Class<? extends Component>, ComponentGenerator> componentGeneratorMap 
+      = new HashMap<>();
+      
+  public static RemoveUnusedImports removeUnusedImports = new RemoveUnusedImports();
   
   static
   {
@@ -92,6 +95,7 @@ public class Generator
     String result = componentGenerator.generate(component, targetPackage);
     if (result != null)
     {
+      result = removeUnusedImports.removeUnusedImports(result);
       filesToWrite.put(componentGenerator.getClassName(component, targetPackage), result);
     }
     for (Component child : component.getChildren())

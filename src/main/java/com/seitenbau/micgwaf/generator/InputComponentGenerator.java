@@ -41,8 +41,8 @@ public class InputComponentGenerator extends HtmlElementComponentGenerator
     // add import
     int indexOfImport = rootContent.indexOf("\nimport");
     fileContent.append(rootContent.substring(0, indexOfImport))
-        .append("import ").append(HttpServletRequest.class.getName()).append(";\n")
-        .append("import ").append(InputComponent.class.getName()).append(";\n")
+        .append("\nimport ").append(HttpServletRequest.class.getName()).append(";\n")
+        .append("import ").append(InputComponent.class.getName()).append(";")
         .append(rootContent.substring(indexOfImport));
 
     fileContent.append("}\n");
