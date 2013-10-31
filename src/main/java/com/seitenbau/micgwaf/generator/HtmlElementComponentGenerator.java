@@ -87,6 +87,7 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
       }
     }
     fileContent.append("\n");
+    generateClassJavadoc(component, fileContent, false);
     fileContent.append("public class ").append(className)
         .append(" extends ").append(HtmlElementComponent.class.getSimpleName())
         .append("\n");
@@ -266,10 +267,11 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
     String className = getClassName(component, targetPackage).getSimpleName();
     String extensionClassName = getExtensionClassName(component, targetPackage).getSimpleName();
     StringBuilder fileContent = new StringBuilder();
-    fileContent.append("package ").append(targetPackage).append(";\n\n");
+    fileContent.append("package ").append(targetPackage).append(";\n");
     fileContent.append("\n");
     fileContent.append("import ").append(Component.class.getName()).append(";\n");
     fileContent.append("\n");
+    generateClassJavadoc(component, fileContent, true);
     fileContent.append("public class ").append(extensionClassName)
         .append(" extends ").append(className)
         .append("\n");

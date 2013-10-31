@@ -178,7 +178,6 @@ public abstract class ComponentGenerator
     toAppendTo.append(generator.generateInitializer(fieldName, component, targetPackage, indent));
   }
 
-
   public void generateInitChildren(
       Component component, 
       String targetPackage,
@@ -235,6 +234,34 @@ public abstract class ComponentGenerator
     toAppendTo.append("  }\n");
   }
   
+  /**
+   * Generates the class javadoc for component classes.
+   * 
+   * @param component the component for which the javadoc should be generated
+   * @param toAppendTo the content to which the constructor code should be appended.
+   * @param forExtension if the javadoc is generated for an extension class.
+   */
+  protected void generateClassJavadoc(Component component, StringBuilder toAppendTo, boolean forExtension)
+  {
+    toAppendTo.append("/**\n");
+    toAppendTo.append(" * This class represents the HTML element with m:id ")
+            .append(removeLoopPart(component.getId())).append(".\n");
+    toAppendTo.append(" * Instances of this class are used whenever these elements are rendered\n");
+    toAppendTo.append(" * or when form date from a page containing these elements is processed.\n");
+    if (!forExtension)
+    {
+      ComponentGenerator generator = Generator.getGenerator(component);
+      if (generator.generateExtensionClass(component))
+      {
+        toAppendTo.append(" *\n");
+        toAppendTo.append(" * NOTE: This clas should not be referenced; instead, the class\n");
+        toAppendTo.append(" * ").append(generator.getExtensionClassName(component, "dummy").getSimpleName())
+            .append(" should be used.").append("\n");
+      }
+    }
+    toAppendTo.append(" **/\n");
+  }
+
   public String removeLoopPart(String id)
   {
     if (id == null)

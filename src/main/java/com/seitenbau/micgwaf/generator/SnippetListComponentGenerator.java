@@ -60,6 +60,7 @@ public class SnippetListComponentGenerator extends ComponentGenerator
     
     // class definition header
     fileContent.append("\n");
+    generateClassJavadoc(component, fileContent, false);
     fileContent.append("public class ").append(className)
         .append(" extends ").append(Component.class.getSimpleName())
         .append("\n");
@@ -158,6 +159,7 @@ public class SnippetListComponentGenerator extends ComponentGenerator
     fileContent.append("\n");
     fileContent.append("import ").append(Component.class.getName()).append(";\n");
     fileContent.append("\n");
+    generateClassJavadoc(component, fileContent, true);
     fileContent.append("public class ").append(extensionClassName)
         .append(" extends ").append(className)
         .append("\n");
