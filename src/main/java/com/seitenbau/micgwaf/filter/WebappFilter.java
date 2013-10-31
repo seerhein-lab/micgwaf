@@ -1,7 +1,6 @@
 package com.seitenbau.micgwaf.filter;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -12,7 +11,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import com.seitenbau.micgwaf.component.Component;
 import com.seitenbau.micgwaf.config.ApplicationBase;
 
 public class WebappFilter implements Filter
