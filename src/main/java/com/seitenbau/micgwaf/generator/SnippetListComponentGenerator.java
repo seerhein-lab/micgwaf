@@ -62,6 +62,7 @@ public class SnippetListComponentGenerator extends ComponentGenerator
         .append(" extends ").append(Component.class.getSimpleName())
         .append("\n");
     fileContent.append("{\n");
+    generateSerialVersionUid(fileContent);
     int snippetCounter = 1;
     int componentCounter = 1;
     for (SnippetListComponent.ComponentPart part : snippetListComponent.parts)
@@ -149,6 +150,7 @@ public class SnippetListComponentGenerator extends ComponentGenerator
         .append(" extends ").append(className)
         .append("\n");
     fileContent.append("{\n");
+    generateSerialVersionUid(fileContent);
     fileContent.append("  public " + extensionClassName + "(Component parent)\n");
     fileContent.append("  {\n");
     fileContent.append("    super(parent);\n");

@@ -159,6 +159,7 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
         .append(" extends ").append(className)
         .append("\n");
     fileContent.append("{\n");
+    generateSerialVersionUid(fileContent);
     fileContent.append("  public " + extensionClassName + "(Component parent)\n");
     fileContent.append("  {\n");
     fileContent.append("    super(parent);\n");
