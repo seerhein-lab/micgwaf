@@ -57,24 +57,28 @@ public class SnippetListComponentGenerator extends ComponentGenerator
         }
       }
     }
+    
+    // class definition header
     fileContent.append("\n");
     fileContent.append("public class ").append(className)
         .append(" extends ").append(Component.class.getSimpleName())
         .append("\n");
     fileContent.append("{\n");
     generateSerialVersionUid(fileContent);
+    
     int snippetCounter = 1;
     int componentCounter = 1;
     for (SnippetListComponent.ComponentPart part : snippetListComponent.parts)
     {
       if (part.htmlSnippet != null)
       {
-        fileContent.append("  public static final String SNIPPET_").append(snippetCounter)
-            .append(" = ").append(asConstant(part.htmlSnippet)).append(";\n\n");
+        fileContent.append("\n  public static final String SNIPPET_").append(snippetCounter)
+            .append(" = ").append(asConstant(part.htmlSnippet)).append(";\n");
         ++snippetCounter;
       }
       else if (part.component != null)
       {
+        fileContent.append("\n");
         String componentField = getComponentFieldName(part.component, componentCounter);
         ComponentGenerator generator = Generator.getGenerator(part.component);
         generator.generateFieldOrVariableFromComponent(part.component, targetPackage, fileContent, "public ", componentField, 2);
@@ -82,11 +86,19 @@ public class SnippetListComponentGenerator extends ComponentGenerator
       }
     }
     
+    // Constructor
+    fileContent.append("\n  /**\n");
+    fileContent.append("  * Constructor. \n");
+    fileContent.append("  *\n");
+    fileContent .append("  * @param parent the parent component,")
+        .append(" or null if this is a standalone component (e.g. a page)\n");
+    fileContent.append("  */\n");
     fileContent.append("  public ").append(className).append("(Component parent)\n");
     fileContent.append("  {\n");
     fileContent.append("    super(\"").append(component.getId()).append("\", parent);\n");
     fileContent.append("  }\n\n");
     
+    // getChildren
     fileContent.append("  @Override\n");
     fileContent.append("  public List<Component> getChildren()\n");
     fileContent.append("  {\n");
@@ -104,7 +116,7 @@ public class SnippetListComponentGenerator extends ComponentGenerator
     fileContent.append("    return result;\n");
     fileContent.append("  }\n");
 
-    fileContent.append("  @Override\n");
+    fileContent.append("\n  @Override\n");
     fileContent.append("  public void render(Writer writer) throws IOException\n");
     fileContent.append("  {\n");
     
@@ -151,10 +163,7 @@ public class SnippetListComponentGenerator extends ComponentGenerator
         .append("\n");
     fileContent.append("{\n");
     generateSerialVersionUid(fileContent);
-    fileContent.append("  public " + extensionClassName + "(Component parent)\n");
-    fileContent.append("  {\n");
-    fileContent.append("    super(parent);\n");
-    fileContent.append("  }\n");
+    generateComponentConstructorWithParent(extensionClassName, fileContent);
     fileContent.append("}\n");
 
     return fileContent.toString();

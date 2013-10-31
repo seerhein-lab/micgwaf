@@ -174,7 +174,7 @@ public abstract class ComponentGenerator
     JavaClassName componentClassName = generator.getReferencableClassName(component, targetPackage);
     toAppendTo.append(indentString).append(modifier).append(componentClassName.getSimpleName())
         .append(" ").append(fieldName)
-        .append(" = new ").append(componentClassName.getSimpleName()).append("(this);\n\n");
+        .append(" = new ").append(componentClassName.getSimpleName()).append("(this);\n");
     toAppendTo.append(generator.generateInitializer(fieldName, component, targetPackage, indent));
   }
 
@@ -212,6 +212,27 @@ public abstract class ComponentGenerator
       counter++;
     }
     result.append(indentString).append("}\n");
+  }
+  
+  /**
+   * Generates an empty constructor for a component with a parent argument.
+   * 
+   * @param className the unqualified class name of the class for which the constructor is generated.
+   * @param toAppendTo the content to which the constructor code should be appended.
+   */
+  public void generateComponentConstructorWithParent(String className, StringBuilder toAppendTo)
+  {
+    // Constructor
+    toAppendTo.append("\n  /**\n");
+    toAppendTo.append("  * Constructor. \n");
+    toAppendTo.append("  *\n");
+    toAppendTo .append("  * @param parent the parent component,")
+        .append(" or null if this is a standalone component (e.g. a page)\n");
+    toAppendTo.append("  */\n");
+    toAppendTo.append("  public " + className + "(Component parent)");
+    toAppendTo.append("  {\n");
+    toAppendTo.append("    super(parent);\n");
+    toAppendTo.append("  }\n");
   }
   
   public String removeLoopPart(String id)
@@ -280,6 +301,6 @@ public abstract class ComponentGenerator
   {
     // SerialversionUID
     toAppendTo.append("  /** Serial Version UID. */\n");
-    toAppendTo.append("  private static final long serialVersionUID = 1L;\n\n");
+    toAppendTo.append("  private static final long serialVersionUID = 1L;\n");
   }
 }

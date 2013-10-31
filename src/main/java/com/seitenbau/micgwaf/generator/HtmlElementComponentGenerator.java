@@ -275,10 +275,7 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
         .append("\n");
     fileContent.append("{\n");
     generateSerialVersionUid(fileContent);
-    fileContent.append("  public " + extensionClassName + "(Component parent)\n");
-    fileContent.append("  {\n");
-    fileContent.append("    super(parent);\n");
-    fileContent.append("  }\n");
+    generateComponentConstructorWithParent(extensionClassName, fileContent);
     fileContent.append("}\n");
     return fileContent.toString();
   }
