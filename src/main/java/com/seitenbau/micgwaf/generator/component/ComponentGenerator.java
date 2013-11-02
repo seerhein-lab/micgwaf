@@ -290,7 +290,7 @@ public abstract class ComponentGenerator
       if (generator.generateExtensionClass(component))
       {
         toAppendTo.append(" *\n");
-        toAppendTo.append(" * NOTE: This clas should not be referenced; instead, the class\n");
+        toAppendTo.append(" * NOTE: This class should not be referenced; instead, the class\n");
         toAppendTo.append(" * ").append(generator.getExtensionClassName(component, "dummy").getSimpleName())
             .append(" should be used.").append("\n");
       }
