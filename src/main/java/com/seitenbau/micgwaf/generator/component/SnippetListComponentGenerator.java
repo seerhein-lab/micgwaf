@@ -1,4 +1,4 @@
-package com.seitenbau.micgwaf.generator;
+package com.seitenbau.micgwaf.generator.component;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -9,6 +9,8 @@ import com.seitenbau.micgwaf.component.ChildListComponent;
 import com.seitenbau.micgwaf.component.Component;
 import com.seitenbau.micgwaf.component.RefComponent;
 import com.seitenbau.micgwaf.component.SnippetListComponent;
+import com.seitenbau.micgwaf.generator.Generator;
+import com.seitenbau.micgwaf.generator.JavaClassName;
 
 public class SnippetListComponentGenerator extends ComponentGenerator
 {

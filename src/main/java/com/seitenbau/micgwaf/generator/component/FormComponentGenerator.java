@@ -1,4 +1,4 @@
-package com.seitenbau.micgwaf.generator;
+package com.seitenbau.micgwaf.generator.component;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,6 +12,8 @@ import com.seitenbau.micgwaf.component.Component;
 import com.seitenbau.micgwaf.component.FormComponent;
 import com.seitenbau.micgwaf.component.HtmlElementComponent;
 import com.seitenbau.micgwaf.component.InputComponent;
+import com.seitenbau.micgwaf.generator.Generator;
+import com.seitenbau.micgwaf.generator.JavaClassName;
 
 public class FormComponentGenerator extends HtmlElementComponentGenerator
 {

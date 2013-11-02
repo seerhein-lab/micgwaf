@@ -16,6 +16,14 @@ import com.seitenbau.micgwaf.component.HtmlElementComponent;
 import com.seitenbau.micgwaf.component.InputComponent;
 import com.seitenbau.micgwaf.component.RefComponent;
 import com.seitenbau.micgwaf.component.SnippetListComponent;
+import com.seitenbau.micgwaf.generator.component.ChildListComponentGenerator;
+import com.seitenbau.micgwaf.generator.component.ComponentGenerator;
+import com.seitenbau.micgwaf.generator.component.EmptyComponentGenerator;
+import com.seitenbau.micgwaf.generator.component.FormComponentGenerator;
+import com.seitenbau.micgwaf.generator.component.HtmlElementComponentGenerator;
+import com.seitenbau.micgwaf.generator.component.InputComponentGenerator;
+import com.seitenbau.micgwaf.generator.component.RefComponentGenerator;
+import com.seitenbau.micgwaf.generator.component.SnippetListComponentGenerator;
 import com.seitenbau.micgwaf.generator.config.GeneratorConfiguration;
 import com.seitenbau.micgwaf.parser.HtmlParser;
 

@@ -1,24 +1,20 @@
-package com.seitenbau.micgwaf.generator;
+package com.seitenbau.micgwaf.generator.component;
 
 import com.seitenbau.micgwaf.component.Component;
-import com.seitenbau.micgwaf.component.EmptyComponent;
+import com.seitenbau.micgwaf.component.RefComponent;
+import com.seitenbau.micgwaf.generator.JavaClassName;
 
-public class EmptyComponentGenerator extends ComponentGenerator
+public class RefComponentGenerator extends ComponentGenerator
 {
   @Override
   public JavaClassName getClassName(
       Component component,
       String targetPackage)
   {
-    return new JavaClassName(EmptyComponent.class);
-  }
-  
-  @Override
-  public JavaClassName getExtensionClassName(
-      Component component,
-      String targetPackage)
-  {
-    return null;
+    // remove last package part and add own
+    String basePackage = targetPackage.substring(0, targetPackage.lastIndexOf('.'));
+    RefComponent refComponent = (RefComponent) component;
+    return toExtensionClassName(refComponent.refid, basePackage + "." + refComponent.refid);
   }
   
   @Override
@@ -26,10 +22,10 @@ public class EmptyComponentGenerator extends ComponentGenerator
   {
     return false;
   }
-  
+
   @Override
   public String generate(
-        Component component,
+        Component rawComponent,
         String targetPackage)
   {
     return null;
@@ -37,7 +33,7 @@ public class EmptyComponentGenerator extends ComponentGenerator
   
   @Override
   public String generateExtension(
-        Component component,
+        Component rawComponent,
         String targetPackage)
   {
     return null;
@@ -52,5 +48,4 @@ public class EmptyComponentGenerator extends ComponentGenerator
   {
     return "";
   }
-
 }

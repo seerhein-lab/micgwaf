@@ -1,10 +1,11 @@
-package com.seitenbau.micgwaf.generator;
+package com.seitenbau.micgwaf.generator.component;
 
 import javax.servlet.http.HttpServletRequest;
 
 import com.seitenbau.micgwaf.component.Component;
 import com.seitenbau.micgwaf.component.HtmlElementComponent;
 import com.seitenbau.micgwaf.component.InputComponent;
+import com.seitenbau.micgwaf.generator.JavaClassName;
 
 public class InputComponentGenerator extends HtmlElementComponentGenerator
 {
