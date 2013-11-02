@@ -16,6 +16,7 @@ import com.seitenbau.micgwaf.component.HtmlElementComponent;
 import com.seitenbau.micgwaf.component.InputComponent;
 import com.seitenbau.micgwaf.component.RefComponent;
 import com.seitenbau.micgwaf.component.SnippetListComponent;
+import com.seitenbau.micgwaf.generator.config.GeneratorConfiguration;
 import com.seitenbau.micgwaf.parser.HtmlParser;
 
 public class Generator
@@ -24,6 +25,11 @@ public class Generator
       = new HashMap<>();
       
   public static RemoveUnusedImports removeUnusedImports = new RemoveUnusedImports();
+  
+  public static GeneratorConfiguration generatorConfiguration; 
+  
+  public static String configurationClasspathResource 
+      = "/com/seitenbau/micgwaf/config/default-micgwaf-codegen.properties";
   
   static
   {
@@ -164,6 +170,15 @@ public class Generator
     return getGenerator(component.getClass());
   }
 
+  /**
+   * Returns the ComponentGenerator for the passed component class.
+   * 
+   * @param componentClass the component class to get a generator for, not null.
+   * 
+   * @return the ComponentGenerator for the generator class, not null.
+   * 
+   * @throws IllegalArgumentException if the componentClass does not have a ComponentGenerator.
+   */
   public static ComponentGenerator getGenerator(Class<? extends Component> componentClass)
   {
     ComponentGenerator result = componentGeneratorMap.get(componentClass);
@@ -172,5 +187,32 @@ public class Generator
       throw new IllegalArgumentException("Unknown component class " + componentClass);
     }
     return result;
+  }
+
+  /**
+   * Returns the configuration of the generator. 
+   * If the configuration is not yet loaded, it will be loaded, using the current value of
+   * configurationClasspathResource.
+   * 
+   * @return the generator configuration, not null.
+   * 
+   * @throws RuntimeException if the configuration could not be loaded.
+   */
+  public static GeneratorConfiguration getGeneratorConfiguration()
+  {
+    if (generatorConfiguration == null)
+    {
+      try
+      {
+        generatorConfiguration = new GeneratorConfiguration(configurationClasspathResource);
+      } 
+      catch (Exception e)
+      {
+        throw new RuntimeException("Could not load generator configuration from classpath resource "
+            + configurationClasspathResource,
+          e);
+      }
+    }
+    return generatorConfiguration;
   }
 }

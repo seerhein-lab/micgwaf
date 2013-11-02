@@ -19,7 +19,7 @@ public class SnippetListComponentGenerator extends ComponentGenerator
   {
     if (component.getId() != null)
     {
-      return toJavaClassName(component.getId(), targetPackage);
+      return toBaseClassName(component, targetPackage);
     }
     return new JavaClassName(SnippetListComponent.class);
   }

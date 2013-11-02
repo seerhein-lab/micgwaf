@@ -21,7 +21,7 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
       Component component,
       String targetPackage)
   {
-    return toJavaClassName(component.getId(), targetPackage);
+    return toBaseClassName(component, targetPackage);
   }
   
   @Override

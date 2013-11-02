@@ -25,6 +25,8 @@ public class GeneratedSourcesTest
   @Before
   public void generateAndCompile() throws Exception
   {
+    Generator.configurationClasspathResource = "/micgwaf/micgwaf-codegen.properties";
+    
     File componentDir = new File("src/test/resources/com/seitenbau/micgwaf/page");
     File generatedSourcesDir = new File("target/generated-sources");
     File generatedExtensionsDir = new File("target/generated-extension-sources");
@@ -71,7 +73,7 @@ public class GeneratedSourcesTest
         new URL[] { compileRootDir.toURI().toURL(), new File("target/classes").toURI().toURL() }, 
         null );
     Class<?> cls = Class.forName(
-        "com.seitenbau.micgwaf.test.generated.root.RootExtension",
+        "com.seitenbau.micgwaf.test.generated.root.ExtensionClassPrefixRootExtensionClassSuffix",
         true, 
         classLoader);
     Constructor<?> rootConstructor = cls.getConstructors()[0];

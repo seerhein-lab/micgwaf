@@ -37,8 +37,7 @@ public abstract class ComponentGenerator
       Component component,
       String targetPackage)
   {
-    String className = getClassName(component, targetPackage).getSimpleName();
-    return new JavaClassName(className + "Extension", targetPackage);
+    return toExtensionClassName(component.getId(), targetPackage);
   }
   
   /**
@@ -114,20 +113,55 @@ public abstract class ComponentGenerator
       int indent);
   
   /**
-   * Converts a component id and a package into a java class name.
-   * Any loop part suffies (starting with a colon :) are removed, 
-   * and the first character is converted to upper case.
+   * Converts a component and a package into a java class name following the base class naming pattern.
+   * The method first checks if an extension class is generated, and if yes and the configuration
+   * say that base classes without extension should follow the extension naming pattern, it forwards
+   * to the toExtensionClassName method.
+   * If this is not the case, any loop part suffixes (starting with a colon :) are removed from the 
+   * component id, and the first character of the component id is converted to upper case.
+   * This modified id is then prefixed by the baseClassPrefix and baseClassSuffix 
+   * from the generator configuration.
    * 
-   * @param componentId the component id, not null.
+   * @param component the component to generate the class name for, not null.
    * @param packageName TODO
    * 
    * @return the java class name for the componentid/package pair.
    */
-  public JavaClassName toJavaClassName(String componentId, String packageName)
+  public JavaClassName toBaseClassName(Component component, String packageName)
+  {
+    if (!generateExtensionClass(component) 
+        && !Generator.getGeneratorConfiguration().isBaseClassWithoutExtensionNamedLikeBaseClasses())
+    {
+      return toExtensionClassName(component.getId(), packageName);
+    }
+    String normalizedId = removeLoopPart(component.getId());
+    String simpleName = Generator.getGeneratorConfiguration().getBaseClassPrefix() 
+        + normalizedId.substring(0, 1).toUpperCase()
+        + normalizedId.substring(1)
+        + Generator.getGeneratorConfiguration().getBaseClassSuffix();
+    return new JavaClassName(simpleName, packageName);
+  }
+  
+  /**
+   * Converts a component id and a package into a java class name following the extension class 
+   * naming pattern.
+   * Any loop part suffixes (starting with a colon :) are removed from the 
+   * component id, and the first character of the component id is converted to upper case.
+   * This modified id is then prefixed by the extensionClassPrefix and extensionClassSuffix 
+   * from the generator configuration.
+   * 
+   * @param componentId the id of the component to generate the class name for, not null.
+   * @param packageName TODO
+   * 
+   * @return the java class name for the componentid/package pair.
+   */
+  public JavaClassName toExtensionClassName(String componentId, String packageName)
   {
     String normalizedId = removeLoopPart(componentId);
-    String simpleName = normalizedId.substring(0, 1).toUpperCase()
-        + normalizedId.substring(1);
+    String simpleName = Generator.getGeneratorConfiguration().getExtensionClassPrefix() 
+        + normalizedId.substring(0, 1).toUpperCase()
+        + normalizedId.substring(1)
+        + Generator.getGeneratorConfiguration().getExtensionClassSuffix();
     return new JavaClassName(simpleName, packageName);
   }
   
