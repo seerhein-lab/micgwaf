@@ -25,7 +25,7 @@ public class GeneratedSourcesTest
   @Before
   public void generateAndCompile() throws Exception
   {
-    Generator.configurationClasspathResource = "/micgwaf/micgwaf-codegen.properties";
+    Generator.configurationClasspathResource = "/com/seitenbau/micgwaf/config/test-micgwaf-codegen.properties";
     
     File componentDir = new File("src/test/resources/com/seitenbau/micgwaf/page");
     File generatedSourcesDir = new File("target/generated-sources");
