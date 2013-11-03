@@ -50,7 +50,7 @@ public class Generator
     componentGeneratorMap.put(EmptyComponent.class, new EmptyComponentGenerator());
   }
   
-  public void generateComponent(
+  public void generate(
         File sourceDirectory,
         File targetDirectory,
         File extensionsTargetDirectory,
@@ -67,8 +67,8 @@ public class Generator
       
       Map<JavaClassName, String> componentFilesToWrite = new HashMap<>();
       Map<JavaClassName, String> extensionFilesToWrite = new HashMap<>();
-      generate(component, componentPackage, componentFilesToWrite);
-      generateExtension(component, componentPackage, extensionFilesToWrite);
+      generateComponentBaseClass(component, componentPackage, componentFilesToWrite);
+      generateComponentExtension(component, componentPackage, extensionFilesToWrite);
       for (Map.Entry<JavaClassName, String> fileToWriteEntry : componentFilesToWrite.entrySet())
       {
         File targetFile = new File(
@@ -103,7 +103,10 @@ public class Generator
     }
   }
   
-  public void generate(Component component, String targetPackage, Map<JavaClassName, String> filesToWrite)
+  public void generateComponentBaseClass(
+      Component component,
+      String targetPackage,
+      Map<JavaClassName, String> filesToWrite)
   {
     ComponentGenerator componentGenerator = componentGeneratorMap.get(component.getClass());
     String result = componentGenerator.generate(component, targetPackage);
@@ -114,11 +117,14 @@ public class Generator
     }
     for (Component child : component.getChildren())
     {
-      generate(child, targetPackage, filesToWrite);
+      generateComponentBaseClass(child, targetPackage, filesToWrite);
     }
   }
   
-  public void generateExtension(Component component, String targetPackage, Map<JavaClassName, String> filesToWrite)
+  public void generateComponentExtension(
+      Component component,
+      String targetPackage,
+      Map<JavaClassName, String> filesToWrite)
   {
     ComponentGenerator componentGenerator = componentGeneratorMap.get(component.getClass());
     if (componentGenerator.generateExtensionClass(component))
@@ -128,7 +134,7 @@ public class Generator
     }
     for (Component child : component.getChildren())
     {
-      generateExtension(child, targetPackage, filesToWrite);
+      generateComponentExtension(child, targetPackage, filesToWrite);
     }
   }
   

@@ -38,7 +38,7 @@ public class GeneratedSourcesTest
     FileUtils.deleteDirectory(compileRootDir);
     
     Generator generator = new Generator();
-    generator.generateComponent(
+    generator.generate(
         componentDir, 
         generatedSourcesDir, 
         generatedExtensionsDir,
