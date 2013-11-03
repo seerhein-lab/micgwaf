@@ -1,23 +1,23 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<div xmlns:micgwaf="http://seitenbau.com/micgwaf">
-  <h3 micgwaf:id="title" class="sectionTitle">Title</h3>
+<div xmlns:m="http://seitenbau.com/micgwaf">
+  <h3 m:id="title" class="sectionTitle">Title</h3>
   <div class="formContainer">
-    <micgwaf:componentRef refid="form" />
+    <m:componentRef refid="form" />
   </div>
   <table>
     <tr>
       <td>Column 1</td>
       <td>Column 2</td>
     </tr>
-    <tr micgwaf:id="tableRow" micgwaf:multiple="true">
+    <tr m:id="tableRow" m:multiple="true">
       <td>Value 1</td>
       <td>Value 2</td>
     </tr>
   </table>
-  <micgwaf:remove>
+  <m:remove>
     <div>To be removed</div>
-  </micgwaf:remove>
-  <div micgwaf:id="defaultRenderedFalse" micgwaf:defaultRendered="false" micgwaf:generateExtensionClass="true">
+  </m:remove>
+  <div m:id="defaultRenderedFalse" m:defaultRendered="false" m:generateExtensionClass="true">
     Not Rendered by default
   </div>
 </div>
