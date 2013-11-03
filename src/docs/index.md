@@ -50,8 +50,11 @@ Generating
   - see the xhtml files in the directory src/test/resources/com/seitenbau/micgwaf/page for an example.
 
 - run com.seitenbau.micgwaf.generator.Generator.generate(File, File, File, String) for the generation
-  See com.seitenbau.micgwaf.generator.GeneratedSourcesTest for an example.
+  - the configuration of the generator can be changed by setting the generatorConfiguration
+    field of the Generator class before the generation run.
+  - See com.seitenbau.micgwaf.generator.GeneratedSourcesTest for an example.
 
-  Creating the webapp
-  -------------------
-  TODO
+Creating the webapp
+-------------------
+TODO
+  
