@@ -29,13 +29,17 @@ import com.seitenbau.micgwaf.parser.HtmlParser;
 
 public class Generator
 {
+  /** All parsed root components, keyed by their component id. */
   public static final Map<Class<? extends Component>, ComponentGenerator> componentGeneratorMap 
       = new HashMap<>();
       
+  /** Post-processor to remove unused imports. */
   public static RemoveUnusedImports removeUnusedImports = new RemoveUnusedImports();
   
+  /** The configuration of the generator. */
   public static GeneratorConfiguration generatorConfiguration; 
   
+  /** Reference to the default generator configuration. */
   public static String configurationClasspathResource 
       = "/com/seitenbau/micgwaf/config/default-micgwaf-codegen.properties";
   
@@ -50,11 +54,26 @@ public class Generator
     componentGeneratorMap.put(EmptyComponent.class, new EmptyComponentGenerator());
   }
   
+  /**
+   * Generates code for all xhtml files in a directory.
+   * The generated code includes base component classes, extension component classes, 
+   * and a component registry class.
+   * 
+   * @param sourceDirectory The directory containing the XHTML files (extension .xhtml).
+   * @param targetDirectory The directory where component source files are written.
+   *        Existing files in this directory are overwritten each generation run without notice.
+   * @param extensionsTargetDirectory The directory where component extension source files are written.
+   *        These files are intended for modification by the user, thus existing files are not overwritten.
+   * @param baseComponentPackage the base package for component classes.
+   * 
+   * @throws IOException if generated files cannot be written to the file system.
+   * @throws RuntimeException if an error during generation occurs. 
+   */
   public void generate(
         File sourceDirectory,
         File targetDirectory,
         File extensionsTargetDirectory,
-        String targetPackage)
+        String baseComponentPackage)
       throws IOException
   {
     HtmlParser parser = new HtmlParser();
@@ -63,12 +82,12 @@ public class Generator
     for (Map.Entry<String, Component> entry : componentMap.entrySet())
     {
       Component component = entry.getValue();
-      String componentPackage = targetPackage + "." + component.getId();
+      String componentPackage = baseComponentPackage + "." + component.getId();
       
       Map<JavaClassName, String> componentFilesToWrite = new HashMap<>();
       Map<JavaClassName, String> extensionFilesToWrite = new HashMap<>();
       generateComponentBaseClass(component, componentPackage, componentFilesToWrite);
-      generateComponentExtension(component, componentPackage, extensionFilesToWrite);
+      generateComponentExtensionClass(component, componentPackage, extensionFilesToWrite);
       for (Map.Entry<JavaClassName, String> fileToWriteEntry : componentFilesToWrite.entrySet())
       {
         File targetFile = new File(
@@ -84,10 +103,20 @@ public class Generator
         writeFile(targetFile, fileToWriteEntry.getValue(), false);
       }
     }
-    generateComponentRegistry(componentMap, targetDirectory, targetPackage);
+    generateComponentRegistry(componentMap, targetDirectory, baseComponentPackage);
   }
 
-  private void writeFile(File targetFile, String content, boolean overwrite) throws IOException
+  /**
+   * Writes a file to the file system using ISO-8859-1 encoding.
+   * Parent directories are created if they do not exist.
+   * 
+   * @param targetFile the file to write to, not null.
+   * @param content the content of the file, not null.
+   * @param overwrite whether existing files should be overwritten.
+   * 
+   * @throws IOException if writing to the file system fails.
+   */
+  public void writeFile(File targetFile, String content, boolean overwrite) throws IOException
   {
     File targetDir = targetFile.getParentFile();
     if (!targetDir.exists())
@@ -99,10 +128,19 @@ public class Generator
     }
     if (overwrite || !targetFile.exists())
     {
-      FileUtils.writeStringToFile(targetFile,  content,  "ISO-8859-1");
+      FileUtils.writeStringToFile(targetFile, content, "ISO-8859-1");
     }
   }
   
+  /**
+   * Generates the base class for a component and its children,
+   * and adds the generated content to the <code>filesToWrite</code> map.
+   * 
+   * @param component the component to generate the code for, not null.
+   * @param targetPackage the package for the component class, not null.
+   * @param filesToWrite a map where the generated files are stored: the key is the class name,
+   *        and the value is the content of the file.
+   */
   public void generateComponentBaseClass(
       Component component,
       String targetPackage,
@@ -121,7 +159,16 @@ public class Generator
     }
   }
   
-  public void generateComponentExtension(
+  /**
+   * Generates the extension class for a component and its children,
+   * and adds the generated content to the <code>filesToWrite</code> map.
+   * 
+   * @param component the component to generate the code for, not null.
+   * @param targetPackage the package for the component extension class, not null.
+   * @param filesToWrite a map where the generated files are stored: the key is the class name,
+   *        and the value is the content of the file.
+   */
+  public void generateComponentExtensionClass(
       Component component,
       String targetPackage,
       Map<JavaClassName, String> filesToWrite)
@@ -134,10 +181,19 @@ public class Generator
     }
     for (Component child : component.getChildren())
     {
-      generateComponentExtension(child, targetPackage, filesToWrite);
+      generateComponentExtensionClass(child, targetPackage, filesToWrite);
     }
   }
   
+  /**
+   * Generates the component registry class and writes it to the file system.
+   * 
+   * @param componentMap a map where all referenceable components are stored: 
+   *        the key is the component id, and the value is the Component itself.
+   * @param targetDirectory the root directory (excluding package structure) to which the source file
+   *        should be written.
+   * @param targetPackage the package for the component registry class, not null.
+   */
   public void generateComponentRegistry(
       Map<String, Component> componentMap,
       File targetDirectory,
@@ -179,6 +235,13 @@ public class Generator
     writeFile(targetFile, content.toString(), true);
   }
   
+  /**
+   * Returns a ComponentGenerator for a component.
+   * 
+   * @param component the component, not null.
+   * 
+   * @return the component generator, or null if no component generator is registersed for the component.
+   */
   public static ComponentGenerator getGenerator(Component component)
   {
     return getGenerator(component.getClass());
