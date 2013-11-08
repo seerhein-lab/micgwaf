@@ -41,7 +41,11 @@ public class WebappFilter implements Filter
   {
     HttpServletRequest httpServletRequest = (HttpServletRequest) request;
     HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-    boolean processed = new PRGHandler().handle(httpServletRequest, httpServletResponse, application);
+    boolean processed = new AjaxHandler().handle(httpServletRequest, httpServletResponse, application);
+    if (!processed)
+    {
+      processed = new PRGHandler().handle(httpServletRequest, httpServletResponse, application);
+    }
     if (!processed)
     {
       chain.doFilter(httpServletRequest, response);

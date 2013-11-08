@@ -119,6 +119,26 @@ public abstract class Component implements Serializable
   }
   
   /**
+   * Processes the HTTP request and executes any actions triggered by the request.
+   * 
+   * @param request the request to process, not null.
+   * 
+   * @return the page to render after processing, or null if this component does not wish another
+   *         page to be rendered.
+   *         note: if more than one child component wishes to redirect to another page, 
+   *         the last component wins.
+   */
+  public Component processAjaxRequest(HttpServletRequest request)
+  {
+    Component toRedirectTo = null;
+    for (Component child : getChildren())
+    {
+      toRedirectTo = child.processAjaxRequest(request);
+    }
+    return toRedirectTo;
+  }
+
+  /**
    * Returns the nearest ancestor of the component with the given class.
    * 
    * @param classOfAncestor the class of the ancestor, not null.
