@@ -8,5 +8,8 @@ TODO
 - Deal with ajax calls similarly as with normal buttons
   - mark ajax buttons differently (how? m:ajaxId=... or m:ajax="true")
   - overwrite processAjaxRequest for the component in question
-  - how to insert javascript component replacement script in rendered page ?
-  - where to generate hook method? (there is not always a surrounding form)
+  - how to insert the javascript component replacement script in rendered page? perhaps via a m:javascript tag?
+  - where to generate hook method? 
+    There is not always a surrounding form. So either the component itself or the page.
+  - should we use a ajaxPressed flag like processing inputs in normal forms? 
+    Probably not, delegate to the hook method directly
