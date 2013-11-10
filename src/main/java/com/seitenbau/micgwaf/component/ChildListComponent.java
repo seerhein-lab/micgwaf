@@ -57,7 +57,7 @@ public class ChildListComponent<T extends Component> extends Component
     
     public ChildList(Collection<? extends C> toCopy)
     {
-      addAll(toCopy);
+      super.addAll(toCopy);
     }
     
     @Override
