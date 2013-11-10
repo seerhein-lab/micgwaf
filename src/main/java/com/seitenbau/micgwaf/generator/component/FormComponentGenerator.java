@@ -198,7 +198,7 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
     fileContent.append("  {\n");
     if (overrideMethod)
     {
-      fileContent.append("   return super.").append(bareButtonId).append("Pressed(")
+      fileContent.append("    return super.").append(bareButtonId).append("Pressed(")
           .append(bareLoopComponentId).append(");\n");
     }
     else
@@ -234,7 +234,7 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
     fileContent.append("  {\n");
     if (overrideMethod)
     {
-      fileContent.append("   return super.").append(bareComponentId).append("Pressed();\n");
+      fileContent.append("    return super.").append(bareComponentId).append("Pressed();\n");
     }
     else
     {
