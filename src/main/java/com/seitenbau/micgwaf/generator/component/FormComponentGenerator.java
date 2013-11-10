@@ -167,15 +167,16 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
       Component loopComponent,
       boolean overrideMethod)
   {
-    String bareComponentId = removeLoopPart(button.getId());
+    String bareButtonId = removeLoopPart(button.getId());
+    String bareLoopComponentId = removeLoopPart(loopComponent.getId());
     ComponentGenerator loopComponentGenerator = Generator.getGenerator(loopComponent);
     JavaClassName loopComponentReferencableClassName 
         = loopComponentGenerator.getReferencableClassName(loopComponent, targetPackage);
     fileContent.append("\n  /**\n");
     fileContent.append("   * Hook method which is called when the button ")
-        .append(bareComponentId).append(" was pressed.\n");
+        .append(bareButtonId).append(" was pressed.\n");
     fileContent.append("   *\n");
-    fileContent.append("   * @param ").append(bareComponentId).append(" The component in the list of ")
+    fileContent.append("   * @param ").append(bareLoopComponentId).append(" The component in the list of ")
         .append(loopComponentReferencableClassName.getSimpleName())
         .append(" Components\n");
     fileContent.append("   *        to which this button belongs.\n");
@@ -189,16 +190,16 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
     fileContent.append("   */\n");
     if (overrideMethod)
     {
-      fileContent.append("   @Override\n");
+      fileContent.append("  @Override\n");
     }
-    fileContent.append("  public Component ").append(bareComponentId).append("Pressed(")
+    fileContent.append("  public Component ").append(bareButtonId).append("Pressed(")
         .append(loopComponentReferencableClassName.getSimpleName()).append(" ")
-        .append(bareComponentId).append(")\n");
+        .append(bareLoopComponentId).append(")\n");
     fileContent.append("  {\n");
     if (overrideMethod)
     {
-      fileContent.append("   return super.").append(bareComponentId).append("Pressed(")
-          .append(bareComponentId).append(");\n");
+      fileContent.append("   return super.").append(bareButtonId).append("Pressed(")
+          .append(bareLoopComponentId).append(");\n");
     }
     else
     {
@@ -227,7 +228,7 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
     fileContent.append("   */\n");
     if (overrideMethod)
     {
-      fileContent.append("   @Override\n");
+      fileContent.append("  @Override\n");
     }
     fileContent.append("  public Component ").append(bareComponentId).append("Pressed()\n");
     fileContent.append("  {\n");
