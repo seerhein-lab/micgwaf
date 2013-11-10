@@ -20,3 +20,4 @@ TODO
     There is not always a surrounding form. So either the component itself or the page.
   - should we use a ajaxPressed flag like processing inputs in normal forms? 
     Probably not, delegate to the hook method directly
+- implement logging

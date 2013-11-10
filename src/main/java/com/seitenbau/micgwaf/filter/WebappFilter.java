@@ -41,11 +41,14 @@ public class WebappFilter implements Filter
   {
     HttpServletRequest httpServletRequest = (HttpServletRequest) request;
     HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+    long startTime = System.currentTimeMillis();
     boolean processed = new AjaxHandler().handle(httpServletRequest, httpServletResponse, application);
     if (!processed)
     {
       processed = new PRGHandler().handle(httpServletRequest, httpServletResponse, application);
     }
+    long endTime = System.currentTimeMillis();
+    System.out.println("Request took " + (endTime - startTime) + " ms");
     if (!processed)
     {
       chain.doFilter(httpServletRequest, response);
