@@ -3,8 +3,9 @@ package com.seitenbau.micgwaf.parser.contenthandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
+import com.seitenbau.micgwaf.component.ChildListComponent;
 import com.seitenbau.micgwaf.component.Component;
-import com.seitenbau.micgwaf.component.SnippetListComponent;
+import com.seitenbau.micgwaf.component.RefComponent;
 import com.seitenbau.micgwaf.util.Constants;
 
 public class DefineContentHandler extends ContentHandler
@@ -14,6 +15,8 @@ public class DefineContentHandler extends ContentHandler
   public static final String DEFINE_ELEMENT_NAME = "define";
   
   public String name;
+  
+  public Component child;
 
   @Override
   public void startElement(
@@ -23,7 +26,7 @@ public class DefineContentHandler extends ContentHandler
         Attributes attributes) 
       throws SAXException 
   {
-    // check for componentRef elements
+    // check for define elements
     if (!Constants.XML_NAMESPACE.equals(uri) || !DefineContentHandler.DEFINE_ELEMENT_NAME.equals(localName)) 
     {
       throw new SAXException("unknown Element " + uri + ":" + localName);
@@ -40,13 +43,33 @@ public class DefineContentHandler extends ContentHandler
   @Override
   public void child(Component child) throws SAXException
   {
-    // ignore all content in componentRef element;
-    // TODO write log message
+    if (this.child == null)
+    {
+      this.child = child;
+      return;
+    }
+    if (child instanceof ChildListComponent<?>)
+    {
+      ChildListComponent<Component> childList = (ChildListComponent<Component>) child;
+      childList.children.add(child);
+      child.setParent(childList);
+    }
+    else
+    {
+      ChildListComponent<Component> childList = new ChildListComponent<Component>(null);
+      childList.children.add(this.child);
+      this.child.setParent(childList);
+      childList.children.add(child);
+      child.setParent(childList);
+      this.child = childList;
+   }
   }
-
+  
   @Override
-  public SnippetListComponent finished() throws SAXException
+  public RefComponent finished() throws SAXException
   {
-    return new SnippetListComponent(name, null);
+    RefComponent result = new RefComponent(name, null);
+    child.setParent(result);
+    return result;
   }
 }

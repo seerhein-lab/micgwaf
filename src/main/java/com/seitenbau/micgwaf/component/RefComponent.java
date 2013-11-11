@@ -47,4 +47,11 @@ public class RefComponent extends Component
     }
     referencedComponent.render(writer);
   }
+
+  @Override
+  public String toString()
+  {
+    return "RefComponent [refid=" + refid + ", referencedComponent="
+        + referencedComponent + "]";
+  }
 }

@@ -5,6 +5,7 @@ import org.xml.sax.SAXException;
 
 import com.seitenbau.micgwaf.component.Component;
 import com.seitenbau.micgwaf.component.Composition;
+import com.seitenbau.micgwaf.component.RefComponent;
 import com.seitenbau.micgwaf.component.SnippetListComponent;
 import com.seitenbau.micgwaf.util.Constants;
 
@@ -26,7 +27,7 @@ public class CompositionContentHandler extends ContentHandler
         Attributes attributes) 
       throws SAXException 
   {
-    // check for componentRef elements
+    // check for composition elements
     if (!Constants.XML_NAMESPACE.equals(uri) 
         || !CompositionContentHandler.COMPOSITION_ELEMENT_NAME.equals(localName)) 
     {
@@ -44,12 +45,41 @@ public class CompositionContentHandler extends ContentHandler
   @Override
   public void child(Component child) throws SAXException
   {
-    if (!(child instanceof Component)) // TODO
+    if (child instanceof SnippetListComponent)
+    {
+      SnippetListComponent snippetListChild = (SnippetListComponent) child;
+      for (SnippetListComponent.ComponentPart part : snippetListChild.parts)
+      {
+        if (part.htmlSnippet != null)
+        {
+          if (!"".equals(part.htmlSnippet.trim()))
+          {
+            throw new IllegalArgumentException("Children of composition elements must not be markup, found "
+                + part.htmlSnippet);
+          }
+          // ignore whitespace
+          continue;
+        }
+        else
+        {
+          handleComponentChild(part.component);
+        }
+      }
+      return;
+    }
+    handleComponentChild(child);
+  }
+
+
+  private void handleComponentChild(Component child)
+  {
+    if (!(child instanceof RefComponent)) // TODO use specialized component here? RefComponent is typically used for something else.
     {
       throw new IllegalArgumentException("Children of composition elements must be define elements, found "
           + child.getClass() + " component instead");
     }
-    result.definitions.put("TODO", child); // TODO
+    RefComponent refComponentChild = (RefComponent) child;
+    result.definitions.put(refComponentChild.refid, child);
   }
 
   @Override
