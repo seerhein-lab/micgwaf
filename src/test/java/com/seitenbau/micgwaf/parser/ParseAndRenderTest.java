@@ -52,6 +52,22 @@ public class ParseAndRenderTest
   }
 
   @Test
+  public void testRenderTemplatedPage() throws Exception
+  {
+    File componentDir = new File("src/test/resources/com/seitenbau/micgwaf/template");
+    Map<String, Component> components 
+        = new HtmlParser().readComponents(componentDir);
+    assertEquals(3, components.size());
+    StringWriter stringWriter = new StringWriter();
+    components.get("templatedPage").render(stringWriter);
+    String actual = stringWriter.toString();
+    actual = actual.replace("\r\n", "\n");
+    String expected = FileUtils.readFileToString(new File(componentDir, "expected/templatedPageExpected.xhtml"));
+    expected = expected.replace("\r\n", "\n");
+    assertEquals(expected, stringWriter.toString());
+  }
+
+  @Test
   @Ignore
   public void testChildAndParentReferences() throws Exception
   {

@@ -29,6 +29,12 @@ public class SnippetListComponent extends Component
     this.parts = parts;
   }
   
+  public SnippetListComponent(String id, Component parent)
+  {
+    super(id, parent);
+    this.parts = new ArrayList<>();
+  }
+
   public void resolveComponentReferences(Map<String, ? extends Component> allComponents)
   {
     super.resolveComponentReferences(allComponents);

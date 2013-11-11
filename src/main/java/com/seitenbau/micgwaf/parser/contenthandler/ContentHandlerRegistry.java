@@ -34,6 +34,15 @@ public class ContentHandlerRegistry
     elementHandlerMap.put(
         RemoveContentHandler.REMOVE_ELEMENT_NAME,
         new RemoveContentHandlerFactory());
+    elementHandlerMap.put(
+        InsertContentHandler.INSERT_ELEMENT_NAME,
+        new InsertContentHandlerFactory());
+    elementHandlerMap.put(
+        CompositionContentHandler.COMPOSITION_ELEMENT_NAME,
+        new CompositionContentHandlerFactory());
+    elementHandlerMap.put(
+        DefineContentHandler.DEFINE_ELEMENT_NAME,
+        new DefineContentHandlerFactory());
     attributeHandlerMap.put(
         HtmlElementContentHandler.ID_ATTR,
         new HtmlElementContentHandlerFactory());
