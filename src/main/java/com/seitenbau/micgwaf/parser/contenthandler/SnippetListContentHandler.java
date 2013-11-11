@@ -9,10 +9,6 @@ import com.seitenbau.micgwaf.util.Constants;
 
 public class SnippetListContentHandler extends ContentHandler
 {
-  public static final String COMPONENT_REF_REFID_ATTR = "refid";
-
-  public static final String COMPONENT_REF_ELEMENT_NAME = "componentRef";
-  
   public StringBuilder currentStringPart = new StringBuilder();
   
   private SnippetListComponent component = new SnippetListComponent(null);
