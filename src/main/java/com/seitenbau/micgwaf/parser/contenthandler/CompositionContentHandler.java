@@ -5,7 +5,7 @@ import org.xml.sax.SAXException;
 
 import com.seitenbau.micgwaf.component.Component;
 import com.seitenbau.micgwaf.component.Composition;
-import com.seitenbau.micgwaf.component.RefComponent;
+import com.seitenbau.micgwaf.component.DefineComponent;
 import com.seitenbau.micgwaf.component.SnippetListComponent;
 import com.seitenbau.micgwaf.util.Constants;
 
@@ -73,13 +73,13 @@ public class CompositionContentHandler extends ContentHandler
 
   private void handleComponentChild(Component child)
   {
-    if (!(child instanceof RefComponent)) // TODO use specialized component here? RefComponent is typically used for something else.
+    if (!(child instanceof DefineComponent))
     {
       throw new IllegalArgumentException("Children of composition elements must be define elements, found "
           + child.getClass() + " component instead");
     }
-    RefComponent refComponentChild = (RefComponent) child;
-    result.definitions.put(refComponentChild.refid, child);
+    DefineComponent defineComponentChild = (DefineComponent) child;
+    result.definitions.put(defineComponentChild.name, child);
   }
 
   @Override

@@ -19,7 +19,7 @@ public class Composition extends Component
   
   public String templateId;
   
-  public Component template;
+  public SnippetListComponent template;
 
   public Composition(Component parent)
   {
@@ -30,10 +30,38 @@ public class Composition extends Component
   public void resolveComponentReferences(Map<String, ? extends Component> allComponents)
   {
     super.resolveComponentReferences(allComponents);
-    this.template = allComponents.get(templateId);
-    if (template == null)
+    Component templateCandidate = allComponents.get(templateId);
+    if (templateCandidate == null)
     {
       throw new IllegalStateException("unknown template component with id " + templateId);
+    }
+    if (!(templateCandidate instanceof SnippetListComponent))
+    {
+      throw new IllegalStateException("template must be of class SnippetListComponent but is of class" 
+          + templateCandidate.getClass().getName());
+    }
+    template = ((SnippetListComponent) templateCandidate).copy();
+    for (SnippetListComponent.ComponentPart part : template.parts)
+    {
+      if (part.component instanceof AnyComponent)
+      {
+        String name = ((AnyComponent) part.component).name;
+        part.component = definitions.get(name);
+        if (part.component == null)
+        {
+          throw new RuntimeException("No component definition exists for insert with name " + name);
+        }
+        if (part.component instanceof DefineComponent)
+        {
+          Component referencedComponent = ((DefineComponent) part.component).referencedComponent;
+          if (referencedComponent == null)
+          {
+            throw new IllegalStateException("No component bound to component definition, name=" 
+                + ((DefineComponent) part.component).name);
+          }
+          part.component = referencedComponent;
+        }
+      }
     }
   }
   
@@ -48,7 +76,12 @@ public class Composition extends Component
   @Override
   public void render(Writer writer) throws IOException
   {
-    // TODO Auto-generated method stub
-    
+    template.render(writer);
+  }
+
+  @Override
+  public void afterRender()
+  {
+    template.afterRender();
   }
 }

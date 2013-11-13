@@ -5,7 +5,7 @@ import org.xml.sax.SAXException;
 
 import com.seitenbau.micgwaf.component.ChildListComponent;
 import com.seitenbau.micgwaf.component.Component;
-import com.seitenbau.micgwaf.component.RefComponent;
+import com.seitenbau.micgwaf.component.DefineComponent;
 import com.seitenbau.micgwaf.util.Constants;
 
 public class DefineContentHandler extends ContentHandler
@@ -66,9 +66,10 @@ public class DefineContentHandler extends ContentHandler
   }
   
   @Override
-  public RefComponent finished() throws SAXException
+  public DefineComponent finished() throws SAXException
   {
-    RefComponent result = new RefComponent(name, null);
+    DefineComponent result = new DefineComponent(name, null);
+    result.referencedComponent = child;
     child.setParent(result);
     return result;
   }

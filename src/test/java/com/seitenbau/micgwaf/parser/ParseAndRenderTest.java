@@ -58,6 +58,10 @@ public class ParseAndRenderTest
     Map<String, Component> components 
         = new HtmlParser().readComponents(componentDir);
     assertEquals(3, components.size());
+    for (Component component : components.values())
+    {
+      component.resolveComponentReferences(components);
+    }
     StringWriter stringWriter = new StringWriter();
     components.get("templatedPage").render(stringWriter);
     String actual = stringWriter.toString();
