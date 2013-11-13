@@ -7,6 +7,7 @@ import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 
+import com.seitenbau.micgwaf.component.AnyComponent;
 import com.seitenbau.micgwaf.component.ChildListComponent;
 import com.seitenbau.micgwaf.component.Component;
 import com.seitenbau.micgwaf.component.ComponentRegistry;
@@ -16,6 +17,7 @@ import com.seitenbau.micgwaf.component.HtmlElementComponent;
 import com.seitenbau.micgwaf.component.InputComponent;
 import com.seitenbau.micgwaf.component.RefComponent;
 import com.seitenbau.micgwaf.component.SnippetListComponent;
+import com.seitenbau.micgwaf.generator.component.AnyComponentGenerator;
 import com.seitenbau.micgwaf.generator.component.ChildListComponentGenerator;
 import com.seitenbau.micgwaf.generator.component.ComponentGenerator;
 import com.seitenbau.micgwaf.generator.component.EmptyComponentGenerator;
@@ -52,6 +54,7 @@ public class Generator
     componentGeneratorMap.put(RefComponent.class, new RefComponentGenerator());
     componentGeneratorMap.put(ChildListComponent.class, new ChildListComponentGenerator());
     componentGeneratorMap.put(EmptyComponent.class, new EmptyComponentGenerator());
+    componentGeneratorMap.put(AnyComponent.class, new AnyComponentGenerator());
   }
   
   /**
@@ -146,7 +149,7 @@ public class Generator
       String targetPackage,
       Map<JavaClassName, String> filesToWrite)
   {
-    ComponentGenerator componentGenerator = componentGeneratorMap.get(component.getClass());
+    ComponentGenerator componentGenerator = getGenerator(component.getClass());
     String result = componentGenerator.generate(component, targetPackage);
     if (result != null)
     {
@@ -173,7 +176,7 @@ public class Generator
       String targetPackage,
       Map<JavaClassName, String> filesToWrite)
   {
-    ComponentGenerator componentGenerator = componentGeneratorMap.get(component.getClass());
+    ComponentGenerator componentGenerator = getGenerator(component.getClass());
     if (componentGenerator.generateExtensionClass(component))
     {
       String result = componentGenerator.generateExtension(component, targetPackage);
@@ -207,7 +210,7 @@ public class Generator
     for (Map.Entry<String, Component> entry : componentMap.entrySet())
     {
       Component component = entry.getValue();
-      ComponentGenerator componentGenerator = componentGeneratorMap.get(component.getClass());
+      ComponentGenerator componentGenerator = getGenerator(component.getClass());
       String componentPackage = targetPackage + "." + component.getId();
       JavaClassName componentClassName = componentGenerator.getReferencableClassName(component, componentPackage);
       content.append("import ").append(componentClassName.getName()).append(";\n");
@@ -222,7 +225,7 @@ public class Generator
     for (Map.Entry<String, Component> entry : componentMap.entrySet())
     {
       Component component = entry.getValue();
-      ComponentGenerator componentGenerator = componentGeneratorMap.get(component.getClass());
+      ComponentGenerator componentGenerator = getGenerator(component.getClass());
       String componentPackage = targetPackage + "." + component.getId();
       JavaClassName componentClassName 
           = componentGenerator.getReferencableClassName(component, componentPackage);
