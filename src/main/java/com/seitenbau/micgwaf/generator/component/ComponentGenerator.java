@@ -187,8 +187,10 @@ public abstract class ComponentGenerator
 
   /**
    * Generates a field or a local variable from a component. 
-   * The component is constructed using the constructor with the parent argument, assigned to
-   * the local variable and field, and afterwards is initialized using the initializer.
+   * If the component is not of the general Type Component, 
+   * the component is constructed using the constructor with the parent argument, assigned to
+   * the local variable and field.
+   * Afterwards, the component is initialized using the initializer.
    * 
    * @param component The component to create the package name for, not null.
    * @param targetPackage TODO
@@ -208,9 +210,17 @@ public abstract class ComponentGenerator
     String indentString = getIndentString(indent);
     ComponentGenerator generator = Generator.getGenerator(component);
     JavaClassName componentClassName = generator.getReferencableClassName(component, targetPackage);
-    toAppendTo.append(indentString).append(modifier).append(componentClassName.getSimpleName())
-        .append(" ").append(fieldName)
-        .append(" = new ").append(componentClassName.getSimpleName()).append("(this);\n");
+    if (componentClassName.isNameFor(Component.class))
+    {
+      toAppendTo.append(indentString).append(modifier).append(componentClassName.getSimpleName())
+      .append(" ").append(fieldName).append(";\n");
+    }
+    else
+    {
+      toAppendTo.append(indentString).append(modifier).append(componentClassName.getSimpleName())
+          .append(" ").append(fieldName)
+          .append(" = new ").append(componentClassName.getSimpleName()).append("(this);\n");
+    }
     toAppendTo.append(generator.generateInitializer(fieldName, component, targetPackage, indent));
   }
 

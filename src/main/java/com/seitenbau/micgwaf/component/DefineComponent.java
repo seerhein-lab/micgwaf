@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class DefineComponent extends Component
 {
@@ -23,7 +22,9 @@ public class DefineComponent extends Component
   
   public List<Component> getChildren()
   {
-    return new ArrayList<>();
+    List<Component> result = new ArrayList<>();
+    result.add(referencedComponent);
+    return result;
   }
 
   @Override

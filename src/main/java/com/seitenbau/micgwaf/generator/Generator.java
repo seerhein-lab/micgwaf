@@ -11,6 +11,8 @@ import com.seitenbau.micgwaf.component.AnyComponent;
 import com.seitenbau.micgwaf.component.ChildListComponent;
 import com.seitenbau.micgwaf.component.Component;
 import com.seitenbau.micgwaf.component.ComponentRegistry;
+import com.seitenbau.micgwaf.component.Composition;
+import com.seitenbau.micgwaf.component.DefineComponent;
 import com.seitenbau.micgwaf.component.EmptyComponent;
 import com.seitenbau.micgwaf.component.FormComponent;
 import com.seitenbau.micgwaf.component.HtmlElementComponent;
@@ -20,6 +22,8 @@ import com.seitenbau.micgwaf.component.SnippetListComponent;
 import com.seitenbau.micgwaf.generator.component.AnyComponentGenerator;
 import com.seitenbau.micgwaf.generator.component.ChildListComponentGenerator;
 import com.seitenbau.micgwaf.generator.component.ComponentGenerator;
+import com.seitenbau.micgwaf.generator.component.CompositionGenerator;
+import com.seitenbau.micgwaf.generator.component.DefineComponentGenerator;
 import com.seitenbau.micgwaf.generator.component.EmptyComponentGenerator;
 import com.seitenbau.micgwaf.generator.component.FormComponentGenerator;
 import com.seitenbau.micgwaf.generator.component.HtmlElementComponentGenerator;
@@ -28,6 +32,7 @@ import com.seitenbau.micgwaf.generator.component.RefComponentGenerator;
 import com.seitenbau.micgwaf.generator.component.SnippetListComponentGenerator;
 import com.seitenbau.micgwaf.generator.config.GeneratorConfiguration;
 import com.seitenbau.micgwaf.parser.HtmlParser;
+import com.seitenbau.micgwaf.util.Assertions;
 
 public class Generator
 {
@@ -55,6 +60,8 @@ public class Generator
     componentGeneratorMap.put(ChildListComponent.class, new ChildListComponentGenerator());
     componentGeneratorMap.put(EmptyComponent.class, new EmptyComponentGenerator());
     componentGeneratorMap.put(AnyComponent.class, new AnyComponentGenerator());
+    componentGeneratorMap.put(Composition.class, new CompositionGenerator());
+    componentGeneratorMap.put(DefineComponent.class, new DefineComponentGenerator());
   }
   
   /**
@@ -247,6 +254,7 @@ public class Generator
    */
   public static ComponentGenerator getGenerator(Component component)
   {
+    Assertions.assertNotNull(component, "component");
     return getGenerator(component.getClass());
   }
 

@@ -18,7 +18,7 @@ public class AnyComponent extends Component
   
   public AnyComponent(String name, Component parent)
   {
-    super(null, parent);
+    super(name, parent);
     this.name = name;
   }
   

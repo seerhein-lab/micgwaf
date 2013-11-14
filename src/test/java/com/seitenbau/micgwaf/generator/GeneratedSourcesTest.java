@@ -54,7 +54,7 @@ public class GeneratedSourcesTest
         }, 
         null );
     Class<?> cls = Class.forName(
-        "com.seitenbau.micgwaf.test.generated.root.ExtensionClassPrefixRootExtensionClassSuffix",
+        "com.seitenbau.micgwaf.test.generated.templatedPage.ExtensionClassPrefixTemplatedPageExtensionClassSuffix",
         true, 
         classLoader);
     Constructor<?> rootConstructor = cls.getConstructors()[0];
@@ -64,7 +64,7 @@ public class GeneratedSourcesTest
     renderMethod.invoke(root, stringWriter);
     System.out.println(stringWriter);
     File componentDir = new File("src/test/resources/com/seitenbau/micgwaf/template");
-    String expected = FileUtils.readFileToString(new File(componentDir, "expected/expected.xhtml"));
+    String expected = FileUtils.readFileToString(new File(componentDir, "expected/templatedPageExpected.xhtml"));
     expected = expected.replace("\r\n", "\n");
     assertEquals(expected, stringWriter.toString());
   }
