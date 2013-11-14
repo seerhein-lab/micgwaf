@@ -3,14 +3,6 @@ TODO
 
 - no model: pages displaying the same information store them in a different way. 
   Find a way to access this information in an uniform way. e.g implement an interface ?
-- Find a way to model page templates (only children can currently be exchanged, not parent)
-  similar to facelets:
-  child
-  <m:composition template="..."><!-- must be root tag -->
-    <m:define name="..."/>
-  </m:composition>
-  parent:
-  <m:insert name="..."/>
 - How to deal with radiobuttons, multiselects and checkboxes with same name but different values
 - Deal with ajax calls similarly as with normal buttons
   - mark ajax buttons differently (how? m:ajaxId=... or m:ajax="true")
@@ -21,3 +13,4 @@ TODO
   - should we use a ajaxPressed flag like processing inputs in normal forms? 
     Probably not, delegate to the hook method directly
 - implement logging
+- implement handling of nested loops (currently only one loop level is supported)

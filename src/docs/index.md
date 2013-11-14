@@ -47,6 +47,10 @@ Generating
   - use the element m:componentRef to reference other components. The refid attribute references the name
     of the components. Only components defined in their own xhtml file can be referenced. for these,
     the default id is the file name minus the .xhtml extension.
+  - for defining page templates, define a normal html file as template, and use a 
+    <m:insert name="..."/> at the places where the templated page should insert its content.
+    For templated pages, use <m:composition templateId="..."> as root element 
+    and <m:define name="..."> elements to define the snippets to insert into the template.
   - see the xhtml files in the directory src/test/resources/com/seitenbau/micgwaf/page for an example.
 
 - run com.seitenbau.micgwaf.generator.Generator.generate(File, File, File, String) for the generation
