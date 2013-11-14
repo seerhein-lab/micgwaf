@@ -14,3 +14,4 @@ TODO
     Probably not, delegate to the hook method directly
 - implement logging
 - implement handling of nested loops (currently only one loop level is supported)
+- more intuitive support of ajax requests
