@@ -25,6 +25,7 @@ public class JavaClassName
     this.packageName = clazz.getPackage().getName();
     this.simpleName = clazz.getSimpleName();
   }
+  
   /**
    * Returns the package of the java class.
    * 
@@ -71,6 +72,20 @@ public class JavaClassName
     return result;
   }
 
+  /**
+   * Returns whether this class name references the passed class <code>clazz</code>.
+   * 
+   * @param clazz the class to check against, not null.
+   * 
+   * @return true it this class name describes the name of <code>clazz</code>, false otherwise.
+   * 
+   * @throws NullPointerException if <code>clazz</code> is null.
+   */
+  public boolean isNameFor(Class<?> clazz)
+  {
+    assertNotNull(clazz, "clazz");
+    return (packageName.equals(clazz.getPackage().getName()) && simpleName.equals(clazz.getSimpleName()));
+  }
   @Override
   public int hashCode()
   {
