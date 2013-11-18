@@ -71,7 +71,9 @@ public class DelegatingContentHandler extends DefaultHandler
         {
           String attributeName = attributes.getLocalName(i);
           if (ContentHandlerRegistry.MULTIPLE_ATTR.equals(attributeName) 
-              || ContentHandlerRegistry.DEFAULT_RENDERED_ATTR.equals(attributeName)
+              || ContentHandlerRegistry.DEFAULT_RENDER_ATTR.equals(attributeName)
+              || ContentHandlerRegistry.DEFAULT_RENDER_SELF_ATTR.equals(attributeName)
+              || ContentHandlerRegistry.DEFAULT_RENDER_CHILDREN_ATTR.equals(attributeName)
               || ContentHandlerRegistry.GENRATE_EXTENSION_CLASS_ATTR.equals(attributeName))
           {
             // these attributes define the behaviour of a handler and are irrelevant for choosing a handler

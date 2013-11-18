@@ -8,7 +8,11 @@ public class ContentHandlerRegistry
 
   public static final String MULTIPLE_ATTR = "multiple";
   
-  public static final String DEFAULT_RENDERED_ATTR = "defaultRendered";
+  public static final String DEFAULT_RENDER_ATTR = "defaultRender";
+  
+  public static final String DEFAULT_RENDER_SELF_ATTR = "defaultRenderSelf";
+  
+  public static final String DEFAULT_RENDER_CHILDREN_ATTR = "defaultRenderChildren";
   
   public static final String REMOVE_ELEM = "remove";
   

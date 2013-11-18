@@ -30,7 +30,11 @@ public class HtmlElementContentHandler extends ContentHandler
   
   public List<Component> children = new ArrayList<>();
   
-  public boolean rendered = true;
+  public Boolean render;
+  
+  public Boolean renderSelf;
+  
+  public Boolean renderChildren;
   
   public GenerationParameters generationParameters = new GenerationParameters();
 
@@ -72,9 +76,19 @@ public class HtmlElementContentHandler extends ContentHandler
         generationParameters.generateExtensionClass = Boolean.parseBoolean(value);
       }
       else if (Constants.XML_NAMESPACE.equals(attributeUri) 
-          && ContentHandlerRegistry.DEFAULT_RENDERED_ATTR.equals(attributeName))
+          && ContentHandlerRegistry.DEFAULT_RENDER_ATTR.equals(attributeName))
       {
-        rendered = Boolean.parseBoolean(value);
+        render = Boolean.parseBoolean(value);
+      }
+      else if (Constants.XML_NAMESPACE.equals(attributeUri) 
+          && ContentHandlerRegistry.DEFAULT_RENDER_SELF_ATTR.equals(attributeName))
+      {
+        renderSelf = Boolean.parseBoolean(value);
+      }
+      else if (Constants.XML_NAMESPACE.equals(attributeUri) 
+          && ContentHandlerRegistry.DEFAULT_RENDER_CHILDREN_ATTR.equals(attributeName))
+      {
+        renderChildren = Boolean.parseBoolean(value);
       }
       else if (attributeUri == null || "".equals(attributeUri))
       {
@@ -129,7 +143,18 @@ public class HtmlElementContentHandler extends ContentHandler
     {
       child.setParent(htmlElementComponent);
     }
-    htmlElementComponent.setRender(rendered);
+    if (render != null)
+    {
+      htmlElementComponent.setRender(render);
+    }
+    if (renderSelf != null)
+    {
+      htmlElementComponent.renderSelf = renderSelf;
+    }
+    if (renderChildren != null)
+    {
+      htmlElementComponent.renderChildren = renderChildren;
+    }
     if (multiple)
     {
       Component result = new ChildListComponent<HtmlElementComponent>(
