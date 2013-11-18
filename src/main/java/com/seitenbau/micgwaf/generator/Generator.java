@@ -303,4 +303,37 @@ public class Generator
     }
     return generatorConfiguration;
   }
+  
+  public static void main(String[] argv) throws IOException
+  {
+    if (argv.length != 5)
+    {
+      System.out.println("Generation failed, Arguments cannot be parsed. "
+          + "Should be configurationClasspathResource, componentDir, targetDirectory, "
+          + "extensionsTargetDirectory, baseComponentPackage");
+      return;
+    }
+    String configurationClasspathResource = argv[0];
+    String componentDir = argv[1];
+    String targetDirectory = argv[2];
+    String extensionsTargetDirectory = argv[3];
+    String baseComponentPackage = argv[4];
+    if (argv.length != 5)
+    {
+      System.out.println("Running with:\n"
+          + "configurationClasspathResource: " + configurationClasspathResource
+          + "componentDir                  : " + componentDir
+          + "targetDirectory               : " + targetDirectory
+          + "extensionsTargetDirectory     : " + extensionsTargetDirectory
+          + "baseComponentPackage          : " + baseComponentPackage);
+    }
+    Generator.configurationClasspathResource = configurationClasspathResource;
+    new Generator().generate(
+        new File(componentDir),
+        new File(targetDirectory),
+        new File(extensionsTargetDirectory),
+        baseComponentPackage);
+    System.out.println("Generation successful");
+    return;
+  }
 }
