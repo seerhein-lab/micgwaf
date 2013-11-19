@@ -274,7 +274,7 @@ public abstract class ComponentGenerator
     toAppendTo .append("  * @param parent the parent component,")
         .append(" or null if this is a standalone component (e.g. a page)\n");
     toAppendTo.append("  */\n");
-    toAppendTo.append("  public " + className + "(Component parent)");
+    toAppendTo.append("  public " + className + "(Component parent)\n");
     toAppendTo.append("  {\n");
     toAppendTo.append("    super(parent);\n");
     toAppendTo.append("  }\n");
