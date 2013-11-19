@@ -16,4 +16,4 @@ TODO
 - implement handling of nested loops (currently only one loop level is supported)
 - more intuitive support of ajax requests
 - for attributes in loops must be treated like ids (add :number) 
-- find a way how to find components higher up in the tree
+- find a way how to find components higher up in the tree (e.g. messageBox outside form)
