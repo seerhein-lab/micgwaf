@@ -30,10 +30,23 @@ micgwaf also supports development of HTML code alongside application development
 For this, a special servlet filter is provided, which renders HTML files as-is, but resolves component
 references.
 
-Generating
-----------
+Getting started
+---------------
 
-- create all .xhtml files in a directory
+To create a Web Application with micgwaf, the following needs to be done:
+- Create XHTML files for the pages (you can use micgwaf for preview)
+- Generate code from the XHTML pages using the micgwaf code generator
+- implement the Application class
+- Create a web.xml descriptor with the micgwaf webapp filter
+- Implement the behavior of the pages by editing the generated code
+- Start the web application
+
+These steps are described below.
+
+Creating XHTML files and Generating Code
+----------------------------------------
+
+- create all .xhtml files in one directory
   - use namespace http://seitenbau.com/micgwaf for micgwaf 
     (the following assumes xmlns:m="http://seitenbau.com/micgwaf")
   - use an unique m:id for each active component. m:id should start with a lowercase letter.
@@ -53,12 +66,96 @@ Generating
     and <m:define name="..."> elements to define the snippets to insert into the template.
   - see the xhtml files in the directory src/test/resources/com/seitenbau/micgwaf/page for an example.
 
+TODO describe preview mode
+
 - run com.seitenbau.micgwaf.generator.Generator.generate(File, File, File, String) for the generation
   - the configuration of the generator can be changed by setting the generatorConfiguration
     field of the Generator class before the generation run.
   - See com.seitenbau.micgwaf.generator.GeneratedSourcesTest for an example.
 
-Creating the webapp
--------------------
-TODO
+Implement the Application class
+-------------------------------
+
+Currently, all the Application class does is providing a mapping from URLs to pages and providing an 
+error handling hook.
+
+The application class must inherit from com.seitenbau.micgwaf.config.ApplicationBase.
+In the constructor, URLs are mapped to pages by calling the mount method.
+The error handling can be overridden by overriding the handleException(Component, Exception, boolean)
+method, doing the error handling business logic (e.g. special logging) and returning the target page.
+
+An example for an application class is
+
+    package com.seitenbau.test.micgwaf;
+
+    import com.seitenbau.micgwaf.component.Component;
+    import com.seitenbau.micgwaf.config.ApplicationBase;
+    import com.seitenbau.test.micgwaf.component.bookListPage.BookListPage;
+    import com.seitenbau.test.micgwaf.component.errorPage.ErrorPage;
+
+    public class Application extends ApplicationBase
+    {
+
+      public Application()
+      {
+        mount("/", BookListPage.class);
+      }
+  
+      @Override
+      public Component handleException(Component component, Exception exception, boolean onRender)
+      {
+        return new ErrorPage(null, exception);
+      }
+    }
+
+Creating the web.xml descriptor
+-------------------------------
+Micgwaf can run in two modes: preview mode and generated mode
+These two modes can be switched on by configuring different filters in the web.xml.
+
+Micgwaf's WebappFilter recognizes mounted pages and forwards these requests to generated component classes
+A all other URLs are ignored by the filter (i.e. tomcat's standard behavior is invoked).
+This filter has the class com.seitenbau.micgwaf.filter.WebappFilter, needs the init-parameter 
+applicationClassName which must be filled with the class name of the Application class.
+
+Micgwaf's HtmlDevelopmentFilter serves micgwaf-enriched XHTML pages without generating. This is specially
+useful for the development of XHTML pages, as every change in an XHTML file will show up instantly. 
+The HtmlDevelopmentFilter needs the init-parameter htmlDir, the value of which must be set
+to the base directory where the HTML files live.
+
+An example for a web.xml file which provides both modes is shown below. For using only one mode,
+simply remove the unused filter and filter-mapping:
+
+    <?xml version="1.0" encoding="ISO-8859-1"?>
+    <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+        xmlns="http://java.sun.com/xml/ns/javaee" 
+        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" version="2.5">
+      <display-name>sb-test-webapp</display-name>
+      <filter>
+        <filter-name>micgwaf-webapp</filter-name>
+        <filter-class>com.seitenbau.micgwaf.filter.WebappFilter</filter-class>
+        <init-param>
+          <param-name>applicationClassName</param-name>
+          <param-value>com.seitenbau.test.micgwaf.Application</param-value>
+        </init-param>
+      </filter>
+      <filter>
+        <filter-name>micgwaf-html-development</filter-name>
+        <filter-class>com.seitenbau.micgwaf.filter.HtmlDevelopmentFilter</filter-class>
+        <init-param>
+          <param-name>htmlDir</param-name>
+          <param-value>src/main/pages</param-value>
+        </init-param>
+      </filter>
+      <filter-mapping>
+        <filter-name>micgwaf-html-development</filter-name>
+        <url-pattern>*.xhtml</url-pattern>
+      </filter-mapping>
+      <filter-mapping>
+        <filter-name>micgwaf-webapp</filter-name>
+        <url-pattern>/*</url-pattern>
+      </filter-mapping>
+    </web-app>
+
+
   
