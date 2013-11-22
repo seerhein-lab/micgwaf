@@ -14,6 +14,6 @@ TODO
     Probably not, delegate to the hook method directly
 - implement logging
 - implement handling of nested loops (currently only one loop level is supported)
-- more intuitive support of ajax requests
 - for attributes in loops must be treated like ids (add :number) 
 - find a way how to find components higher up in the tree (e.g. messageBox outside form)
+- allow a directory tree for XHTML files (not just flat directory layout)
