@@ -4,23 +4,23 @@ micgwaf Documentation
 Introduction
 ------------
 
-micgwaf is a framework for creating web applications with java. It aims at simplicity; the programmer can
+Micgwaf is a framework for creating web applications with java. It aims at simplicity; the programmer can
 easily understand what happens when a submit is processed or a page is rendered.
 Nonetheless, micgwaf allows for effectively building web applications.
 
-Currently the framework is restricted to web 1.0 applications; micgwaf comes without ajax and javascript
-support. However, ajax and javascript frameworks can be integrated easily.
+Micgwaf has built-in support for partial page rendering via ajax requests.
+It does not use any javascript framework, any javascript framework can be integrated with micgwaf.
 
-micgwaf uses code generation for developing web applications. 
-The starting point for code generation is the xhtml code of the application pages.
+Micgwaf uses code generation for developing web applications. 
+The starting point for code generation is the XHTML code of the application pages.
 In these pages, the elements of which micgwaf should be aware are marked using the m:id attribute 
 where the prefix m is bound to the micgwaf namespace 
-(which is ignored by browsers, so the xhtml pages are still valid xhtml and can be rendered by a 
+(which is ignored by browsers, so the XHTML pages are still valid XHTML and can be rendered by a 
 browser as-is).
 For each root file and for each element which is marked by the m:id attribute, the micgwaf code generator
 generates a component, which can render the component and possibly handle submitted forms.
 The behavior of these components can be programmed by overriding component methods in component subclasses.
-External xhtml files (respectively their components) can be referenced in pages, so re-using of xhtml
+External XHTML files (respectively their components) can be referenced in pages, so re-using of XHTML
 code is possible.
 
 For using the components in a web application, a servlet filter needs to be configured and
