@@ -13,6 +13,7 @@
 
   <modules>
     <module>micgwaf-core</module>
+    <module>micgwaf-maven-plugin</module>
   </modules>
 </project>
   
