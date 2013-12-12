@@ -11,3 +11,10 @@ See the [docs](src/docs/index.md) for more information.
 ### Build status
 
 [![Build Status](https://buildhive.cloudbees.com/job/thomasfox/job/micgwaf/badge/icon)](https://buildhive.cloudbees.com/job/thomasfox/job/micgwaf/)
+
+### Components
+
+Micgwaf consists of different components
+
+- micgwaf-core: The core implementation
+- maven-micgwaf-plugin: Plugin to build micgwaf projects with eclipse
