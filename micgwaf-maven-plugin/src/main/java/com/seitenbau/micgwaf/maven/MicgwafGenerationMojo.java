@@ -20,34 +20,26 @@ public class MicgwafGenerationMojo extends AbstractMojo implements Mojo
   /**
    * The source directory of the html files.
    *
-   * @parameter expression="micgwaf.source.directory" default-value="false"
+   * @parameter expression="${micgwaf.source.directory}" default-value="${project.basedir}/src/main/html"
    * @required
    */
-  private File sourceDirectory;
+  private File sourceDir;
 
   /**
    * The target directory of the generated base files.
    *
-   * @parameter expression="micgwaf.target.base.directory" default-value="false"
+   * @parameter expression="${micgwaf.target.base.directory}" default-value="${project.basedir}/target/generated-sources"
    * @required
    */
-  private File baseTargetDirectory;
+  private File baseTargetDir;
 
   /**
    * The target directory of the generated extension files.
    *
-   * @parameter expression="micgwaf.target.extensions.directory" default-value="false"
+   * @parameter expression="${micgwaf.target.extensions.directory}" default-value="${project.basedir}/src/main/generated-java"
    * @required
    */
-  private File extensionsTargetDirectory;
-
-  /**
-   * The package in which all generated code should live in.
-   *
-   * @parameter
-   * @required
-   */
-  private String targetPackage;
+  private File extensionsTargetDir;
 
   /**
    * The Maven project this plugin runs in.
@@ -59,6 +51,14 @@ public class MicgwafGenerationMojo extends AbstractMojo implements Mojo
   private MavenProject project;
 
   /**
+   * The package in which all generated code should live in.
+   *
+   * @parameter expression="${micgwaf.target.package}"
+   * @required
+   */
+  private String targetPackage;
+
+  /**
    * Configures and runs the micgwaf generator.
    */
   public void execute() throws MojoExecutionException
@@ -66,9 +66,13 @@ public class MicgwafGenerationMojo extends AbstractMojo implements Mojo
     Generator generator = new Generator();
     
     getLog().debug("Running generation");
+    getLog().debug("sourceDir: " + sourceDir);
+    getLog().debug("baseTargetDir: " + baseTargetDir);
+    getLog().debug("extensionsTargetDir: " + extensionsTargetDir);
+    getLog().debug("targetPackage: " + targetPackage);
     try 
     {
-      generator.generate(sourceDirectory, baseTargetDirectory, extensionsTargetDirectory, targetPackage);
+      generator.generate(sourceDir, baseTargetDir, extensionsTargetDir, targetPackage);
     } 
     catch (IOException e) 
     {
@@ -76,40 +80,40 @@ public class MicgwafGenerationMojo extends AbstractMojo implements Mojo
 	}
     getLog().debug("Generation successful");
 
-    project.addCompileSourceRoot(baseTargetDirectory.toString());
-    getLog().debug("Added " + baseTargetDirectory.toString() + " as compile source root");
-    project.addCompileSourceRoot(extensionsTargetDirectory.toString());
-    getLog().debug("Added " + extensionsTargetDirectory.toString() + " as compile source root");
+    project.addCompileSourceRoot(baseTargetDir.toString());
+    getLog().debug("Added " + baseTargetDir.toString() + " as compile source root");
+    project.addCompileSourceRoot(extensionsTargetDir.toString());
+    getLog().debug("Added " + extensionsTargetDir.toString() + " as compile source root");
     }
 
     /**
      * Sets the source directory.
      *
-     * @param sourceDirectory the source directory.
+     * @param sourceDir the source directory.
      */
-    public void setSourceDirectory(final File sourceDirectory)
+    public void setSourceDir(final File sourceDir)
     {
-        this.sourceDirectory = sourceDirectory;
+        this.sourceDir = sourceDir;
     }
 
     /**
      * Sets the target directory for the base classes.
      *
-     * @param baseTargetDirectory the target directory for the base classes.
+     * @param baseTargetDir the target directory for the base classes.
      */
-    public void setBaseTargetDirectory(final File baseTargetDirectory)
+    public void setBaseTargetDir(final File baseTargetDir)
     {
-        this.baseTargetDirectory = baseTargetDirectory;
+        this.baseTargetDir = baseTargetDir;
     }
 
     /**
      * Sets the target directory for the extension classes.
      *
-     * @param baseTargetDirectory the target directory for the extension classes.
+     * @param baseTargetDir the target directory for the extension classes.
      */
-    public void setExtensionsTargetDirectory(final File extensionsTargetDirectory)
+    public void setExtensionsTargetDir(final File extensionsTargetDir)
     {
-        this.extensionsTargetDirectory = extensionsTargetDirectory;
+        this.extensionsTargetDir = extensionsTargetDir;
     }
 
     /**
