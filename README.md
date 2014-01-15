@@ -18,3 +18,4 @@ Micgwaf consists of different components
 
 - micgwaf-core: The core implementation
 - maven-micgwaf-plugin: Plugin to build micgwaf projects with eclipse
+- micgwaf-demo: Demo project for micgwaf
