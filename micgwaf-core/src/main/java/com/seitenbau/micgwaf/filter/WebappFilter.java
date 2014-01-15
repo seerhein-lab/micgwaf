@@ -17,15 +17,14 @@ public class WebappFilter implements Filter
 {
   public static final String APPLICATION_CLASS_NAME_INIT_PARAM = "applicationClassName";
   
-  public ApplicationBase application;
-  
   @Override
   public void init(FilterConfig filterConfig) throws ServletException
   {
     String applicationClassName = filterConfig.getInitParameter(APPLICATION_CLASS_NAME_INIT_PARAM);
     try
     {
-      application = (ApplicationBase) Class.forName(applicationClassName).newInstance();
+      ApplicationBase application = (ApplicationBase) Class.forName(applicationClassName).newInstance();
+      ApplicationBase.setApplication(application);
     } catch (InstantiationException | IllegalAccessException | ClassNotFoundException e)
     {
       throw new ServletException(e);
@@ -42,10 +41,10 @@ public class WebappFilter implements Filter
     HttpServletRequest httpServletRequest = (HttpServletRequest) request;
     HttpServletResponse httpServletResponse = (HttpServletResponse) response;
     long startTime = System.currentTimeMillis();
-    boolean processed = new AjaxHandler().handle(httpServletRequest, httpServletResponse, application);
+    boolean processed = new AjaxHandler().handle(httpServletRequest, httpServletResponse);
     if (!processed)
     {
-      processed = new PRGHandler().handle(httpServletRequest, httpServletResponse, application);
+      processed = new PRGHandler().handle(httpServletRequest, httpServletResponse);
     }
     long endTime = System.currentTimeMillis();
     System.out.println("Request took " + (endTime - startTime) + " ms");

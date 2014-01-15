@@ -14,7 +14,7 @@ import com.seitenbau.micgwaf.config.ApplicationBase;
  */
 public class AjaxHandler
 {
-  public boolean handle(HttpServletRequest request, HttpServletResponse response, ApplicationBase application)
+  public boolean handle(HttpServletRequest request, HttpServletResponse response)
       throws IOException
   {
     response.setCharacterEncoding("UTF-8");
@@ -22,12 +22,12 @@ public class AjaxHandler
     String path = request.getServletPath();
     if (path.startsWith("/ajax"))
     {
-      processed = process(request, response, application);
+      processed = process(request, response);
     }
     return processed;
   }
   
-  public boolean process(HttpServletRequest request, HttpServletResponse response, ApplicationBase application)
+  public boolean process(HttpServletRequest request, HttpServletResponse response)
       throws IOException
   {
     Component toProcess = (Component) request.getSession().getAttribute("toProcess");
@@ -48,7 +48,7 @@ public class AjaxHandler
     catch (Exception e)
     {
       // TODO extra method handleAjaxException ?
-      toRender = application.handleException(toProcess, e, false);
+      toRender = ApplicationBase.getApplication().handleException(toProcess, e, false);
     }
     
     PrintWriter writer = response.getWriter();
@@ -62,7 +62,7 @@ public class AjaxHandler
       catch (Exception e)
       {
         response.reset();
-        toRender = application.handleException(toRender, e, false);
+        toRender = ApplicationBase.getApplication().handleException(toRender, e, false);
         toRender.render(writer);
         toRender.afterRender();
       }

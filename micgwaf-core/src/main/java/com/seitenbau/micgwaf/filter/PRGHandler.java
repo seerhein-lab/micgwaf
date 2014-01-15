@@ -18,23 +18,23 @@ public class PRGHandler
 {
 private static final String REQUEST_PARAM = "step";
   
-  public boolean handle(HttpServletRequest request, HttpServletResponse response, ApplicationBase application)
+  public boolean handle(HttpServletRequest request, HttpServletResponse response)
       throws IOException
   {
     response.setCharacterEncoding("UTF-8");
     boolean processed = false;
     if ("POST".equals(request.getMethod()))
     {
-      processed =  process(request, response, application);
+      processed =  process(request, response);
     }
     if (!processed)
     {
-      processed = render(request, response, application);
+      processed = render(request, response);
     }
     return processed;
   }
   
-  public boolean process(HttpServletRequest request, HttpServletResponse response, ApplicationBase application)
+  public boolean process(HttpServletRequest request, HttpServletResponse response)
       throws IOException
   {
     String path = request.getServletPath();
@@ -64,9 +64,10 @@ private static final String REQUEST_PARAM = "step";
     }
     catch (Exception e)
     {
-      toRender = application.handleException(toProcess, e, false);
+      toRender = ApplicationBase.getApplication().handleException(toProcess, e, false);
     }
     
+    @SuppressWarnings("unchecked")
     List<Component> componentList = (List<Component>) request.getSession().getAttribute("components");
     if (componentList == null)
     {
@@ -81,11 +82,12 @@ private static final String REQUEST_PARAM = "step";
     return true;
   }
 
-  public boolean render(HttpServletRequest request, HttpServletResponse response, ApplicationBase application)
+  public boolean render(HttpServletRequest request, HttpServletResponse response)
       throws IOException
   {
     String path = request.getServletPath();
-    List<Component> componentList = (List<Component>) request.getSession().getAttribute("components");
+    @SuppressWarnings("unchecked")
+	List<Component> componentList = (List<Component>) request.getSession().getAttribute("components");
     if (componentList == null)
     {
       componentList = new ArrayList<>();
@@ -102,9 +104,17 @@ private static final String REQUEST_PARAM = "step";
       }
       
     }
-    if (toRender == null)
+    if (toRender != null)
     {
-      toRender = application.getComponent(path);
+      // TODO this is dirty. 
+      // Although storing/retrieving from the session may loose information, which may need rebuilding,
+      // we may not be sure whether this method does initializations which should happen only once
+      // during instance lifetime. 
+      ApplicationBase.getApplication().postConstruct(toRender);
+    }
+    else
+    {
+      toRender = ApplicationBase.getApplication().getComponent(path);
     }
     if (toRender == null)
     {
@@ -119,7 +129,7 @@ private static final String REQUEST_PARAM = "step";
     catch (Exception e)
     {
       response.reset();
-      toRender = application.handleException(toRender, e, false);
+      toRender = ApplicationBase.getApplication().handleException(toRender, e, false);
       toRender.render(writer);
       toRender.afterRender();
     }

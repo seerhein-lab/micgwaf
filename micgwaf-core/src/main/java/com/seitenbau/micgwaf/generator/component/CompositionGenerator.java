@@ -12,6 +12,7 @@ import com.seitenbau.micgwaf.component.Composition;
 import com.seitenbau.micgwaf.component.DefineComponent;
 import com.seitenbau.micgwaf.component.RefComponent;
 import com.seitenbau.micgwaf.component.SnippetListComponent;
+import com.seitenbau.micgwaf.config.ApplicationBase;
 import com.seitenbau.micgwaf.generator.Generator;
 import com.seitenbau.micgwaf.generator.JavaClassName;
 
@@ -40,6 +41,7 @@ public class CompositionGenerator extends ComponentGenerator
     StringBuilder fileContent = new StringBuilder();
     fileContent.append("package ").append(javaClassName.getPackage()).append(";\n\n");
     fileContent.append("import ").append(Component.class.getName()).append(";\n");
+    fileContent.append("import ").append(ApplicationBase.class.getName()).append(";\n");
     fileContent.append("import ").append(IOException.class.getName()).append(";\n");
     fileContent.append("import ").append(Writer.class.getName()).append(";\n");
     fileContent.append("import ").append(List.class.getName()).append(";\n");

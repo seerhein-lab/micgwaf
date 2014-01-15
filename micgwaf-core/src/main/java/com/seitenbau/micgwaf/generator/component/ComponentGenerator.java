@@ -219,7 +219,8 @@ public abstract class ComponentGenerator
     {
       toAppendTo.append(indentString).append(modifier).append(componentClassName.getSimpleName())
           .append(" ").append(fieldName)
-          .append(" = new ").append(componentClassName.getSimpleName()).append("(this);\n");
+          .append(" = ApplicationBase.getApplication().postConstruct(\n")
+          .append(indentString).append("    ").append("new ").append(componentClassName.getSimpleName()).append("(this));\n");
     }
     toAppendTo.append(generator.generateInitializer(fieldName, component, targetPackage, indent));
   }
@@ -374,6 +375,6 @@ public abstract class ComponentGenerator
   {
     // SerialversionUID
     toAppendTo.append("  /** Serial Version UID. */\n");
-    toAppendTo.append("  private static final long serialVersionUID = 1L;\n");
+    toAppendTo.append("  private static final long serialVersionUID = 1L;\n\n");
   }
 }

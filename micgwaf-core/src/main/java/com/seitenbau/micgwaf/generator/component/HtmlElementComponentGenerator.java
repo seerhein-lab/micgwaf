@@ -13,6 +13,7 @@ import com.seitenbau.micgwaf.component.HtmlElementComponent;
 import com.seitenbau.micgwaf.component.RefComponent;
 import com.seitenbau.micgwaf.component.SnippetComponent;
 import com.seitenbau.micgwaf.component.SnippetListComponent;
+import com.seitenbau.micgwaf.config.ApplicationBase;
 import com.seitenbau.micgwaf.generator.Generator;
 import com.seitenbau.micgwaf.generator.JavaClassName;
 
@@ -55,6 +56,8 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
     fileContent.append("import ").append(HtmlElementComponent.class.getName()).append(";\n");
     fileContent.append("import ").append(SnippetComponent.class.getName()).append(";\n");
     fileContent.append("import ").append(ChildListComponent.class.getName()).append(";\n");
+    fileContent.append("import ").append(ApplicationBase.class.getName()).append(";\n");
+
     fileContent.append("import ").append(IOException.class.getName()).append(";\n");
     fileContent.append("import ").append(Writer.class.getName()).append(";\n");
     fileContent.append("import ").append(List.class.getName()).append(";\n");
@@ -115,16 +118,19 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
           {
             fileContent.append("  public ").append(SnippetComponent.class.getSimpleName())
                     .append(" snippet").append(componentCounter)
-                    .append(" = new ").append(SnippetComponent.class.getSimpleName())
-                    .append("(null, ").append(asConstant(part.htmlSnippet)).append(", this);\n\n");
+                    .append(" = (").append(SnippetComponent.class.getSimpleName())
+                    .append(") ApplicationBase.getApplication().postConstruct(\n")
+                    .append("      ")
+                    .append("new ").append(SnippetComponent.class.getSimpleName())
+                    .append("(null, ").append(asConstant(part.htmlSnippet)).append(", this));\n\n");
           }
-          componentCounter++;                      
+          componentCounter++;
         }
         continue;
       }
       String componentField = getComponentFieldName(child, componentCounter);
       generateFieldOrVariableFromComponent(child, targetPackage, fileContent, "public ", componentField, 2);
-      componentCounter++;          
+      componentCounter++;
     }
 
     // Constructor
