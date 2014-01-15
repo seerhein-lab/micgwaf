@@ -23,16 +23,20 @@ public class HtmlParser
   private static final String SAX_NAMESPACE_FEATURE_NAME 
       = "http://xml.org/sax/features/namespaces";
   
-  public Map<String, Component> readComponents(File directory)
+  public Map<String, Component> readComponents(File sourceDirectory)
   {
-    if (!directory.isDirectory())
+    if (sourceDirectory == null)
+    {
+      throw new NullPointerException("sourceDirectory must not be null");
+    }
+    if (!sourceDirectory.isDirectory())
     {
       throw new IllegalArgumentException(
-          directory.getAbsolutePath() + " is no Directory");
+          sourceDirectory.getAbsolutePath() + " is no Directory");
     }
     
     Map<String, Component> result = new HashMap<>();
-    File[] files = directory.listFiles();
+    File[] files = sourceDirectory.listFiles();
     for (File file : files)
     {
       String fileName = file.getName();
