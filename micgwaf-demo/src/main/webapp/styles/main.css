@@ -1,0 +1,367 @@
+@CHARSET "ISO-8859-1";
+
+html, body
+{
+	height: 100%;
+	margin: 0;
+	padding: 0;
+	font-family: "Trebuchet ms",Arial,Verdana,Helvetica,Sans-Serif;
+	font-size: 14px;
+}
+
+h3
+{
+	margin-top: 0px;
+	background-color: #BDD7E6;
+	padding: 0 0 0 2px;
+}
+
+a
+{
+	color: #417CB1;	
+}
+
+.inputText
+{
+	border: 1px solid #CCCCCC;
+	width: 180px;
+}
+
+a:link
+{
+	color: #417CB1;	
+}
+	
+a:visited
+{
+	color: #417CB1;	
+}
+	
+a:hover
+{
+	text-decoration: none;
+	color: #417CB1;
+}
+
+a:active
+{
+	color: #417CB1;	
+}
+
+select
+{
+	width: 150px;	
+}
+
+.button
+{
+  background-color: #417CB1;
+  font-family: Arial,Helvetica,Sans-Serif;
+  height: 20px;
+  border: 0px;
+  color: #FFFFFF; 
+  margin: 0px 10px 0px 0px;
+}
+.tableButton
+{
+  background-color: #BEBEBE;
+  font-family: Arial,Helvetica,Sans-Serif;
+  height: 20px;
+  border: 0px;
+  color: #000000; 
+  margin: 0px 5px 0px 0px;
+}
+
+div#nav
+{
+	height: 100%;
+	width: 200px;
+	background: #BEBEBE;
+	float: left;
+	padding-top: 54px;
+	position: fixed;
+}
+
+div#contentArea
+{
+	height: 100%;
+	width: 800px;
+	margin: 0 0 0 200px;
+	background-color: #FFFFFF;
+	padding-left: 25px;
+}
+
+div#header
+{
+	font-family: Georgia,"Trebuchet ms",Arial,Serif;
+	font-weight: bold;
+	color: #417CB1;
+	font-size: 30px;
+	padding-top: 50px;
+	height: 50px;
+}
+
+table
+{
+	width: 100%;
+  border-collapse:collapse;
+}
+
+td,th
+{
+  border: 1px solid #CCCCCC;
+  border-collapse:collapse;
+  padding: 2px;
+}
+
+	
+
+.navItemBg
+{
+	background-color: #FFFFFF;
+	width: 200px;
+}
+
+.navBalkenTop
+{
+	width: 100%;
+	height: 30px;
+	background-color: #417CB1;
+}
+
+/* Navigation Link 1.Ebene ---------------------- */
+
+.mainNav {
+	display: block;
+	padding: 4px 0 4px 20px;
+	text-decoration: none;
+	font-weight: bold;
+	color: #417CB1;
+}
+
+.mainNav:link
+{
+	text-decoration: none;
+}
+.mainNav:visited
+{
+	background-color:  none;
+}
+
+.mainNav:hover
+{
+	background-color: #BDD7E6;
+}
+
+.mainNav:active
+{
+	color: #5F5F5F
+	background-color: none;
+}
+
+/* Navigation Link 2.Ebene ---------------------- */
+.subNav {
+	color: #607F74;
+	display: block;
+	padding: 0 0 0 20px;
+	text-decoration: none;
+}
+
+.subNav:link
+{
+	text-decoration: none;
+}
+.subNav:visited
+{
+	color: #607F74;
+}
+
+.subNav:hover
+{
+	display: block;
+	background-color: #D2DDD9;
+	text-decoration: none;	
+}
+
+.subNav:active
+{
+	color: #607F74;
+}
+
+.subNav, .mainNav
+{
+	border-top: 1px dashed #CCCCCC;
+}
+
+.exampleBorder
+{
+	border: 1px dashed #BEBEBE;
+	padding: 10px;
+	margin-bottom: 20px;
+}
+
+.textArea
+{
+	width: 250px;
+	height: 125px;
+}
+
+.code 
+{ 
+	font-family: monospace;
+	color: #7F7F7F 
+}
+
+.smallFont
+{
+	font-size: 8px;	
+}
+
+.spacer
+{
+	height:20px;
+}
+
+/* messages ------------------------------------- */
+
+.infoMessage
+{
+	border: 1px solid green;
+	list-style: none;
+	padding: 5px;
+}
+
+.errorMessage
+{
+	border: 1px solid red;
+	list-style: none;
+	padding: 2px;
+	margin: 0px 2px 2px 0px;
+}
+
+.errorMessageForField
+{
+  color: red;
+  list-style: none;
+  margin: 0px;
+  padding: 0px;
+  display: inline;
+}
+
+.facesErrorMessage
+{
+	color:red;
+}
+
+.errorBox
+{
+  border: 1px solid red;
+  padding: 5px;
+  margin: 0px 2px 2px 0px;
+}
+
+div.messageBox ul
+{
+  padding: 0px;
+}
+
+div.errorMessageDiv
+{
+  display: inline;
+}
+
+div.errorMessageDiv ul
+{
+  padding: 0px;
+  display: inline;
+}
+
+* breadcrumbtrail ------------------------------ */
+.bct 
+{
+	color: #417CB1;
+	font-family: "Trebuchet ms",Arial,Verdana,Helvetica,Sans-Serif;
+}
+
+ul#bctUl 
+{
+  	padding: 0;
+  	margin: 0;
+  	list-style: none;
+}
+ul#bctUl li
+{
+	display: inline;
+  	margin-right: 5px;
+  	font-size: 0.9em;
+}
+
+.bctBorder
+{
+	border: 1px dashed #CCCCCC;
+}
+
+/* sb:selectOneRadio ----------------------------- */
+
+.radioLabel
+{
+	color: #417CB1;
+}
+
+/* sb:pager ----------------------------- */
+
+.paging {
+	height:20px;
+	margin-top: 5px;
+	background-color:#EEEEEE
+}
+
+.paging .treffernummern {
+  width:190px;
+  height:20px;
+  float:left;
+  margin:0;
+  padding:0;
+}
+.paging .seitengroesse {
+  text-align:center;
+  width:395px;
+  height:20px;
+  padding:0;
+  float:left;
+}
+.paging .seitennummern {
+  width:190px;
+  text-align:right;
+  height:20px;
+  float:right;
+  margin:0;
+  padding:0;
+}
+
+.paging .seitennummern a.page {
+  background:none;
+  display:inline;
+  color:#6A6969;
+  margin:0;
+  padding:1px;
+}
+.paging .seitennummern a.back {
+  background:none;
+  display:inline;
+  color:#AAAAAA;
+  margin:0;
+  padding:1px;
+}
+.paging .seitennummern a.forward {
+  background:none;
+  display:inline;
+  color:#AAAAAA;
+  margin:0;
+  padding:1px;
+}
+
+.paging .pageSelect span {
+  color: #AAAAAA;
+}
+

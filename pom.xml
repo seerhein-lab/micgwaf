@@ -14,6 +14,7 @@
   <modules>
     <module>micgwaf-core</module>
     <module>micgwaf-maven-plugin</module>
+    <module>micgwaf-demo</module>
   </modules>
 </project>
   

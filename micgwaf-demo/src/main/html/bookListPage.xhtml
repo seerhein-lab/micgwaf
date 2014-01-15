@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns:m="http://seitenbau.com/micgwaf">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>micgwaf Demo</title>
+    <link href="styles/bootstrap.css" rel="stylesheet" type="text/css"/>
+    <script type="text/javascript">
+function loadXMLDoc(path)
+{
+  var xmlhttp;
+  if (window.XMLHttpRequest)
+  {// code for IE7+, Firefox, Chrome, Opera, Safari
+    xmlhttp=new XMLHttpRequest();
+  }
+  else
+  {// code for IE6, IE5
+    xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  }
+  xmlhttp.onreadystatechange=function()
+  {
+    if (xmlhttp.readyState==4)
+    {
+      if (xmlhttp.status==200)
+      {
+        var xmlDoc = xmlhttp.responseXML;
+        var documentElement = xmlDoc.documentElement;
+        var id = documentElement.id;
+        var toReplace = document.getElementById(id);
+        //toReplace.parentNode.replace(documentElement, toReplace);
+        toReplace.insertAdjacentHTML('beforebegin', xmlhttp.responseText);
+        toReplace.remove();
+      }
+    }
+  }
+  xmlhttp.open("GET","/ajax/" + path, true);
+  xmlhttp.send();
+}
+  </script>
+  </head>
+
+  <body>
+    <div id="contentArea" class="container">
+      <h2>Book List</h2>
+      <form m:id="bookListForm">
+        <m:componentRef refid="messageBox" />
+        <table id="adresseTable" class="table table-striped">
+          <thead>
+            <tr>
+              <th>Author</th>
+              <th>Title</th>
+              <th>Publisher</th>
+              <th>ISBN</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr m:id="bookRow" m:multiple="true" m:generateExtensionClass="true">
+              <td>
+                <span m:id="author">author</span>
+                <div m:id="authorErrorBox" class="errorBox" m:defaultRender="false">
+                  <input m:id="authorInput" />
+                </div>
+              </td>
+              <td>
+                <span m:id="title">title</span>
+                <div m:id="titleErrorBox" class="errorBox" m:defaultRender="false">
+                  <input m:id="titleInput" />
+                </div>
+              </td>
+              <td>
+                <span m:id="publisher">publisher</span>
+                <div m:id="publisherErrorBox" class="errorBox" m:defaultRender="false">
+                  <input m:id="publisherInput" />
+                </div>
+              </td>
+              <td>
+                <span m:id="isbn">ISBN</span>
+                <div m:id="isbnErrorBox" class="errorBox" m:defaultRender="false">
+                  <input m:id="isbnInput" />
+                </div>
+              </td>
+              <td>
+                <button m:id="editExtraPageButton" class="btn btn-sm" type="submit">edit</button>
+                <button m:id="editInlineButton" class="btn btn-sm" type="submit">edit inline</button>
+                <button m:id="editInlineAjaxButton" class="btn btn-sm" type="button" onclick="loadXMLDoc(this.id);">edit (ajax)</button>
+                <button m:id="saveButton" m:defaultRender="false" class="btn btn-sm" type="submit">save</button>
+                <button m:id="cancelEditButton" m:defaultRender="false" class="btn btn-sm" type="submit">cancel change</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <button m:id="hinzufuegenButton"
+            type="submit"
+            class="btn btn-default"
+            title="Add new Book">Add Book</button>
+        <button m:id="errorButton"
+            type="submit"
+            class="btn btn-default"
+            title="Throw an exception to test error handling">Create Error</button>
+        <button m:id="resetButton"
+            type="submit"
+            class="btn btn-default"
+            title="Reverts the book list to the original data">Reset</button>
+      </form>
+    </div>
+  </body>
+</html>
