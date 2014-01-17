@@ -108,9 +108,9 @@ public abstract class ApplicationBase
   
   /**
    * This handler is called whenever an Exception is not caught by the components.
-   * This implementation returns the co
+   * This implementation returns a component which writes "An error occurred".
    * 
-   * @param component the page in which the error occured 
+   * @param component the page in which the error occurred 
    * @param exception the exception which was caught 
    * @param onRender true if the exception was caught on rendering, false if not.
    * 
