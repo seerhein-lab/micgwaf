@@ -23,7 +23,7 @@ public abstract class ApplicationBase
    * This method must be called at least once with the appropriate application instance
    * because the micgwaf framework depends on getting the application instance by <code>getApplication()</code>.
    *  
-   * @param instance the instance which is used byt he micgwaf framework.
+   * @param instance the instance which is used by the micgwaf framework.
    */
   public static void setApplication(ApplicationBase instance)
   {
