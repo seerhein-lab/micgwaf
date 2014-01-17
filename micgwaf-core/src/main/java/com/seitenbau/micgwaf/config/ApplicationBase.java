@@ -9,6 +9,7 @@ import java.util.Map;
 
 import com.seitenbau.micgwaf.component.Component;
 import com.seitenbau.micgwaf.component.SnippetComponent;
+import com.seitenbau.micgwaf.util.Assertions;
 
 public abstract class ApplicationBase
 {
@@ -46,9 +47,24 @@ public abstract class ApplicationBase
     return instance;
   }
 
+  /**
+   * Mounts a component to a certain path.
+   * @param path the path to mount the component to, not null.
+   * @param component the component to mount, or null to remove an already mounted component.
+   * 
+   * @throws NullPointerException if path is null.
+   */
   protected void mount(String path, Class<? extends Component> component)
   {
-    components.put(path, component);
+    Assertions.assertNotNull(path, "path");
+    if (component == null)
+    {
+      components.remove(path);
+    }
+    else
+    {
+      components.put(path, component);
+    }
   }
   
   /**
