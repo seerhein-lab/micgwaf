@@ -50,6 +50,7 @@ public class DefineContentHandler extends ContentHandler
     }
     if (child instanceof ChildListComponent<?>)
     {
+      @SuppressWarnings("unchecked")
       ChildListComponent<Component> childList = (ChildListComponent<Component>) child;
       childList.children.add(child);
       child.setParent(childList);
