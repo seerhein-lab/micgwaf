@@ -7,11 +7,15 @@ import java.io.StringWriter;
 import java.io.Writer;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
+
+import com.seitenbau.micgwaf.Application;
+import com.seitenbau.micgwaf.config.ApplicationBase;
 
 public class GeneratedSourcesTest
 {
@@ -20,52 +24,62 @@ public class GeneratedSourcesTest
   {
     GeneratorAndCompiler.generateAndCompile("src/test/resources/com/seitenbau/micgwaf/page");
 
-    URLClassLoader classLoader = URLClassLoader.newInstance(
-        new URL[] { 
-            GeneratorAndCompiler.compileRootDir.toURI().toURL(), 
-            new File("target/classes").toURI().toURL() 
-        }, 
-        null );
-    Class<?> cls = Class.forName(
-        "com.seitenbau.micgwaf.test.generated.root.ExtensionClassPrefixRootExtensionClassSuffix",
-        true, 
+    URLClassLoader classLoader = getClassLoader();
+    initMicgwaf(classLoader);
+    String pageContent = invokeRenderForPage(
+        "com.seitenbau.micgwaf.test.generated.root.ExtensionClassPrefixRootExtensionClassSuffix", 
         classLoader);
-    Constructor<?> rootConstructor = cls.getConstructors()[0];
-    Object root = rootConstructor.newInstance(new Object[] {null});
-    StringWriter stringWriter = new StringWriter();
-    Method renderMethod = cls.getMethod("render", Writer.class);
-    renderMethod.invoke(root, stringWriter);
-    System.out.println(stringWriter);
     File componentDir = new File("src/test/resources/com/seitenbau/micgwaf/page");
     String expected = FileUtils.readFileToString(new File(componentDir, "expected/expected.xhtml"));
     expected = expected.replace("\r\n", "\n");
-    assertEquals(expected, stringWriter.toString());
+    assertEquals(expected, pageContent);
   }
-  
+
   @Test
   public void testRenderTemplate() throws Exception
   {
     GeneratorAndCompiler.generateAndCompile("src/test/resources/com/seitenbau/micgwaf/template");
 
+    URLClassLoader classLoader = getClassLoader();
+    initMicgwaf(classLoader);
+    String pageContent = invokeRenderForPage(
+        "com.seitenbau.micgwaf.test.generated.templatedPage.ExtensionClassPrefixTemplatedPageExtensionClassSuffix", 
+        classLoader);
+    File componentDir = new File("src/test/resources/com/seitenbau/micgwaf/template");
+    String expected = FileUtils.readFileToString(new File(componentDir, "expected/templatedPageExpected.xhtml"));
+    expected = expected.replace("\r\n", "\n");
+    assertEquals(expected, pageContent);
+  }
+
+  private URLClassLoader getClassLoader() throws MalformedURLException {
     URLClassLoader classLoader = URLClassLoader.newInstance(
         new URL[] { 
             GeneratorAndCompiler.compileRootDir.toURI().toURL(), 
-            new File("target/classes").toURI().toURL() 
+            new File("target/classes").toURI().toURL() ,
+            new File("target/test-classes").toURI().toURL() 
         }, 
         null );
-    Class<?> cls = Class.forName(
-        "com.seitenbau.micgwaf.test.generated.templatedPage.ExtensionClassPrefixTemplatedPageExtensionClassSuffix",
-        true, 
-        classLoader);
+    return classLoader;
+  }
+
+  private void initMicgwaf(URLClassLoader classLoader) throws Exception 
+  {
+    Class<?> applicationBaseClass = Class.forName(ApplicationBase.class.getName(), true, classLoader);
+    Method setApplicationMethod = applicationBaseClass.getMethod("setApplication", applicationBaseClass);
+    Class<?> applicationClass = Class.forName(Application.class.getName(), true, classLoader);
+    Object application = applicationClass.newInstance();
+    setApplicationMethod.invoke(null, application);
+  }
+
+  private String invokeRenderForPage(String pageClass, URLClassLoader classLoader)
+      throws Exception
+  {
+    Class<?> cls = Class.forName(pageClass, true, classLoader);
     Constructor<?> rootConstructor = cls.getConstructors()[0];
     Object root = rootConstructor.newInstance(new Object[] {null});
     StringWriter stringWriter = new StringWriter();
     Method renderMethod = cls.getMethod("render", Writer.class);
     renderMethod.invoke(root, stringWriter);
-    System.out.println(stringWriter);
-    File componentDir = new File("src/test/resources/com/seitenbau/micgwaf/template");
-    String expected = FileUtils.readFileToString(new File(componentDir, "expected/templatedPageExpected.xhtml"));
-    expected = expected.replace("\r\n", "\n");
-    assertEquals(expected, stringWriter.toString());
+    return stringWriter.toString();
   }
 }
