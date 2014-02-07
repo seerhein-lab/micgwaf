@@ -1,17 +1,18 @@
 package com.seitenbau.micgwaf.parser;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
 
 import java.io.File;
 import java.io.StringWriter;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import com.seitenbau.micgwaf.component.Component;
-import com.seitenbau.micgwaf.parser.HtmlParser;
+import com.seitenbau.micgwaf.component.RefComponent;
 
 public class ParseAndRenderTest
 {
@@ -72,12 +73,29 @@ public class ParseAndRenderTest
   }
 
   @Test
-  @Ignore
   public void testChildAndParentReferences() throws Exception
   {
     File componentDir = new File("src/test/resources/com/seitenbau/micgwaf/page");
     Map<String, Component> components 
         = new HtmlParser().readComponents(componentDir);
-    // TODO check child and parent references
+    assertEquals(3, components.size());
+    Component root = components.get("root");
+    Component form = components.get("form");
+    Component content = components.get("content");
+    checkParentAndChildrenReferences(root);
+    checkParentAndChildrenReferences(content);
+    checkParentAndChildrenReferences(form);
+  }
+
+  private void checkParentAndChildrenReferences(Component root) {
+    assertNull(root.getParent());
+    for (Component child : root.getChildren())
+    {
+      assertSame(root, child.getParent());
+      for (Component grandchild : child.getChildren())
+      {
+        assertSame(child, grandchild.getParent());
+      }
+    }
   }
 }
