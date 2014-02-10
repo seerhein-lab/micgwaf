@@ -123,19 +123,23 @@ public abstract class Component implements Serializable
    * 
    * @param request the request to process, not null.
    * 
-   * @return the page to render after processing, or null if this component does not wish another
-   *         page to be rendered.
-   *         note: if more than one child component wishes to redirect to another page, 
-   *         the last component wins.
+   * @return The component which produces the snippet to render as a response to this ajax request,
+   *         or null to signal that this component or its children are not interested in
+   *         this ajax request.
+   *         note: if more than one child component wishes to hande the request,
+   *         the first component wins.
    */
   public Component processAjaxRequest(HttpServletRequest request)
   {
-    Component toRedirectTo = null;
     for (Component child : getChildren())
     {
-      toRedirectTo = child.processAjaxRequest(request);
+      Component toRedirectTo = child.processAjaxRequest(request);
+      if (toRedirectTo != null) 
+      {
+        return toRedirectTo;
+      }
     }
-    return toRedirectTo;
+    return null;
   }
 
   /**
