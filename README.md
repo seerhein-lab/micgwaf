@@ -19,3 +19,18 @@ Micgwaf consists of different components
 - micgwaf-core: The core implementation
 - micgwaf-maven-plugin: Plugin to build micgwaf projects with eclipse
 - micgwaf-demo: Demo project for micgwaf
+
+### Checkout the project into eclipse
+
+The following procedure can be followed to checkout this project into eclipse
+
+- use the git repository exploring perspective and clone the micgwaf repository from github
+- right-click the cloned repo and select import projects... then select "import as general project"
+- change into the project root dir and run "mvn eclipse:eclipse"
+- remove the .project file in the project root dir
+- select File->Import->Existing Projects into Workspace and select the project root dir as root dir
+- import the three selected subprojects
+- click File->New->Project and import the project root dir as a project
+
+Now you can use the subprojects for running and compiling and the main project 
+for any git operation you may want to execute.
