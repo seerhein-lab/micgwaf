@@ -4,9 +4,10 @@ micgwaf
 MInimal Code-Generating Web Application Framework
 
 This is work in progress to explore whether a code generating approach is workable for web applications.
-micgwaf is not (yet) ready for production use and APIs will change all the time without notice.
+micgwaf is not (yet) ready for production use and APIs will change any time without notice.
 
-See the [docs](micgwaf-core/src/docs/index.md) of the micgwaf core project for more information.
+See the [docs](micgwaf-core/src/docs/index.md) of the micgwaf core project for more information
+on how to use micgwaf.
 
 ### Build status
 
