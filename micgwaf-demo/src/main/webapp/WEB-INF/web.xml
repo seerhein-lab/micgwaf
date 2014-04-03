@@ -3,15 +3,15 @@
   <display-name>sb-test-webapp</display-name>
   <filter>
     <filter-name>micgwaf-webapp</filter-name>
-    <filter-class>com.seitenbau.micgwaf.filter.WebappFilter</filter-class>
+    <filter-class>de.seerheinlab.micgwaf.filter.WebappFilter</filter-class>
     <init-param>
       <param-name>applicationClassName</param-name>
-      <param-value>com.seitenbau.test.micgwaf.Application</param-value>
+      <param-value>de.seerheinlab.test.micgwaf.Application</param-value>
     </init-param>
   </filter>
   <filter>
     <filter-name>micgwaf-html-development</filter-name>
-    <filter-class>com.seitenbau.micgwaf.filter.HtmlDevelopmentFilter</filter-class>
+    <filter-class>de.seerheinlab.micgwaf.filter.HtmlDevelopmentFilter</filter-class>
     <init-param>
       <param-name>htmlDir</param-name>
       <param-value>src/main/html</param-value>
