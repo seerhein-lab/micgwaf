@@ -10,7 +10,7 @@ See the [docs](src/docs/index.md) for more information.
 
 ### Build status
 
-[![Build Status](https://buildhive.cloudbees.com/job/thomasfox/job/micgwaf/badge/icon)](https://buildhive.cloudbees.com/job/thomasfox/job/micgwaf/)
+[![Build Status](https://buildhive.cloudbees.com/job/seerhein-lab/job/micgwaf/badge/icon)](https://buildhive.cloudbees.com/job/seerhein-lab/job/micgwaf/)
 
 ### Components
 
