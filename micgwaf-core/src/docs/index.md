@@ -49,8 +49,8 @@ Creating XHTML files and Generating Code
 ----------------------------------------
 
 - create all .xhtml files in one directory
-  - use namespace http://seitenbau.com/micgwaf for micgwaf 
-    (the following assumes xmlns:m="http://seitenbau.com/micgwaf")
+  - use namespace http://seerhein-lab.de/micgwaf for micgwaf 
+    (the following assumes xmlns:m="http://seerhein-lab.de/micgwaf")
   - use an unique m:id for each active component. m:id should start with a lowercase letter.
   - use m:generateExtensionClass="true" for each component which code you want to change.
     By default, for forms,  m:generateExtensionClass is true.
