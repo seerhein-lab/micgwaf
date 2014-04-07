@@ -41,9 +41,11 @@ public class WebappFilter implements Filter
     HttpServletRequest httpServletRequest = (HttpServletRequest) request;
     HttpServletResponse httpServletResponse = (HttpServletResponse) response;
     long startTime = System.currentTimeMillis();
+    // TODO make Ajax handler exchangeable
     boolean processed = new AjaxHandler().handle(httpServletRequest, httpServletResponse);
     if (!processed)
     {
+      // TODO make PRG handler exchangeable
       processed = new PRGHandler().handle(httpServletRequest, httpServletResponse);
     }
     long endTime = System.currentTimeMillis();
