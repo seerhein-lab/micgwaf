@@ -24,11 +24,13 @@ External XHTML files (respectively their components) can be referenced in pages,
 code is possible.
 
 For using the components in a web application, a servlet filter needs to be configured and
-the components need to be mounted to specific paths.
+the page components need to be mounted to specific request URLs.
 
 micgwaf also supports development of HTML code alongside application development.
 For this, a special servlet filter is provided, which renders HTML files as-is, but resolves component
 references.
+
+For reading more on the objectives of micgwaf, see micgwaf's [background](background.md)
 
 Getting started
 ---------------
