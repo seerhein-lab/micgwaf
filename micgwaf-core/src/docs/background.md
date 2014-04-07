@@ -39,3 +39,5 @@ Micgwaf addresses these points in the following fashion:
    an id attribute in the special micgwaf namespace.
    So the markup still stays as much HTML as possible (it is even valid HTML which can be displayed
    by a web browser).
+   
+TODO further objectives
