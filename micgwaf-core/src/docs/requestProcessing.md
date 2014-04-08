@@ -10,5 +10,9 @@ This filter by default does the following
 - If not, the filter chain is invoked (i.e. any other resources defined in the webapp which match the request
   are served.
 - If no such resource is found, the servlet container handles the missing resource.
+micgwaf obtains the handler chain by calling  method 
+de.seerheinlab.micgwaf.config.ApplicationBase.getRequestHandlerChain()
+A custom request handler chain can be created by either overriding this method in the application class
+or by modifying the contents of the field de.seerheinlab.micgwaf.config.ApplicationBase.requestHandlers.
 
 TODO: describe what the handlers do
