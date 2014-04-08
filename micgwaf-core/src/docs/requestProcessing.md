@@ -29,15 +29,20 @@ The PRG(Post-Redirect-Get) Handler first checks whether the request is a POST re
 indicating that the request originated from a POST of a form.
 If yes, it starts the process phase. There, the page component from which the POST originated is identified. 
 If such a component exists, its process method is called, which returns the component to render, or null,
- in which case the component to render is set to the processed page component. The component to render
- is stored in the session, and a redirect is issued as response, to redirect to the rendered page.
- This concludes handling of the POST, and the handler returns true to indicate the request has been handled.
+in which case the component to render is set to the processed page component. The component to render
+is stored in the session, and a redirect is issued as response, to redirect to the rendered page.
+This concludes handling of the POST, and the handler returns true to indicate the request has been handled.
   
- If no such component exists or the request is no POST process, the render phase is started instead,
- which renders the component stored in the session. If no such component exists, the application class
- is asked to return the appropriate handler for the current path. If no component is returned, the PRG
- handler acknowledges that it could not handle the request and returns false. If a renderable component
- is identified, it is asked to render itself, and then the handler returns true
+If no such component exists or the request is no POST process, the render phase is started instead,
+which renders the component stored in the session. If no such component exists, the application class
+is asked to return the appropriate handler for the current path. If no component is returned, the PRG
+handler acknowledges that it could not handle the request and returns false. If a renderable component
+is identified, it is asked to render itself, and then the handler returns true.
+
+If an uncaught exception occurs during processing or rendering, the application's handleException method
+is called which returns a component to display an error page. By default, this prints the message
+"an error occurred". It is recommended to overwrite the application's handleException() method to provide
+a more sophisticated error handling.
   
 TODO describe step parameter
 
