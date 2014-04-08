@@ -1,4 +1,4 @@
-How Micgwaf processes a HTTP request
+How micgwaf processes a HTTP request
 ====================================
 
 micgwaf generates classes to handle incoming requests and to prodoce the appropriate response.
@@ -9,7 +9,8 @@ As soon as one of the filters processes the request, looping the request handler
 produces response is returned.
 If no RequestHandler processes the request, the standard filter chain is invoked
 (i.e. any other resources defined in the webapp which match the request are served.
- If no such resource is found, the servlet container handles the missing resource.
+ If no such resource is found, the servlet container handles the missing resource as it is configured
+ (e.g. by sending a HTTP 404 response).
 
 The default handler chain consist of the following Handlers
 - de.seerheinlab.micgwaf.requesthandler.AjaxHandler 
@@ -27,17 +28,19 @@ PRGHandler request processing
 
 The PRG(Post-Redirect-Get) Handler first checks whether the request is a POST request, 
 indicating that the request originated from a POST of a form.
-If yes, it starts the process phase. There, the page component from which the POST originated is identified. 
-If such a component exists, its process method is called, which returns the component to render, or null,
-in which case the component to render is set to the processed page component. The component to render
+If yes, it starts the process phase. There, the page component from which the POST originated 
+is read from the session. 
+If such a component exists, its process method is called, which returns the component to render (or null,
+in which case the component to render is set to the processed page component). The component to render
 is stored in the session, and a redirect is issued as response, to redirect to the rendered page.
 This concludes handling of the POST, and the handler returns true to indicate the request has been handled.
   
 If no such component exists or the request is no POST process, the render phase is started instead,
 which renders the component stored in the session. If no such component exists, the application class
-is asked to return the appropriate handler for the current path. If no component is returned, the PRG
-handler acknowledges that it could not handle the request and returns false. If a renderable component
-is identified, it is asked to render itself, and then the handler returns true.
+is asked to return the appropriate page component for the current request path. 
+If no component is returned, the PRG handler acknowledges that it could not handle the request
+and returns false.
+If a renderable component is identified, it is asked to render itself, and then the handler returns true.
 
 If an uncaught exception occurs during processing or rendering, the application's handleException method
 is called which returns a component to display an error page. By default, this prints the message
