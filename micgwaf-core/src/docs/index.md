@@ -161,5 +161,7 @@ simply remove the unused filter and filter-mapping:
       </filter-mapping>
     </web-app>
 
-
+Further references
+------------------
+[Request processing](requestProcessing.md)
   
