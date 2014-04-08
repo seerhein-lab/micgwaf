@@ -1,6 +1,7 @@
 package de.seerheinlab.micgwaf.filter;
 
 import java.io.IOException;
+import java.util.Iterator;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import de.seerheinlab.micgwaf.config.ApplicationBase;
+import de.seerheinlab.micgwaf.requesthandler.RequestHandler;
 
 public class WebappFilter implements Filter
 {
@@ -41,13 +43,16 @@ public class WebappFilter implements Filter
     HttpServletRequest httpServletRequest = (HttpServletRequest) request;
     HttpServletResponse httpServletResponse = (HttpServletResponse) response;
     long startTime = System.currentTimeMillis();
-    // TODO make Ajax handler exchangeable
-    boolean processed = new AjaxHandler().handle(httpServletRequest, httpServletResponse);
-    if (!processed)
+
+    boolean processed = false;
+    Iterator<RequestHandler> requestHandlerIt 
+        = ApplicationBase.getApplication().getRequestHandlerChain().iterator();
+    while (!processed && requestHandlerIt.hasNext())
     {
-      // TODO make PRG handler exchangeable
-      processed = new PRGHandler().handle(httpServletRequest, httpServletResponse);
+      RequestHandler requestHandler = requestHandlerIt.next();
+      processed = requestHandler.handle(httpServletRequest, httpServletResponse);
     }
+
     long endTime = System.currentTimeMillis();
     System.out.println("Request took " + (endTime - startTime) + " ms");
     if (!processed)

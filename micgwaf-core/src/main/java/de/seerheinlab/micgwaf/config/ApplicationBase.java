@@ -4,11 +4,16 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import de.seerheinlab.micgwaf.component.Component;
 import de.seerheinlab.micgwaf.component.SnippetComponent;
+import de.seerheinlab.micgwaf.requesthandler.AjaxHandler;
+import de.seerheinlab.micgwaf.requesthandler.PRGHandler;
+import de.seerheinlab.micgwaf.requesthandler.RequestHandler;
 import de.seerheinlab.micgwaf.util.Assertions;
 
 public abstract class ApplicationBase
@@ -19,6 +24,18 @@ public abstract class ApplicationBase
   /** Mapping from path patterns to components handling the requests with the path patterns. */
   public Map<String, Class<? extends Component>> components = new HashMap<>();
   
+  /** The request handler chain. The first handler gets invoked first. */
+  public List<RequestHandler> requestHandlers = new ArrayList<>();
+  
+  /**
+   * Constructor.
+   */
+  public ApplicationBase()
+  {
+    requestHandlers.add(new AjaxHandler());
+    requestHandlers.add(new PRGHandler());
+  }
+
   /**
    * Sets the application instance retrieved by <code>getApplication()</code>.
    * This method must be called at least once with the appropriate application instance
@@ -104,6 +121,16 @@ public abstract class ApplicationBase
     }
     throw new IllegalStateException("Component of class " + componentClass.getName() 
         + " has no constructor with a single Component parameter");
+  }
+  
+  /**
+   * Returns the request handler chain.
+   * 
+   * @return the request handler chain, not null. The first handler in the list gets invoked first.
+   */
+  public List<RequestHandler> getRequestHandlerChain()
+  {
+    return requestHandlers;
   }
   
   /**

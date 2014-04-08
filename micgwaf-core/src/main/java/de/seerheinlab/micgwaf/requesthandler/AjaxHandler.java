@@ -1,4 +1,4 @@
-package de.seerheinlab.micgwaf.filter;
+package de.seerheinlab.micgwaf.requesthandler;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -12,7 +12,7 @@ import de.seerheinlab.micgwaf.config.ApplicationBase;
 /**
  * Handles the PostReditectGet-Pattern
  */
-public class AjaxHandler
+public class AjaxHandler implements RequestHandler
 {
   public boolean handle(HttpServletRequest request, HttpServletResponse response)
       throws IOException

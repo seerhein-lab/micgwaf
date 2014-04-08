@@ -1,4 +1,4 @@
-package de.seerheinlab.micgwaf.filter;
+package de.seerheinlab.micgwaf.requesthandler;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -14,7 +14,7 @@ import de.seerheinlab.micgwaf.config.ApplicationBase;
 /**
  * Handles the PostRedirectGet-Pattern
  */
-public class PRGHandler
+public class PRGHandler implements RequestHandler
 {
 private static final String REQUEST_PARAM = "step";
   
