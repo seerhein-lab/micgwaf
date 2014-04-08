@@ -10,7 +10,7 @@ import de.seerheinlab.micgwaf.component.Component;
 import de.seerheinlab.micgwaf.config.ApplicationBase;
 
 /**
- * Handles the PostReditectGet-Pattern
+ * Handles the PostRedirectGet-Pattern
  */
 public class AjaxHandler implements RequestHandler
 {
