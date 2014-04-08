@@ -16,12 +16,14 @@ import de.seerheinlab.micgwaf.config.ApplicationBase;
  */
 public class PRGHandler implements RequestHandler
 {
-private static final String REQUEST_PARAM = "step";
+  public String stepParam = "step";
+  
+  public String defaultEncoding = "UTF-8";
   
   public boolean handle(HttpServletRequest request, HttpServletResponse response)
       throws IOException
   {
-    response.setCharacterEncoding("UTF-8");
+    response.setCharacterEncoding(defaultEncoding);
     boolean processed = false;
     if ("POST".equals(request.getMethod()))
     {
@@ -76,7 +78,7 @@ private static final String REQUEST_PARAM = "step";
     }
     componentList.add(toRender);
     
-    response.sendRedirect(".?" + REQUEST_PARAM + "=" + lastStep);
+    response.sendRedirect(".?" + stepParam + "=" + lastStep);
     request.getSession().setAttribute("step", lastStep + 1);
     
     return true;
@@ -95,9 +97,9 @@ private static final String REQUEST_PARAM = "step";
     }
 
     Component toRender = null;
-    if (request.getParameter(REQUEST_PARAM) != null)
+    if (request.getParameter(stepParam) != null)
     {
-      Integer param = Integer.parseInt(request.getParameter(REQUEST_PARAM));
+      Integer param = Integer.parseInt(request.getParameter(stepParam));
       if (param < componentList.size()) // if not assume stale index and treat as new
       {
         toRender = componentList.get(param);
