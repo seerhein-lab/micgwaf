@@ -16,6 +16,9 @@ The default handler chain consist of the following Handlers
 - de.seerheinlab.micgwaf.requesthandler.AjaxHandler 
 - de.seerheinlab.micgwaf.requesthandler.PRGHandler 
 
+Here, the Ajax handler checks whether the request is an Ajax request, and handles it accordingly if it is.
+If not, the PRG Handler does the "normal" request processing.
+
 micgwaf obtains the handler chain by calling the method 
 getRequestHandlerChain() of the configured Application class.
 A custom request handler chain can be created by either overriding this method in the application class
@@ -26,13 +29,23 @@ The handlers by default do the following:
 PRGHandler request processing
 -----------------------------
 
-The PRG(Post-Redirect-Get) Handler first checks whether the request is a POST request, 
+The PRG (Post-Redirect-Get) Handler handles two phases: a process phase in which the application logic
+is executed (e.g. calling business services), and a render phase in which the response HTML is built.
+Each of these phases run in a separate HTTP request; the process phase in a POST request,
+and the render phase in a GET request. The GET request is triggered by the POST request because the result
+of the POST Request is a redirect.
+
+Which one of the two phases is currently active is decided by the following algorithm:
+The PRG Handler first checks whether the request is a POST request, 
 indicating that the request originated from a POST of a form.
-If yes, it starts the process phase. There, the page component from which the POST originated 
-is read from the session. 
-If such a component exists, its process method is called, which returns the component to render (or null,
-in which case the component to render is set to the processed page component). The component to render
-is stored in the session, and a redirect is issued as response, to redirect to the rendered page.
+If yes, it checks whether there is a component stored in the session which matches the given request.
+If yes, the process phase is started, in all other cases, the render phase is started.
+
+In the process phase, the process method of the page component from which the POST originated is called, 
+which returns the component to render (or null, in which case the component to render is set
+to the processed page component).
+The component to render is stored in the session, and a redirect is issued as response,
+to redirect to the rendered page.
 This concludes handling of the POST, and the handler returns true to indicate the request has been handled.
   
 If no such component exists or the request is no POST process, the render phase is started instead,
