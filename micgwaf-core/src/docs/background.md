@@ -24,9 +24,12 @@ In my mind, a java web application framework should be designed along the follow
    - page frames
    - ignore parts (for templating)
    
-5) As far as possible, mockups should be easy to be re-used in application code.
+5) As far as possible, HTML mockups should be easy to be re-used in application code.
    So any mock-ups shown to discuss features of the web application can easily be used
    to build the real application afterwards and are not "lost work".
+   
+6) The framework should handle a pressed browser back button gracefully, not re-executing the business methods
+   which were executed prior to rendering the re-displayed page.
 
 Micgwaf addresses these points in the following fashion:
 
