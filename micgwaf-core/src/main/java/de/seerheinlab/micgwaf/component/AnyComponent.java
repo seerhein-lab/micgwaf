@@ -6,8 +6,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Acts as a placeholder for any component which can be inserted ad the specified location.
- * Only used for parsing, e.g. for insert elements in templates.
+ * Acts as a placeholder for any component which can be inserted ad the
+ * specified location. Only used for parsing, e.g. for insert elements in
+ * templates.
  */
 public class AnyComponent extends Component
 {
@@ -15,13 +16,13 @@ public class AnyComponent extends Component
   private static final long serialVersionUID = 1L;
 
   public String name;
-  
+
   public AnyComponent(String name, Component parent)
   {
     super(name, parent);
     this.name = name;
   }
-  
+
   public List<Component> getChildren()
   {
     return new ArrayList<>();
