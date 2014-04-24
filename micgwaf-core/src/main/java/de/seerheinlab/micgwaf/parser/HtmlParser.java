@@ -2,7 +2,6 @@ package de.seerheinlab.micgwaf.parser;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
@@ -51,7 +50,7 @@ public class HtmlParser
           }
           result.put(component.getId(), component);
         }
-        catch (FileNotFoundException | SAXException | IOException | ParserConfigurationException e)
+        catch (SAXException | IOException | ParserConfigurationException e)
         {
           throw new RuntimeException(e);
         } 

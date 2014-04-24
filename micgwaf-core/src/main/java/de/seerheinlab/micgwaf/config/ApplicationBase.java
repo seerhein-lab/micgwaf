@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import de.seerheinlab.micgwaf.component.Component;
 import de.seerheinlab.micgwaf.component.SnippetComponent;
 import de.seerheinlab.micgwaf.requesthandler.AjaxHandler;
