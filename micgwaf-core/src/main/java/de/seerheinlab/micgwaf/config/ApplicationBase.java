@@ -64,6 +64,27 @@ public abstract class ApplicationBase
     return instance;
   }
 
+
+  /**
+   * Returns the path considered for mounting components.
+   * We assume we are running in a servlet filter, 
+   * so this implementation returns the path info from the request,
+   * or "/" if the path info is null.
+   * 
+   * @param request the request, not null.
+   *
+   * @return the path considered for mounting, not null.
+   */
+  public String getMountPath(HttpServletRequest request)
+  {
+    String path = request.getServletPath();
+    if (path == null || "".equals(path))
+    {
+      path = "/";
+    }
+    return path;
+  }
+
   /**
    * Mounts a component to a certain path.
    * @param path the path to mount the component to, not null.

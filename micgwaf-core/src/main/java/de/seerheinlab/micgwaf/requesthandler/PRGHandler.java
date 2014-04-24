@@ -2,8 +2,6 @@ package de.seerheinlab.micgwaf.requesthandler;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -14,12 +12,13 @@ import de.seerheinlab.micgwaf.config.ApplicationBase;
 /**
  * Handles the PostRedirectGet-Pattern
  */
+// TODO Currently the session increases to the infinite. define maxConversations, maxSteps, maxStates and evict Components
 public class PRGHandler implements RequestHandler
 {
-  public String stepParam = "step";
-  
   public String defaultEncoding = "UTF-8";
   
+  public StateHandler stateHandler = new UrlParamSessionStateHandler();
+
   public boolean handle(HttpServletRequest request, HttpServletResponse response)
       throws IOException
   {
@@ -27,7 +26,7 @@ public class PRGHandler implements RequestHandler
     boolean processed = false;
     if ("POST".equals(request.getMethod()))
     {
-      processed =  process(request, response);
+      processed = process(request, response);
     }
     if (!processed)
     {
@@ -35,26 +34,16 @@ public class PRGHandler implements RequestHandler
     }
     return processed;
   }
-  
-  public boolean process(HttpServletRequest request, HttpServletResponse response)
-      throws IOException
+
+  public boolean process(HttpServletRequest request,
+      HttpServletResponse response) throws IOException
   {
-    String path = request.getServletPath();
-    String pathFromSession = (String) request.getSession().getAttribute("path");
-    Component toProcess = (Component) request.getSession().getAttribute("toProcess");
-    if (toProcess == null || !path.equals(pathFromSession))
+    Component toProcess = stateHandler.getState(request);
+    if (toProcess == null)
     {
       return false;
     }
-    Integer lastStep = (Integer) request.getSession().getAttribute("step");
-    if (lastStep == null)
-    {
-      lastStep = 0;
-    }
-    if (toProcess == null || !path.equals(pathFromSession))
-    {
-      return false;
-    }
+    
     Component toRender;
     try
     {
@@ -63,71 +52,47 @@ public class PRGHandler implements RequestHandler
       {
         toRender = toProcess;
       }
-    }
+    } 
     catch (Exception e)
     {
       toRender = ApplicationBase.getApplication().handleException(toProcess, e, false);
     }
-    
-    @SuppressWarnings("unchecked")
-    List<Component> componentList = (List<Component>) request.getSession().getAttribute("components");
-    if (componentList == null)
-    {
-      componentList = new ArrayList<>();
-      request.getSession().setAttribute("components", componentList);
-    }
-    componentList.add(toRender);
-    
-    response.sendRedirect(".?" + stepParam + "=" + lastStep);
-    request.getSession().setAttribute("step", lastStep + 1);
-    
+    stateHandler.saveNextStateAndCompleteRequest(toRender, request, response);
+
     return true;
   }
 
   public boolean render(HttpServletRequest request, HttpServletResponse response)
       throws IOException
   {
-    String path = request.getServletPath();
-    @SuppressWarnings("unchecked")
-	List<Component> componentList = (List<Component>) request.getSession().getAttribute("components");
-    if (componentList == null)
-    {
-      componentList = new ArrayList<>();
-      request.getSession().setAttribute("components", componentList);
-    }
-
-    Component toRender = null;
-    if (request.getParameter(stepParam) != null)
-    {
-      Integer param = Integer.parseInt(request.getParameter(stepParam));
-      if (param < componentList.size()) // if not assume stale index and treat as new
-      {
-        toRender = componentList.get(param);
-      }
-      
-    }
+    Component toRender = stateHandler.getState(request);
     if (toRender != null)
     {
-      // TODO this is dirty. 
-      // Although storing/retrieving from the session may loose information, which may need rebuilding,
-      // we may not be sure whether this method does initializations which should happen only once
-      // during instance lifetime. 
+      // TODO this is dirty.
+      // Although storing/retrieving from the session may loose information,
+      // which may need rebuilding,
+      // we may not be sure whether this method does initializations which
+      // should happen only once
+      // during instance lifetime.
       ApplicationBase.getApplication().postConstruct(toRender);
-    }
+    } 
     else
     {
+      String path = ApplicationBase.getApplication().getMountPath(request);
       toRender = ApplicationBase.getApplication().getComponent(path);
-    }
-    if (toRender == null)
-    {
-      return false;
+      if (toRender == null)
+      {
+        return false;
+      }
+      stateHandler.saveNextStateAndCompleteRequest(toRender, request, response);
+      return true;
     }
     PrintWriter writer = response.getWriter();
     try
     {
       toRender.render(writer);
       toRender.afterRender();
-    }
+    } 
     catch (Exception e)
     {
       response.reset();
@@ -136,8 +101,8 @@ public class PRGHandler implements RequestHandler
       toRender.afterRender();
     }
     writer.close();
-    request.getSession().setAttribute("toProcess", toRender);
-    request.getSession().setAttribute("path", path);
+    // TODO should state changes in the toRender component be tracked, i.e. stored in the session?
+    // This also affects if toRender is completely new because of Exception handling...
     return true;
   }
 }
