@@ -1,15 +1,16 @@
 package de.seerheinlab.micgwaf.requesthandler;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import de.seerheinlab.micgwaf.Application;
 import de.seerheinlab.micgwaf.component.Component;
+import de.seerheinlab.micgwaf.config.ApplicationBase;
 
 /**
  * A state handler which stores the state in the session and adds a request parameter to the
@@ -22,6 +23,9 @@ public class UrlParamSessionStateHandler implements StateHandler
   public static final String COMPONENT_MAP_SESSION_ATTRIBUTE_NAME 
       = UrlParamSessionStateHandler.class.getName() + "." + "COMPONENT_MAP";
 
+  public static final String COMPONENT_KEY_LIST_SESSION_ATTRIBUTE_NAME 
+      = UrlParamSessionStateHandler.class.getName() + "." + "COMPONENT_KEY_LIST";
+
   public static final String NEXT_CONVERSATION_SESSION_ATTRIBUTE_NAME 
       = UrlParamSessionStateHandler.class.getName() + "." + "NEXT_CONVERSATION";
 
@@ -32,13 +36,16 @@ public class UrlParamSessionStateHandler implements StateHandler
   
   /** Starts the part of the state key which marks the current step. */
   public String stepPrefix = "s";
+  
+  /** How many states are stored maximally in the session. */
+  public int maxStates = 100;
 
   @Override
   public Component getState(HttpServletRequest request)
   {
     Map<ComponentMapSessionKey, Component> componentMap = getComponentMapFromSession(request);
 
-    String path = Application.getApplication().getMountPath(request);
+    String path = ApplicationBase.getApplication().getMountPath(request);
     String stateKey = getCurrentStateKey(request);
     if (stateKey == null)
     {
@@ -58,9 +65,15 @@ public class UrlParamSessionStateHandler implements StateHandler
   {
     Map<ComponentMapSessionKey, Component> componentMap = getComponentMapFromSession(request);
     String nextStateKey = getNextStateKey(request);
-    String path = Application.getApplication().getMountPath(request);
+    String path = ApplicationBase.getApplication().getMountPath(request);
     ComponentMapSessionKey sessionStateKey = new ComponentMapSessionKey(path, nextStateKey);
     componentMap.put(sessionStateKey, component);
+    while (maxStates > 0 && componentMap.size() > maxStates)
+    {
+      Iterator<Map.Entry<ComponentMapSessionKey, Component>> entryIt = componentMap.entrySet().iterator();
+      entryIt.next();
+      entryIt.remove();
+    }
     response.sendRedirect(".?" + stateKeyParam + "=" + nextStateKey);
   }
 
@@ -80,7 +93,7 @@ public class UrlParamSessionStateHandler implements StateHandler
         .getAttribute(COMPONENT_MAP_SESSION_ATTRIBUTE_NAME);
     if (componentMap == null)
     {
-      componentMap = new HashMap<>();
+      componentMap = new LinkedHashMap<>();
       request.getSession().setAttribute(COMPONENT_MAP_SESSION_ATTRIBUTE_NAME, componentMap);
     }
     return componentMap;
