@@ -20,8 +20,7 @@ import de.seerheinlab.micgwaf.component.Component;
 
 public class HtmlParser
 {
-  private static final String SAX_NAMESPACE_FEATURE_NAME 
-      = "http://xml.org/sax/features/namespaces";
+  private static final String SAX_NAMESPACE_FEATURE_NAME = "http://xml.org/sax/features/namespaces";
   
   public Map<String, Component> readComponents(File sourceDirectory)
   {
@@ -52,23 +51,10 @@ public class HtmlParser
           }
           result.put(component.getId(), component);
         }
-        catch (FileNotFoundException e)
+        catch (FileNotFoundException | SAXException | IOException | ParserConfigurationException e)
         {
           throw new RuntimeException(e);
         } 
-        catch (SAXException e)
-        {
-          throw new RuntimeException(e);
-        }
-        catch (IOException e)
-        {
-          throw new RuntimeException(e);
-        } 
-        catch (ParserConfigurationException e)
-        {
-          throw new RuntimeException(e);
-        }
-        
       }
     }
     return result;
@@ -77,11 +63,10 @@ public class HtmlParser
   public Component parse(InputStream inputStream) 
       throws SAXException, IOException, ParserConfigurationException
   {
-    SAXParserFactory saxParserFactory = SAXParserFactory.newInstance(); 
+    SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
     SAXParser saxParser = saxParserFactory.newSAXParser(); 
     XMLReader xmlReader = saxParser.getXMLReader(); 
-    DelegatingContentHandler handler 
-        = new DelegatingContentHandler();
+    DelegatingContentHandler handler = new DelegatingContentHandler();
     xmlReader.setContentHandler(handler);
     xmlReader.setEntityResolver(handler);
     xmlReader.setDTDHandler(handler);
