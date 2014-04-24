@@ -52,12 +52,18 @@ public class GeneratedSourcesTest
     assertEquals(expected, pageContent);
   }
 
-  private URLClassLoader getClassLoader() throws MalformedURLException {
+  private URLClassLoader getClassLoader() throws MalformedURLException 
+  {
+    URL httpServletRequestUrl = GeneratedSourcesTest.class.getClassLoader().getResource("javax/servlet/http/HttpServletRequest.class");
+    // Assuming we have a file jar URL, just get the URL to the jar file
+    String servletJarPath = httpServletRequestUrl.toString();
+    servletJarPath = servletJarPath.substring(servletJarPath.indexOf("file:"), servletJarPath.indexOf("!"));
     URLClassLoader classLoader = URLClassLoader.newInstance(
         new URL[] { 
             GeneratorAndCompiler.compileRootDir.toURI().toURL(), 
             new File("target/classes").toURI().toURL() ,
-            new File("target/test-classes").toURI().toURL() 
+            new File("target/test-classes").toURI().toURL(),
+            new URL(servletJarPath),
         }, 
         null );
     return classLoader;
