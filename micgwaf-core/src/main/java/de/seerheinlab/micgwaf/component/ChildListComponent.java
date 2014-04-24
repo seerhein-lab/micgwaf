@@ -15,7 +15,7 @@ public class ChildListComponent<T extends Component> extends Component
   private static final long serialVersionUID = 1L;
 
   public final ChildList<T> children = new ChildList<T>();
-  
+
   public ChildListComponent(Component parent)
   {
     super(null, parent);
@@ -45,7 +45,7 @@ public class ChildListComponent<T extends Component> extends Component
       child.render(writer);
     }
   }
-  
+
   public static class ChildList<C extends Component> extends ArrayList<C>
   {
     /** serial Version UID. */
@@ -54,12 +54,12 @@ public class ChildListComponent<T extends Component> extends Component
     public ChildList()
     {
     }
-    
+
     public ChildList(Collection<? extends C> toCopy)
     {
       super.addAll(toCopy);
     }
-    
+
     @Override
     public boolean add(C component)
     {
@@ -141,7 +141,7 @@ public class ChildListComponent<T extends Component> extends Component
       component.inLoop(size());
       return super.set(index, component);
     }
-    
+
     public ChildList<C> copy()
     {
       return new ChildList<C>(this);
