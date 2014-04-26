@@ -62,21 +62,30 @@ public abstract class Component implements Serializable
     }
   }
   
-  public String getHtmlId(String htmlId)
+  /**
+   * Calculates the HTML id of a component, taking into account potential parents implementing the
+   * ChangesChildHtmlId interface.
+   * 
+   * @param initialHtmlId the initial HTML id of this component, or null.
+   * 
+   * @return the HTML id with the modifications of all ancestors implementing the ChangesChildHtmlId
+   *         interfaces, or null if null wass passed in.
+   */
+  public String getHtmlId(String initialHtmlId)
   {
-    if (htmlId == null)
+    if (initialHtmlId == null)
     {
       return null;
     }
     Component parent = getParent();
     if (parent == null)
     {
-      return htmlId;
+      return initialHtmlId;
     }
-    String newId = htmlId;
+    String newId = initialHtmlId;
     if (parent instanceof ChangesChildHtmlId)
     {
-      newId = ((ChangesChildHtmlId) parent).changeChildHtmlId(this, htmlId);
+      newId = ((ChangesChildHtmlId) parent).changeChildHtmlId(this, initialHtmlId);
     }
     return parent.getHtmlId(newId);
   }
