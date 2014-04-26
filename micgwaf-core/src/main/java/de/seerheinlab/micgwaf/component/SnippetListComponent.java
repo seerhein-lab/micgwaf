@@ -6,35 +6,57 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import de.seerheinlab.micgwaf.util.Assertions;
+
 /**
- * A component representing a list of HTML snippets.
+ * A component representing a list of HTML snippets or other components (called parts).
+ * This component is mainly used during parsing HTML documents.
  */
 public class SnippetListComponent extends Component
 {
   /** Serial Version UID. */
   private static final long serialVersionUID = 1L;
 
-  /** Unmodifiable list of parts. */
+  /** The list of parts. */
   public final List<ComponentPart> parts;
   
+  /**
+   * Constructs a SnippetListComponent containing no parts.
+   * 
+   * @param parent the parent component. May be null if this is a standalone component (e.g. a page).
+   */
   public SnippetListComponent(Component parent)
   {
     super(null, parent);
     this.parts = new ArrayList<>();
   }
 
-  public SnippetListComponent(List<ComponentPart> parts, Component parent)
-  {
-    super(null, parent);
-    this.parts = parts;
-  }
-  
+  /**
+   * Constructs a SnippetListComponent with an id, containing no parts.
+   * 
+   * @param id the id of the component, may be null. The id is not used in this component.
+   * @param parent the parent component. May be null if this is a standalone component (e.g. a page).
+   */
   public SnippetListComponent(String id, Component parent)
   {
     super(id, parent);
     this.parts = new ArrayList<>();
   }
 
+  /**
+   * Constructs a SnippetListComponent with the given initial parts.
+   * 
+   * @param parts the initial parts of this component, not null. This list is copied, but it contents
+   *        are not cloned in any way.
+   * @param parent the parent component. May be null if this is a standalone component (e.g. a page).
+   */
+  public SnippetListComponent(List<ComponentPart> parts, Component parent)
+  {
+    super(null, parent);
+    Assertions.assertNotNull(parts, "parts");
+    this.parts = new ArrayList<>(parts);
+  }
+  
   public void resolveComponentReferences(Map<String, ? extends Component> allComponents)
   {
     super.resolveComponentReferences(allComponents);
@@ -84,9 +106,9 @@ public class SnippetListComponent extends Component
   /**
    * Returns a shallow copy of this object.
    * The part list is copied and thus may be changed in the copy without affecting the copy origin.
-   * However, referenced component (in the parts or the parent reference) are not copied.
+   * However, the referenced components (the parts and the parent reference) are not copied.
    * 
-   * @return a copy of this object, not null.
+   * @return a shallow copy of this object, not null.
    */
   public SnippetListComponent copy()
   {
@@ -123,7 +145,7 @@ public class SnippetListComponent extends Component
       }
       catch (CloneNotSupportedException e)
       {
-        // should not happen as we implementn Cloneaable
+        // should not happen as we implement Cloneaable
         throw new RuntimeException(e);
       }
     }
