@@ -19,13 +19,16 @@ public interface StateHandler
    * @param request the request to answer, not null.
    * 
    * @return the component, or null if no such component can be found.
+   * 
+   * @throws IOException if an IOError occurs.
    */
-  public Component getState(HttpServletRequest request);
+  public Component getState(HttpServletRequest request) throws IOException;
   
   /**
    * Creates a new state containing the passed component, saves it so it can be retrieved next time,
    * and completes the current request.
-   * TODO check isolation, i.e. what happens if different steps contain the same component and it gets modified
+   * The stored state must be decoupled from the component, i.e. if the component changes 
+   * after state saving, the saved state must stay the same.
    * 
    * @param component the component to save in the state, not null.
    * @param request the current servlet request, not null.

@@ -1,6 +1,10 @@
 package de.seerheinlab.micgwaf.requesthandler;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -41,9 +45,9 @@ public class UrlParamSessionStateHandler implements StateHandler
   public int maxStates = 100;
 
   @Override
-  public Component getState(HttpServletRequest request)
+  public Component getState(HttpServletRequest request) throws IOException
   {
-    Map<ComponentMapSessionKey, Component> componentMap = getComponentMapFromSession(request);
+    Map<ComponentMapSessionKey, byte[]> componentMap = getComponentMapFromSession(request);
 
     String path = ApplicationBase.getApplication().getMountPath(request);
     String stateKey = getCurrentStateKey(request);
@@ -52,7 +56,7 @@ public class UrlParamSessionStateHandler implements StateHandler
       return null;
     }
     ComponentMapSessionKey sessionStateKey = new ComponentMapSessionKey(path, stateKey);
-    Component state = componentMap.get(sessionStateKey);
+    Component state = deserialize(componentMap.get(sessionStateKey));
     return state;
   }
 
@@ -63,14 +67,14 @@ public class UrlParamSessionStateHandler implements StateHandler
         HttpServletResponse response)
       throws IOException
   {
-    Map<ComponentMapSessionKey, Component> componentMap = getComponentMapFromSession(request);
+    Map<ComponentMapSessionKey, byte[]> componentMap = getComponentMapFromSession(request);
     String nextStateKey = getNextStateKey(request);
     String path = ApplicationBase.getApplication().getMountPath(request);
     ComponentMapSessionKey sessionStateKey = new ComponentMapSessionKey(path, nextStateKey);
-    componentMap.put(sessionStateKey, component);
+    componentMap.put(sessionStateKey, serialize(component));
     while (maxStates > 0 && componentMap.size() > maxStates)
     {
-      Iterator<Map.Entry<ComponentMapSessionKey, Component>> entryIt = componentMap.entrySet().iterator();
+      Iterator<Map.Entry<ComponentMapSessionKey, byte[]>> entryIt = componentMap.entrySet().iterator();
       entryIt.next();
       entryIt.remove();
     }
@@ -86,10 +90,10 @@ public class UrlParamSessionStateHandler implements StateHandler
    * 
    * @return the component map, not null.
    */
-  protected Map<ComponentMapSessionKey, Component> getComponentMapFromSession(HttpServletRequest request)
+  protected Map<ComponentMapSessionKey, byte[]> getComponentMapFromSession(HttpServletRequest request)
   {
     @SuppressWarnings("unchecked")
-    Map<ComponentMapSessionKey, Component> componentMap = (Map<ComponentMapSessionKey, Component>) request.getSession()
+    Map<ComponentMapSessionKey, byte[]> componentMap = (Map<ComponentMapSessionKey, byte[]>) request.getSession()
         .getAttribute(COMPONENT_MAP_SESSION_ATTRIBUTE_NAME);
     if (componentMap == null)
     {
@@ -203,6 +207,61 @@ public class UrlParamSessionStateHandler implements StateHandler
       session.setAttribute(NEXT_CONVERSATION_SESSION_ATTRIBUTE_NAME, nextConversation + 1);
       // logger.debug("getNextStep(): created conversation " + conversation);
       return nextConversation;
+    }
+  }
+  
+  /**
+   * Serializes a component to a byte array.
+   * 
+   * @param component the component to serialize, not null.
+   * 
+   * @return the serialized component.
+   * 
+   * @throws IOException if serialization fails.
+   */
+  protected byte[] serialize(Component component) throws IOException
+  {
+    ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+    ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
+    try 
+    {
+      objectOutputStream.writeObject(component);
+      objectOutputStream.flush();
+    } 
+    finally 
+    {
+      objectOutputStream.close();
+    }
+    return outputStream.toByteArray();
+  }
+  
+  /**
+   * Deserializes a byte array to a component.
+   * 
+   * @param data the byte array to deserialize, or null.
+   * 
+   * @return the deserialized component, may be null.
+   * 
+   * @throws IOException if deserialization fails.
+   */
+  protected Component deserialize(byte[] data) throws IOException 
+  {
+    if (data == null)
+    {
+      return null;
+    }
+    ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data));
+    try 
+    {
+      return (Component) ois.readObject();
+    }
+    catch (ClassNotFoundException e)
+    {
+      throw new IOException(e);
+    }
+    finally
+    {
+      ois.close();
     }
   }
 }

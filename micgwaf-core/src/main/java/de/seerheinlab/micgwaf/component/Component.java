@@ -11,6 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * Base class of all components.
  * A component is a part of a HTML page that knows how to render itself and how to process HTTP requests.
+ * 
+ * All components must be serializable (because the component state is stored in serialized form
+ * between requests).
  */
 public abstract class Component implements Serializable
 {
