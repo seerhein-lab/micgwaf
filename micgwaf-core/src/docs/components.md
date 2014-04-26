@@ -11,4 +11,14 @@ However, components can be more simple (like just rendering HTML, e.g. a header)
 In micgwaf, a component needs to follow the component contract, laid out in the interface
 de.seerheinlab.micgwaf.component.Component.
 
-TODO component lifecycle
+Component lifecycle
+-------------------
+
+TODO
+
+Framework components
+-------------------
+
+The following components are built in in micgwaf:
+
+TODO
