@@ -97,6 +97,7 @@ public class CompositionGenerator extends ComponentGenerator
           fileContent,
           "public ",
           templateFieldName,
+          "this",
           2);
     }
 
@@ -118,7 +119,7 @@ public class CompositionGenerator extends ComponentGenerator
         componentDefinition = ((DefineComponent) componentDefinition).referencedComponent;
       }
       ComponentGenerator generator = Generator.getGenerator(componentDefinition);
-      generator.generateFieldOrVariableFromComponent(componentDefinition, targetPackage, fileContent, "", entry.getKey(), 4);
+      generator.generateFieldOrVariableFromComponent(componentDefinition, targetPackage, fileContent, "", entry.getKey(), "this", 4);
       fileContent.append("    ").append(templateFieldName).append(".").append(entry.getKey()).append(" = ").append(entry.getKey()).append(";\n");
     }
     fileContent.append("  }\n\n");
@@ -187,7 +188,7 @@ public class CompositionGenerator extends ComponentGenerator
       if (part.component != null)
       {
         String fieldName = getChildName(componentField, counter);
-        generateFieldOrVariableFromComponent(part.component, targetPackage, result, "", fieldName, indent + 2);
+        generateFieldOrVariableFromComponent(part.component, targetPackage, result, "", fieldName, "this", indent + 2);
         result.append(indentString).append("  ").append(componentField)
             .append(".parts.add(ComponentPart.fromComponent(")
             .append(fieldName).append("));\n");

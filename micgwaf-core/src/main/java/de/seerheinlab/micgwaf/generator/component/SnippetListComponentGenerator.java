@@ -86,7 +86,7 @@ public class SnippetListComponentGenerator extends ComponentGenerator
         fileContent.append("\n");
         String componentField = getComponentFieldName(part.component, componentCounter);
         ComponentGenerator generator = Generator.getGenerator(part.component);
-        generator.generateFieldOrVariableFromComponent(part.component, targetPackage, fileContent, "public ", componentField, 2);
+        generator.generateFieldOrVariableFromComponent(part.component, targetPackage, fileContent, "public ", componentField, "this", 2);
         componentCounter++;          
       }
     }
@@ -192,7 +192,7 @@ public class SnippetListComponentGenerator extends ComponentGenerator
       if (part.component != null)
       {
         String fieldName = getChildName(componentField, counter);
-        generateFieldOrVariableFromComponent(part.component, targetPackage, result, "", fieldName, indent + 2);
+        generateFieldOrVariableFromComponent(part.component, targetPackage, result, "", fieldName, "this", indent + 2);
         result.append(indentString).append("  ").append(componentField)
             .append(".parts.add(ComponentPart.fromComponent(")
             .append(fieldName).append("));\n");

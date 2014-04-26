@@ -197,6 +197,7 @@ public abstract class ComponentGenerator
    * @param toAppendTo the String builder to which the generated code should be appended, not null.
    * @param modifier any modifier to the variable or field, e.g "public " or "final ".
    * @param fieldName the name of the field or variable
+   * @param parentName the code how to access the parent of the component.
    * @param indent how many spaces the generated code should be indented.
    */
   public void generateFieldOrVariableFromComponent(
@@ -205,6 +206,7 @@ public abstract class ComponentGenerator
       StringBuilder toAppendTo,
       String modifier,
       String fieldName,
+      String parentName,
       int indent)
   {
     String indentString = getIndentString(indent);
@@ -220,7 +222,7 @@ public abstract class ComponentGenerator
       toAppendTo.append(indentString).append(modifier).append(componentClassName.getSimpleName())
           .append(" ").append(fieldName)
           .append(" = ApplicationBase.getApplication().postConstruct(\n")
-          .append(indentString).append("    ").append("new ").append(componentClassName.getSimpleName()).append("(this));\n");
+          .append(indentString).append("    ").append("new ").append(componentClassName.getSimpleName()).append("(" + parentName + "));\n");
     }
     toAppendTo.append(generator.generateInitializer(fieldName, component, targetPackage, indent));
   }
@@ -251,7 +253,7 @@ public abstract class ComponentGenerator
       {
         fieldName = getChildName(componentField, counter);
       }
-      generateFieldOrVariableFromComponent(child, targetPackage, result, "", fieldName, indent + 2);
+      generateFieldOrVariableFromComponent(child, targetPackage, result, "", fieldName, "this", indent + 2);
       result.append(indentString).append("  ").append(componentField).append(".children.add(")
           .append(fieldName).append(");\n");
 

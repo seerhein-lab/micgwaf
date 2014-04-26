@@ -70,6 +70,7 @@ public class HtmlElementComponent extends Component
     {
       renderedAttributes.put("id", id);
     }
+    renderedAttributes.put("id", getHtmlId( renderedAttributes.get("id")));
     return renderedAttributes;
   }
   

@@ -62,22 +62,23 @@ public abstract class Component implements Serializable
     }
   }
   
-  /**
-   * Marks this component as being the loopIndex'th part in a loop.
-   * May be called repetitively if several loops surround the component.
-   * 
-   * @param loopIndex the number of the component in a loop, 0 based.
-   */
-  public void inLoop(int loopIndex)
+  public String getHtmlId(String htmlId)
   {
-    if (id != null)
+    if (htmlId == null)
     {
-      id = id + ":" + loopIndex;
+      return null;
     }
-    for (Component child : getChildren())
+    Component parent = getParent();
+    if (parent == null)
     {
-      child.inLoop(loopIndex);
+      return htmlId;
     }
+    String newId = htmlId;
+    if (parent instanceof ChangesChildHtmlId)
+    {
+      newId = ((ChangesChildHtmlId) parent).changeChildHtmlId(this, htmlId);
+    }
+    return parent.getHtmlId(newId);
   }
   
   /** 

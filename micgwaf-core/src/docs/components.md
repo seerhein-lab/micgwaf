@@ -11,12 +11,13 @@ However, components can be more simple (like just rendering HTML, e.g. a header)
 In micgwaf, a component needs to follow the component contract, laid out in the interface
 de.seerheinlab.micgwaf.component.Component.
 
-A Component typically has a constructor with two parameters: the id of the component and the parent.
-The id can be null, although for most components this is not recommended, and the parent may be null
-only for standalone components like page components.
+A component typically has a constructor with the parent component as parameter.
+The parent may be null only for standalone components like page components.
 There is a bi-directional relation between parent and child components.
 Typically, the component tree is constructed bottom-up (starting from the page component), so it is
 the responsibility of the parent component to establish the bi-directional relationship properly. 
+Also quite common are constructors with the id of the component and the parent.
+The id can be null, although for most components this is not recommended.
 
 A Component has the following responsibilities
 - Allow its children to render themselves in the render phase
@@ -40,7 +41,14 @@ Framework components
 
 There are a number of components built into the micgwaf framework itself. 
 They live in the package de.seerheinlab.micgwaf.component.
-This package contains the component interface, and the following implementations:
+This package contains the component interface.
+It contains components which are used in "normal" development of Web applications, and components which are 
+internally used by micgwaf when parsing HTML files. 
+The normal implementations are :
 
  - SnippetComponent: This component simply prints a HTML snippet as is during the render phase.
    It ignores the process phase.
+   
+The implementations used mainly during parsing are
+
+- SnippetListComponent: Contains HTML snippets and child components.

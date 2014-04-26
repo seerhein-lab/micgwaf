@@ -1,5 +1,7 @@
 package de.seerheinlab.micgwaf.component;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpServletRequest;
 
 public class InputComponent extends HtmlElementComponent
@@ -77,13 +79,24 @@ public class InputComponent extends HtmlElementComponent
     return super.processRequest(request);
   }
   
-  @Override
-  public void inLoop(int loopIndex)
+  /**
+   * Returns the attributes to be used for rendering.
+   * This implementation adds the id of the component as id attribute, if not null,
+   * and it corrects the values of id and name attributes.
+   * This method may be overwritten in subclasses.
+   * 
+   * @return the attributes for rendering, in a map with a defined iteration order, not null.
+   */
+  public Map<String, String> getRenderedAttributes()
   {
-    super.inLoop(loopIndex);
-    attributes.put(NAME_ATTR, attributes.get(NAME_ATTR) + ":" + loopIndex);
+    Map<String, String> renderedAttributes = super.getRenderedAttributes();
+    if (renderedAttributes.containsKey(NAME_ATTR))
+    {
+      renderedAttributes.put(NAME_ATTR, renderedAttributes.get(NAME_ATTR));
+    }
+    return renderedAttributes;
   }
-  
+
   @Override
   public void afterRender()
   {

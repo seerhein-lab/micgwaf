@@ -75,7 +75,7 @@ public class ChildListComponentGenerator extends ComponentGenerator
     {
       Component child = childListComponent.children.get(i);
       ComponentGenerator delegate = Generator.getGenerator(child);
-      generateFieldOrVariableFromComponent(child, targetPackage, result, "", componentField + i, 4);
+      generateFieldOrVariableFromComponent(child, targetPackage, result, "", componentField + i, componentField, 4);
       result.append(delegate.generateInitializer(componentField + i, child, targetPackage, indent + 2));
       result.append(indentString).append("  ").append(componentField).append(".children.add(")
          .append(componentField).append(i).append(");\n");

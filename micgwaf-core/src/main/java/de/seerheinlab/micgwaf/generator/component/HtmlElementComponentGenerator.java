@@ -112,7 +112,7 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
           String componentField = getComponentFieldName(part, componentCounter);
           if (part.component != null)
           {
-            generateFieldOrVariableFromComponent(part.component, targetPackage, fileContent, "public ", componentField, 2);
+            generateFieldOrVariableFromComponent(part.component, targetPackage, fileContent, "public ", componentField, "this", 2);
           }
           else
           {
@@ -129,7 +129,7 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
         continue;
       }
       String componentField = getComponentFieldName(child, componentCounter);
-      generateFieldOrVariableFromComponent(child, targetPackage, fileContent, "public ", componentField, 2);
+      generateFieldOrVariableFromComponent(child, targetPackage, fileContent, "public ", componentField, "this", 2);
       componentCounter++;
     }
 
