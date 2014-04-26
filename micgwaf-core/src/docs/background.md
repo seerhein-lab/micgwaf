@@ -3,7 +3,7 @@ micgwaf background
 
 In my mind, a java web application framework should be designed along the following principles
 
-1) HTML and Java code should be tightly build. 
+1) HTML and Java code should be tightly bound. 
    If java code and HTML do not match, the mismatch should be discovered during build time.
    This makes it e.g. easy to find out where any Java method is used during rendering HTML.
    
