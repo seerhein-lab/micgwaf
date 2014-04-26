@@ -4,7 +4,7 @@ import java.util.List;
 
 import de.seerheinlab.micgwaf.component.Component;
 import de.seerheinlab.micgwaf.component.RefComponent;
-import de.seerheinlab.micgwaf.component.SnippetListComponent;
+import de.seerheinlab.micgwaf.component.PartListComponent;
 import de.seerheinlab.micgwaf.generator.Generator;
 import de.seerheinlab.micgwaf.generator.JavaClassName;
 
@@ -359,7 +359,7 @@ public abstract class ComponentGenerator
     return  "component" + componentCounter;
   }
 
-  public String getComponentFieldName(SnippetListComponent.ComponentPart part, int componentCounter)
+  public String getComponentFieldName(PartListComponent.ComponentPart part, int componentCounter)
   {
     if (part.component != null)
     {

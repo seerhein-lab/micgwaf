@@ -25,6 +25,7 @@ A Component has the following responsibilities
 - Allow its children to resolve component references. This responsibility is usually taken care of by the 
   method resolveComponentReferences(Map<String, ? extends Component>) of Component itself.
   Components which do NOT use the handling of children implemented in Component need to override this method.
+  It is only relevant in HTML Development mode (when serving the HTML files directly)
 - render HTML id attributes using the result of the Component.getHtmlId(String) methods. 
   This method generates unique ids even if the component is rendered several times (e.g. in loops).
 
@@ -51,4 +52,4 @@ The normal implementations are :
    
 The implementations used mainly during parsing are
 
-- SnippetListComponent: Contains HTML snippets and child components.
+- PartListComponent: Contains HTML snippets and child components.

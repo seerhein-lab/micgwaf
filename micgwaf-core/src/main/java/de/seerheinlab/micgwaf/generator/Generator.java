@@ -18,7 +18,7 @@ import de.seerheinlab.micgwaf.component.FormComponent;
 import de.seerheinlab.micgwaf.component.HtmlElementComponent;
 import de.seerheinlab.micgwaf.component.InputComponent;
 import de.seerheinlab.micgwaf.component.RefComponent;
-import de.seerheinlab.micgwaf.component.SnippetListComponent;
+import de.seerheinlab.micgwaf.component.PartListComponent;
 import de.seerheinlab.micgwaf.generator.component.AnyComponentGenerator;
 import de.seerheinlab.micgwaf.generator.component.ChildListComponentGenerator;
 import de.seerheinlab.micgwaf.generator.component.ComponentGenerator;
@@ -29,7 +29,7 @@ import de.seerheinlab.micgwaf.generator.component.FormComponentGenerator;
 import de.seerheinlab.micgwaf.generator.component.HtmlElementComponentGenerator;
 import de.seerheinlab.micgwaf.generator.component.InputComponentGenerator;
 import de.seerheinlab.micgwaf.generator.component.RefComponentGenerator;
-import de.seerheinlab.micgwaf.generator.component.SnippetListComponentGenerator;
+import de.seerheinlab.micgwaf.generator.component.PartListComponentGenerator;
 import de.seerheinlab.micgwaf.generator.config.GeneratorConfiguration;
 import de.seerheinlab.micgwaf.parser.HtmlParser;
 import de.seerheinlab.micgwaf.util.Assertions;
@@ -52,7 +52,7 @@ public class Generator
   
   static
   {
-    componentGeneratorMap.put(SnippetListComponent.class, new SnippetListComponentGenerator());
+    componentGeneratorMap.put(PartListComponent.class, new PartListComponentGenerator());
     componentGeneratorMap.put(HtmlElementComponent.class, new HtmlElementComponentGenerator());
     componentGeneratorMap.put(InputComponent.class, new InputComponentGenerator());
     componentGeneratorMap.put(FormComponent.class, new FormComponentGenerator());

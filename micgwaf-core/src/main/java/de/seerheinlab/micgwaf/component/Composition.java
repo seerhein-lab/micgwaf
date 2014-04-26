@@ -19,7 +19,7 @@ public class Composition extends Component
   
   public String templateId;
   
-  public SnippetListComponent template;
+  public PartListComponent template;
 
   public Composition(Component parent)
   {
@@ -35,13 +35,13 @@ public class Composition extends Component
     {
       throw new IllegalStateException("unknown template component with id " + templateId);
     }
-    if (!(templateCandidate instanceof SnippetListComponent))
+    if (!(templateCandidate instanceof PartListComponent))
     {
       throw new IllegalStateException("template must be of class SnippetListComponent but is of class" 
           + templateCandidate.getClass().getName());
     }
-    template = ((SnippetListComponent) templateCandidate).copy();
-    for (SnippetListComponent.ComponentPart part : template.parts)
+    template = ((PartListComponent) templateCandidate).copy();
+    for (PartListComponent.ComponentPart part : template.parts)
     {
       if (part.component instanceof AnyComponent)
       {

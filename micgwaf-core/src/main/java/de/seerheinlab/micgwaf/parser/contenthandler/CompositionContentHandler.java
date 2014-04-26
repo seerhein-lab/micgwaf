@@ -6,7 +6,7 @@ import org.xml.sax.SAXException;
 import de.seerheinlab.micgwaf.component.Component;
 import de.seerheinlab.micgwaf.component.Composition;
 import de.seerheinlab.micgwaf.component.DefineComponent;
-import de.seerheinlab.micgwaf.component.SnippetListComponent;
+import de.seerheinlab.micgwaf.component.PartListComponent;
 import de.seerheinlab.micgwaf.util.Constants;
 
 public class CompositionContentHandler extends ContentHandler
@@ -45,10 +45,10 @@ public class CompositionContentHandler extends ContentHandler
   @Override
   public void child(Component child) throws SAXException
   {
-    if (child instanceof SnippetListComponent)
+    if (child instanceof PartListComponent)
     {
-      SnippetListComponent snippetListChild = (SnippetListComponent) child;
-      for (SnippetListComponent.ComponentPart part : snippetListChild.parts)
+      PartListComponent snippetListChild = (PartListComponent) child;
+      for (PartListComponent.ComponentPart part : snippetListChild.parts)
       {
         if (part.htmlSnippet != null)
         {

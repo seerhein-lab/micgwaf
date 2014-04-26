@@ -11,7 +11,7 @@ import de.seerheinlab.micgwaf.component.Component;
 import de.seerheinlab.micgwaf.component.Composition;
 import de.seerheinlab.micgwaf.component.DefineComponent;
 import de.seerheinlab.micgwaf.component.RefComponent;
-import de.seerheinlab.micgwaf.component.SnippetListComponent;
+import de.seerheinlab.micgwaf.component.PartListComponent;
 import de.seerheinlab.micgwaf.config.ApplicationBase;
 import de.seerheinlab.micgwaf.generator.Generator;
 import de.seerheinlab.micgwaf.generator.JavaClassName;
@@ -47,8 +47,8 @@ public class CompositionGenerator extends ComponentGenerator
     fileContent.append("import ").append(List.class.getName()).append(";\n");
     fileContent.append("import ").append(ArrayList.class.getName()).append(";\n");
     fileContent.append("import ").append(ChildListComponent.class.getName()).append(";\n");
-    fileContent.append("import ").append(SnippetListComponent.class.getName()).append(";\n");
-    fileContent.append("import ").append(SnippetListComponent.ComponentPart.class.getCanonicalName()).append(";\n");
+    fileContent.append("import ").append(PartListComponent.class.getName()).append(";\n");
+    fileContent.append("import ").append(PartListComponent.ComponentPart.class.getCanonicalName()).append(";\n");
     
     {
       RefComponent template = new RefComponent(composition.templateId, null);
@@ -179,11 +179,11 @@ public class CompositionGenerator extends ComponentGenerator
       int indent)
   {
     String indentString = getIndentString(indent);
-    SnippetListComponent snippetListComponent = (SnippetListComponent) component;
+    PartListComponent snippetListComponent = (PartListComponent) component;
     StringBuilder result = new StringBuilder();
     result.append(indentString).append("{\n");
     int counter = 1;
-    for (SnippetListComponent.ComponentPart part : snippetListComponent.parts)
+    for (PartListComponent.ComponentPart part : snippetListComponent.parts)
     {
       if (part.component != null)
       {

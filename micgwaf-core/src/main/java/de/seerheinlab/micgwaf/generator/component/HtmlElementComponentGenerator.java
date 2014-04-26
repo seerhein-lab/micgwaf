@@ -12,7 +12,7 @@ import de.seerheinlab.micgwaf.component.GenerationParameters;
 import de.seerheinlab.micgwaf.component.HtmlElementComponent;
 import de.seerheinlab.micgwaf.component.RefComponent;
 import de.seerheinlab.micgwaf.component.SnippetComponent;
-import de.seerheinlab.micgwaf.component.SnippetListComponent;
+import de.seerheinlab.micgwaf.component.PartListComponent;
 import de.seerheinlab.micgwaf.config.ApplicationBase;
 import de.seerheinlab.micgwaf.generator.Generator;
 import de.seerheinlab.micgwaf.generator.JavaClassName;
@@ -73,10 +73,10 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
           fileContent.append("import ").append(componentClass.getName()).append(";\n");
         }
       }
-      else if (child instanceof SnippetListComponent)
+      else if (child instanceof PartListComponent)
       {
-        SnippetListComponent snippetListChild = (SnippetListComponent) child;
-        for (SnippetListComponent.ComponentPart part : snippetListChild.parts)
+        PartListComponent snippetListChild = (PartListComponent) child;
+        for (PartListComponent.ComponentPart part : snippetListChild.parts)
         {
           if (part.component != null)
           {
@@ -104,10 +104,10 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
     int componentCounter = 1;
     for (Component child : htmlElementCompont.children)
     {
-      if (child instanceof SnippetListComponent)
+      if (child instanceof PartListComponent)
       {
-        SnippetListComponent snippetListChild = (SnippetListComponent) child;
-        for (SnippetListComponent.ComponentPart part : snippetListChild.parts)
+        PartListComponent snippetListChild = (PartListComponent) child;
+        for (PartListComponent.ComponentPart part : snippetListChild.parts)
         {
           String componentField = getComponentFieldName(part, componentCounter);
           if (part.component != null)
@@ -178,10 +178,10 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
     componentCounter = 1;
     for (Component child : htmlElementCompont.children)
     {
-      if (child instanceof SnippetListComponent)
+      if (child instanceof PartListComponent)
       {
-        SnippetListComponent snippetListChild = (SnippetListComponent) child;
-        for (SnippetListComponent.ComponentPart part : snippetListChild.parts)
+        PartListComponent snippetListChild = (PartListComponent) child;
+        for (PartListComponent.ComponentPart part : snippetListChild.parts)
         {
           String componentField = getComponentFieldName(part, componentCounter);
           fileContent.append("    result.add(").append(componentField).append(");\n");
@@ -208,12 +208,12 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
     {
       Component child = htmlElementComponent.children.get(0);
       String componentField = getComponentFieldName(child, 1);
-      if (child instanceof SnippetListComponent)
+      if (child instanceof PartListComponent)
       {
-        SnippetListComponent snippetListComponent = (SnippetListComponent) child;
+        PartListComponent snippetListComponent = (PartListComponent) child;
         if (snippetListComponent.parts.size() == 1)
         {
-          SnippetListComponent.ComponentPart part = snippetListComponent.parts.get(0);
+          PartListComponent.ComponentPart part = snippetListComponent.parts.get(0);
           componentField = getComponentFieldName(part, 1);
           if (part.htmlSnippet != null)
           {

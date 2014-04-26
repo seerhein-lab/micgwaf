@@ -4,14 +4,14 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 import de.seerheinlab.micgwaf.component.Component;
-import de.seerheinlab.micgwaf.component.SnippetListComponent;
+import de.seerheinlab.micgwaf.component.PartListComponent;
 import de.seerheinlab.micgwaf.util.Constants;
 
 public class SnippetListContentHandler extends ContentHandler
 {
   public StringBuilder currentStringPart = new StringBuilder();
   
-  private SnippetListComponent component = new SnippetListComponent(null);
+  private PartListComponent component = new PartListComponent(null);
 
   @Override
   public void startElement(
@@ -73,15 +73,15 @@ public class SnippetListContentHandler extends ContentHandler
   @Override
   public void child(Component child)
   {
-    component.parts.add(SnippetListComponent.ComponentPart.fromHtmlSnippet(currentStringPart.toString()));
+    component.parts.add(PartListComponent.ComponentPart.fromHtmlSnippet(currentStringPart.toString()));
     currentStringPart = new StringBuilder();
-    component.parts.add(SnippetListComponent.ComponentPart.fromComponent(child));
+    component.parts.add(PartListComponent.ComponentPart.fromComponent(child));
   }
 
   @Override
-  public SnippetListComponent finished() throws SAXException
+  public PartListComponent finished() throws SAXException
   {
-    component.parts.add(SnippetListComponent.ComponentPart.fromHtmlSnippet(currentStringPart.toString()));
+    component.parts.add(PartListComponent.ComponentPart.fromHtmlSnippet(currentStringPart.toString()));
     return component;
   }
 }
