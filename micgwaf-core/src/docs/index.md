@@ -53,10 +53,10 @@ Creating XHTML files and Generating Code
     (the following assumes xmlns:m="http://seerhein-lab.de/micgwaf")
   - use an unique m:id for each active component. m:id should start with a lowercase letter.
   - use m:generateExtensionClass="true" for each component which code you want to change.
-    By default, for forms,  m:generateExtensionClass is true.
-  - use m:defaultRendered="false" for components which you do not render by default
-    (you can change this behavior in java code by calling the setRender method of the component or changing its 
-    renderSelf or renderChildren attributes).
+    By default, for forms, m:generateExtensionClass is true, for all other components, it is false.
+  - use m:defaultRendered="false" for components which should not render by default
+    (you can change this behavior in java code by calling the setRender method of the component
+    or by changing its renderSelf or renderChildren attributes).
   - use m:multiple="true" for components which can appear multiple times (so they are referenced as lists
     and not as single references in the parent component).
   - use the element m:componentRef to reference other components. The refid attribute references the name
