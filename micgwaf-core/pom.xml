@@ -60,6 +60,21 @@
               </content>
             </file>
           </additionalConfig>
+          <additionalProjectnatures>
+            <projectnature>com.atlassw.tools.eclipse.checkstyle.CheckstyleNature</projectnature>
+            <projectnature>net.sf.eclipsecs.core.CheckstyleNature</projectnature>
+          </additionalProjectnatures>
+          <additionalConfig>
+            <!-- Enable UTF-8 in eclipse project -->
+            <file>
+              <name>.settings${file.separator}org.eclipse.core.resources.prefs</name>
+              <content>
+                <![CDATA[#Tue Feb 08 10:00:00 CET 2010
+eclipse.preferences.version=1
+encoding/<project>=UTF-8]]>
+              </content>
+            </file>
+          </additionalConfig>
         </configuration>
       </plugin>
       <plugin>
@@ -82,6 +97,15 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-checkstyle-plugin</artifactId>
+        <version>2.10</version>
+        <configuration>
+          <configLocation>${basedir}/../src/main/plugin-config/checkstyle.xml</configLocation>
+        </configuration>
+      </plugin>
+      
     </plugins>
   </build>
 </project>
