@@ -3,7 +3,6 @@ TODO
 
 - no model: pages displaying the same information store them in a different way. 
   Find a way to access this information in an uniform way. e.g implement an interface ?
-- How to deal with radiobuttons, multiselects and checkboxes with same name but different values
 - implement logging
 - implement handling of nested loops (currently only one loop level is supported)
 - for attributes in loops must be treated like ids (add :number) 
