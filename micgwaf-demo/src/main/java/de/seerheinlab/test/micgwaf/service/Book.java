@@ -9,8 +9,11 @@ import java.io.Serializable;
  */
 public class Book implements Serializable
 {
+  /** SerialVersionUID. */
+  private static final long serialVersionUID = 1L;
+
   /** Primary key. */
-  private int id;
+  private Integer id;
   
   /** The book title. */
   private String title;
@@ -27,18 +30,27 @@ public class Book implements Serializable
   /**
    * Standard constructor.
    */
-  public Book(int id)
+  public Book()
+  {
+  }
+  
+  /**
+   * Constructor with an id.
+   * 
+   * @param id the id of the new book.
+   */
+  public Book(Integer id)
   {
     this.id = id;
   }
-  
+
   /**
    * Copy constructor.
    * 
    * @param toCopy the book to copy, not null.
    * @param newId the new id of the copied book.
    */
-  public Book(Book toCopy, int newId)
+  public Book(Book toCopy, Integer newId)
   {
     this.id = newId;
     this.title = toCopy.title;
@@ -47,9 +59,14 @@ public class Book implements Serializable
     this.isbn = toCopy.isbn;
   }
   
-  public int getId()
+  public Integer getId()
   {
     return id;
+  }
+
+  public void setId(Integer id)
+  {
+    this.id = id;
   }
 
   public String getTitle()

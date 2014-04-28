@@ -14,16 +14,20 @@ public class BookService
    */
   public static BookService instance = new BookService();
   
-  private static List<Book> bookList;
+  /** The list of books, not null. */
+  private static final List<Book> bookList = new ArrayList<>();
 
   static
   {
     instance.resetBooks();
   }
   
+  /**
+   * Resets the book list to its standard content.
+   */
   public void resetBooks()
   {
-    bookList = new ArrayList<Book>();
+    bookList.clear();
     {
       Book book = new Book(0);
       book.setTitle("Effective Java");
@@ -53,21 +57,29 @@ public class BookService
   /**
    * Saves a Book.
    * 
-   * @param toSave the book to save.
+   * @param toSave the book to save, not null.
    */
   public void save(Book toSave)
   {
-    Iterator<Book> bookIt = bookList.iterator();
     int position = 0;
-    while (bookIt.hasNext())
+    if (toSave.getId() == null)
     {
-      Book candidate = bookIt.next();
-      if (candidate.getId() == toSave.getId())
+      toSave.setId(getNewListNumber());
+      position = bookList.size();
+    }
+    else
+    {
+      Iterator<Book> bookIt = bookList.iterator();
+      while (bookIt.hasNext())
       {
-        bookIt.remove();
-        break;
+        Book candidate = bookIt.next();
+        if (candidate.getId() == toSave.getId())
+        {
+          bookIt.remove();
+          break;
+        }
+        position++;
       }
-      position++;
     }
     bookList.add(position, toSave);
   }
@@ -95,11 +107,11 @@ public class BookService
    */
   public Integer getNewListNumber()
   {
-    Iterator<Book> adressenIt = bookList.iterator();
+    Iterator<Book> bookIt = bookList.iterator();
     int position = 0;
-    while (adressenIt.hasNext())
+    while (bookIt.hasNext())
     {
-      Book candidate = adressenIt.next();
+      Book candidate = bookIt.next();
       if (candidate.getId() > position)
       {
         position = candidate.getId();
