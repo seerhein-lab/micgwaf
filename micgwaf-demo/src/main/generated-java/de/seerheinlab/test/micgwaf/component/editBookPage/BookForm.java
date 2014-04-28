@@ -46,9 +46,7 @@ public class BookForm extends BaseBookForm
   {
     if (book == null)
     {
-      // TODO should not be necessary.
-      // When using a database, id is set when object is saved, not earlier.
-      this.book = new Book(BookService.instance.getNewListNumber());
+      this.book = new Book();
     }
     else
     {

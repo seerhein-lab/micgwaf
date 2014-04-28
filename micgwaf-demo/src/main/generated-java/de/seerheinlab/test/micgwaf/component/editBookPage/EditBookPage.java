@@ -2,6 +2,7 @@ package de.seerheinlab.test.micgwaf.component.editBookPage;
 
 
 import de.seerheinlab.micgwaf.component.Component;
+import de.seerheinlab.test.micgwaf.service.Book;
 
 /**
  * This class represents the HTML element with m:id editBookPage.
@@ -21,6 +22,18 @@ public class EditBookPage extends BaseEditBookPage
   */
   public EditBookPage(Component parent)
   {
+    this(parent, null);
+  }
+
+  /**
+  * Creates a EditBookPage which edits the specified book.
+  *
+  * @param parent the parent component, or null if this is a standalone component (e.g. a page)
+  * @param book the book to edit, or null for creating a new Book.
+  */
+  public EditBookPage(Component parent, Book book)
+  {
     super(parent);
+    bookForm.setBook(book);
   }
 }

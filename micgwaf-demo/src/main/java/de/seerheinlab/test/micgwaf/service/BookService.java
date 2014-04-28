@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import com.sun.org.apache.xalan.internal.utils.Objects;
+
 /**
  * Stores books.
  */
@@ -73,7 +75,7 @@ public class BookService
       while (bookIt.hasNext())
       {
         Book candidate = bookIt.next();
-        if (candidate.getId() == toSave.getId())
+        if (Objects.equals(candidate.getId(), toSave.getId()))
         {
           bookIt.remove();
           break;

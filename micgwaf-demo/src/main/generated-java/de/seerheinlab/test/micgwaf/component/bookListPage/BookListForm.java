@@ -73,16 +73,14 @@ public class BookListForm extends BaseBookListForm
    * @param bookRow The component in the list of BookRow Components
    *        to which this button belongs.
    *
-   * @return the page to be rendered.
-   *         If no component returns a not-null result, the current page in the current state
-   *         will be rendered.
-   *         If more than one component returns a not-null result, the last not-null result will be used.
+   * @return the page to be rendered, in this case, the EditBookPage.
    */
   @Override
   public Component editExtraPageButtonPressed(BookRow bookRow)
   {
-    return super.editExtraPageButtonPressed(bookRow);
-  }
+    EditBookPage targetPage = new EditBookPage(null, bookRow.getBook());
+    return targetPage;
+ }
 
   /**
    * Hook method which is called when the button saveButton was pressed.
