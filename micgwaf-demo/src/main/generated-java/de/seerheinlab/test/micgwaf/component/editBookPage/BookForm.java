@@ -1,6 +1,5 @@
 package de.seerheinlab.test.micgwaf.component.editBookPage;
 
-
 import de.seerheinlab.micgwaf.component.Component;
 import de.seerheinlab.micgwaf.util.Assertions;
 import de.seerheinlab.test.micgwaf.component.bookListPage.BookListPage;
@@ -128,6 +127,9 @@ public class BookForm extends BaseBookForm
     return valid;
   }
 
+  /**
+   * Remove the has-error class from all input field error boxes.
+   */
   public void hideErrorBoxes()
   {
     authorGroup.removeClass("has-error");
