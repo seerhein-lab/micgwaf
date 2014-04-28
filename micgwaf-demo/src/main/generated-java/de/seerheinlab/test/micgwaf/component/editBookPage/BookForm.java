@@ -2,7 +2,9 @@ package de.seerheinlab.test.micgwaf.component.editBookPage;
 
 
 import de.seerheinlab.micgwaf.component.Component;
+import de.seerheinlab.micgwaf.util.Assertions;
 import de.seerheinlab.test.micgwaf.component.bookListPage.BookListPage;
+import de.seerheinlab.test.micgwaf.component.messageBox.ErrorMessage;
 import de.seerheinlab.test.micgwaf.service.Book;
 import de.seerheinlab.test.micgwaf.service.BookService;
 
@@ -16,11 +18,12 @@ public class BookForm extends BaseBookForm
   /**
   * Constructor. 
   *
-  * @param parent the parent component, or null if this is a standalone component (e.g. a page)
+  * @param baseEditBookPage the parent component, not null.
   */
-  public BookForm(Component parent)
+  public BookForm(BaseEditBookPage baseEditBookPage)
   {
-    super(parent);
+    super(baseEditBookPage);
+    Assertions.assertNotNull(baseEditBookPage, "baseEditBookPage");
     setBook(null);
   }
 
@@ -69,8 +72,10 @@ public class BookForm extends BaseBookForm
   @Override
   public Component okButtonPressed()
   {
-    // TODO validate
-    processInput();
+    if (!processInput())
+    {
+      return null;
+    }
     BookService.instance.save(book);
     return new BookListPage(null);
   }
@@ -88,13 +93,64 @@ public class BookForm extends BaseBookForm
   }
   
   /**
-   * Sets the input values to the corresponding fields in the stored book.
+   * Validates the input and sets the input values to the corresponding fields in the stored book, 
+   * if validation was successful.
+   * If validation was not successful, the erroneous fields are marked and an error message is printed.
+   * 
+   * @return true if the input is valid and the form data was copied into the book, 
+   *         or false if an validation error occured.
    */
-  public void processInput()
+  public boolean processInput()
   {
-    book.setAuthor(getAuthorInput());
-    book.setTitle(getTitleInput());
-    book.setPublisher(getPublisherInput());
-    book.setIsbn(getIsbnInput());
+    hideErrorBoxes();
+    clearErrorMessages();
+    boolean valid = true;
+    if (getAuthorInput() == null || getAuthorInput().trim().isEmpty())
+    {
+      valid = false;
+      authorGroup.addClass("has-error");
+      ((EditBookPage) parent).messageBox.errorMessageList.add(new ErrorMessage(parent, "Author must be filled"));
+    }
+    if (getTitleInput() == null || getTitleInput().trim().isEmpty())
+    {
+      valid = false;
+      titleGroup.addClass("has-error");
+      addErrorMessage("Title must be filled");
+    }
+    if (valid)
+    {
+      book.setAuthor(getAuthorInput());
+      book.setTitle(getTitleInput());
+      book.setPublisher(getPublisherInput());
+      book.setIsbn(getIsbnInput());
+
+    }
+    return valid;
+  }
+
+  public void hideErrorBoxes()
+  {
+    authorGroup.removeClass("has-error");
+    titleGroup.removeClass("has-error");
+    publisherGroup.removeClass("has-error");
+    isbnGroup.removeClass("has-error");
+  }
+
+  /**
+   * Adds an error message to the surrounding page.
+   * 
+   * @param message the message to add, not null.
+   */
+  public void addErrorMessage(String message)
+  {
+    ((EditBookPage) parent).messageBox.errorMessageList.add(new ErrorMessage(parent, message));
+  }
+  
+  /**
+   * Clears the error messages in the surrounding page.
+   */
+  public void clearErrorMessages()
+  {
+    ((EditBookPage) parent).messageBox.errorMessageList.clear();
   }
 }
