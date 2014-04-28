@@ -53,5 +53,6 @@ The normal implementations are :
 The implementations used mainly during parsing are
 
 - PartListComponent: Contains HTML snippets and child components.
+  Is used by parsing whenever plain HTM snippets appear (TODO check: not SnippetComponent?)
 - TemplateIntegration: Component which binds together the template to be used in a HTML file
-  and the template snippet defined in that page.
+  and the template snippet defined in that page. Represents the m:useTemplate tag.
