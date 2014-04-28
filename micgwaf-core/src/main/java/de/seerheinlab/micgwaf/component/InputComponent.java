@@ -62,7 +62,7 @@ public class InputComponent extends HtmlElementComponent
   @Override
   public Component processRequest(HttpServletRequest request)
   {
-    String nameAttr = attributes.get(NAME_ATTR);
+    String nameAttr = getHtmlId(attributes.get(NAME_ATTR));
     if (nameAttr != null)
     {
       submittedValue = request.getParameter(nameAttr);
@@ -92,7 +92,7 @@ public class InputComponent extends HtmlElementComponent
     Map<String, String> renderedAttributes = super.getRenderedAttributes();
     if (renderedAttributes.containsKey(NAME_ATTR))
     {
-      renderedAttributes.put(NAME_ATTR, renderedAttributes.get(NAME_ATTR));
+      renderedAttributes.put(NAME_ATTR, getHtmlId(renderedAttributes.get(NAME_ATTR)));
     }
     return renderedAttributes;
   }
