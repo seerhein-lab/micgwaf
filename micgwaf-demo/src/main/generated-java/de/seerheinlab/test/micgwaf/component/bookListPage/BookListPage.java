@@ -2,6 +2,7 @@ package de.seerheinlab.test.micgwaf.component.bookListPage;
 
 
 import de.seerheinlab.micgwaf.component.Component;
+import de.seerheinlab.test.micgwaf.service.BookService;
 
 /**
  * This class represents the HTML element with m:id bookListPage.
@@ -22,5 +23,6 @@ public class BookListPage extends BaseBookListPage
   public BookListPage(Component parent)
   {
     super(parent);
+    bookListForm.display(BookService.instance.getBookList());
   }
 }
