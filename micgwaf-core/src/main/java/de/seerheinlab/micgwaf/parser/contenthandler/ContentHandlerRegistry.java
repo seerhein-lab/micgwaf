@@ -42,8 +42,8 @@ public class ContentHandlerRegistry
         InsertContentHandler.INSERT_ELEMENT_NAME,
         new InsertContentHandlerFactory());
     elementHandlerMap.put(
-        CompositionContentHandler.COMPOSITION_ELEMENT_NAME,
-        new CompositionContentHandlerFactory());
+        TemplateIntegrationContentHandler.USE_TEMPLATE_ELEMENT_NAME,
+        new TemplateIntegrationContentHandlerFactory());
     elementHandlerMap.put(
         DefineContentHandler.DEFINE_ELEMENT_NAME,
         new DefineContentHandlerFactory());

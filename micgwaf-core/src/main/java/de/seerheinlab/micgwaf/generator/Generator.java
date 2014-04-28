@@ -11,7 +11,7 @@ import de.seerheinlab.micgwaf.component.AnyComponent;
 import de.seerheinlab.micgwaf.component.ChildListComponent;
 import de.seerheinlab.micgwaf.component.Component;
 import de.seerheinlab.micgwaf.component.ComponentRegistry;
-import de.seerheinlab.micgwaf.component.Composition;
+import de.seerheinlab.micgwaf.component.TemplateIntegration;
 import de.seerheinlab.micgwaf.component.DefineComponent;
 import de.seerheinlab.micgwaf.component.EmptyComponent;
 import de.seerheinlab.micgwaf.component.FormComponent;
@@ -22,7 +22,7 @@ import de.seerheinlab.micgwaf.component.PartListComponent;
 import de.seerheinlab.micgwaf.generator.component.AnyComponentGenerator;
 import de.seerheinlab.micgwaf.generator.component.ChildListComponentGenerator;
 import de.seerheinlab.micgwaf.generator.component.ComponentGenerator;
-import de.seerheinlab.micgwaf.generator.component.CompositionGenerator;
+import de.seerheinlab.micgwaf.generator.component.TemplateIntegrationGenerator;
 import de.seerheinlab.micgwaf.generator.component.DefineComponentGenerator;
 import de.seerheinlab.micgwaf.generator.component.EmptyComponentGenerator;
 import de.seerheinlab.micgwaf.generator.component.FormComponentGenerator;
@@ -60,7 +60,7 @@ public class Generator
     componentGeneratorMap.put(ChildListComponent.class, new ChildListComponentGenerator());
     componentGeneratorMap.put(EmptyComponent.class, new EmptyComponentGenerator());
     componentGeneratorMap.put(AnyComponent.class, new AnyComponentGenerator());
-    componentGeneratorMap.put(Composition.class, new CompositionGenerator());
+    componentGeneratorMap.put(TemplateIntegration.class, new TemplateIntegrationGenerator());
     componentGeneratorMap.put(DefineComponent.class, new DefineComponentGenerator());
   }
   

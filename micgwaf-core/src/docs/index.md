@@ -64,7 +64,7 @@ Creating XHTML files and Generating Code
     the default id is the file name minus the .xhtml extension.
   - for defining page templates, define a normal html file as template, and use a 
     <m:insert name="..."/> at the places where the templated page should insert its content.
-    For templated pages, use <m:composition templateId="..."> as root element 
+    For templated pages, use <m:template templateId="..."> as root element 
     and <m:define name="..."> elements to define the snippets to insert into the template.
   - see the xhtml files in the directory src/test/resources/de/seerheinlab/micgwaf/page for an example.
   - see the [micgwaf namespace reference](namespace.md) for a reference of the elements and attributes

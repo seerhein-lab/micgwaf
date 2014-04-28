@@ -8,9 +8,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Component for compositions. Only used for parsing.
+ * Component for integrating with a template. Only used for parsing.
  */
-public class Composition extends Component
+public class TemplateIntegration extends Component
 {
   /** serialVersionUID. */
   private static final long serialVersionUID = 1L;
@@ -21,7 +21,7 @@ public class Composition extends Component
   
   public PartListComponent template;
 
-  public Composition(Component parent)
+  public TemplateIntegration(Component parent)
   {
     super(null, parent);
   }

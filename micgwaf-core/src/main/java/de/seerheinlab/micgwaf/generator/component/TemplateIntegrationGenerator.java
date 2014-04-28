@@ -8,7 +8,7 @@ import java.util.Map;
 
 import de.seerheinlab.micgwaf.component.ChildListComponent;
 import de.seerheinlab.micgwaf.component.Component;
-import de.seerheinlab.micgwaf.component.Composition;
+import de.seerheinlab.micgwaf.component.TemplateIntegration;
 import de.seerheinlab.micgwaf.component.DefineComponent;
 import de.seerheinlab.micgwaf.component.RefComponent;
 import de.seerheinlab.micgwaf.component.PartListComponent;
@@ -16,7 +16,7 @@ import de.seerheinlab.micgwaf.config.ApplicationBase;
 import de.seerheinlab.micgwaf.generator.Generator;
 import de.seerheinlab.micgwaf.generator.JavaClassName;
 
-public class CompositionGenerator extends ComponentGenerator
+public class TemplateIntegrationGenerator extends ComponentGenerator
 {
   @Override
   public JavaClassName getClassName(
@@ -35,7 +35,7 @@ public class CompositionGenerator extends ComponentGenerator
     {
       return null;
     }
-    Composition composition = (Composition) component;
+    TemplateIntegration comtemplateIntegration = (TemplateIntegration) component;
     JavaClassName javaClassName = getClassName(component, targetPackage);
     String className = getClassName(component, targetPackage).getSimpleName();
     StringBuilder fileContent = new StringBuilder();
@@ -51,7 +51,7 @@ public class CompositionGenerator extends ComponentGenerator
     fileContent.append("import ").append(PartListComponent.ComponentPart.class.getCanonicalName()).append(";\n");
     
     {
-      RefComponent template = new RefComponent(composition.templateId, null);
+      RefComponent template = new RefComponent(comtemplateIntegration.templateId, null);
       ComponentGenerator generator = Generator.getGenerator(template);
       JavaClassName componentClass = generator.getReferencableClassName(template, targetPackage);
       if (template instanceof RefComponent 
@@ -61,7 +61,7 @@ public class CompositionGenerator extends ComponentGenerator
       }
     }
     
-    for (Map.Entry<String, Component> entry : composition.definitions.entrySet())
+    for (Map.Entry<String, Component> entry : comtemplateIntegration.definitions.entrySet())
     {
       Component definedComponent = entry.getValue();
       ComponentGenerator generator = Generator.getGenerator(definedComponent);
@@ -84,11 +84,11 @@ public class CompositionGenerator extends ComponentGenerator
     
     String templateFieldName = "template";
     {
-      while (composition.definitions.keySet().contains(templateFieldName))
+      while (comtemplateIntegration.definitions.keySet().contains(templateFieldName))
       {
         templateFieldName = "_" + templateFieldName;
       }
-      RefComponent template = new RefComponent(composition.templateId, null);
+      RefComponent template = new RefComponent(comtemplateIntegration.templateId, null);
       ComponentGenerator generator = Generator.getGenerator(template);
       fileContent.append("\n");
       generator.generateFieldOrVariableFromComponent(
@@ -111,7 +111,7 @@ public class CompositionGenerator extends ComponentGenerator
     fileContent.append("  public ").append(className).append("(Component parent)\n");
     fileContent.append("  {\n");
     fileContent.append("    super(\"").append(component.getId()).append("\", parent);\n");
-    for (Map.Entry<String, Component> entry : composition.definitions.entrySet())
+    for (Map.Entry<String, Component> entry : comtemplateIntegration.definitions.entrySet())
     {
       Component componentDefinition = entry.getValue();
       if (componentDefinition instanceof DefineComponent)

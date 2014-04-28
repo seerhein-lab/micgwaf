@@ -4,18 +4,18 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 import de.seerheinlab.micgwaf.component.Component;
-import de.seerheinlab.micgwaf.component.Composition;
+import de.seerheinlab.micgwaf.component.TemplateIntegration;
 import de.seerheinlab.micgwaf.component.DefineComponent;
 import de.seerheinlab.micgwaf.component.PartListComponent;
 import de.seerheinlab.micgwaf.util.Constants;
 
-public class CompositionContentHandler extends ContentHandler
+public class TemplateIntegrationContentHandler extends ContentHandler
 {
   public static final String TEMPLATE_ID_ATTR = "templateId";
 
-  public static final String COMPOSITION_ELEMENT_NAME = "composition";
+  public static final String USE_TEMPLATE_ELEMENT_NAME = "useTemplate";
   
-  public Composition result = new Composition(null);
+  public TemplateIntegration result = new TemplateIntegration(null);
   
   public String templateId;
   
@@ -27,9 +27,9 @@ public class CompositionContentHandler extends ContentHandler
         Attributes attributes) 
       throws SAXException 
   {
-    // check for composition elements
+    // check for useTemplate elements
     if (!Constants.XML_NAMESPACE.equals(uri) 
-        || !CompositionContentHandler.COMPOSITION_ELEMENT_NAME.equals(localName)) 
+        || !TemplateIntegrationContentHandler.USE_TEMPLATE_ELEMENT_NAME.equals(localName)) 
     {
       throw new SAXException("unknown Element " + uri + ":" + localName);
     }
@@ -54,7 +54,10 @@ public class CompositionContentHandler extends ContentHandler
         {
           if (!"".equals(part.htmlSnippet.trim()))
           {
-            throw new IllegalArgumentException("Children of composition elements must not be markup, found "
+            throw new IllegalArgumentException(
+                "Children of "
+                + TemplateIntegrationContentHandler.USE_TEMPLATE_ELEMENT_NAME
+                + " elements must not be markup, found "
                 + part.htmlSnippet);
           }
           // ignore whitespace
@@ -75,7 +78,11 @@ public class CompositionContentHandler extends ContentHandler
   {
     if (!(child instanceof DefineComponent))
     {
-      throw new IllegalArgumentException("Children of composition elements must be define elements, found "
+      throw new IllegalArgumentException("Children of " 
+          + TemplateIntegrationContentHandler.USE_TEMPLATE_ELEMENT_NAME 
+          + " elements must be "
+          + DefineContentHandler.DEFINE_ELEMENT_NAME
+          + " elements, found "
           + child.getClass() + " component instead");
     }
     DefineComponent defineComponentChild = (DefineComponent) child;
@@ -83,7 +90,7 @@ public class CompositionContentHandler extends ContentHandler
   }
 
   @Override
-  public Composition finished() throws SAXException
+  public TemplateIntegration finished() throws SAXException
   {
     result.templateId = templateId;
     return result;

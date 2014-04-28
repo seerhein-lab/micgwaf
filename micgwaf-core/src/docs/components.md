@@ -53,3 +53,5 @@ The normal implementations are :
 The implementations used mainly during parsing are
 
 - PartListComponent: Contains HTML snippets and child components.
+- TemplateIntegration: Component which binds together the template to be used in a HTML file
+  and the template snippet defined in that page.
