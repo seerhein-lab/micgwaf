@@ -38,8 +38,10 @@ Best practices
   (the form is where most actions happen).
   If no form is contained, another good place is the Page component itself.
 
-Blueprints
-----------
+Description of pages
+--------------------
+
+### bookListPage.html
 
 A page containing a list of items (books) and actions on these items
 (open edit page, edit inline within table, edit inline using ajax) as well as some
@@ -55,7 +57,16 @@ The BookRow page knows how to display business objects (Books) within the displa
 To do this, the HTML span elements containing the displayed text have been assigned a m:id attribute,
 so their content can be easily changed in the BookRow by calling the setTextContent method of the
 components generated for them.
-The BookListForm page 
+
+The BookListForm component handles the page actions reset (the contents of the book list), add Book, 
+and create Error (for testing the error handling).
+Each of the buttons for these actions is annotated with the m:id attribute in the HTML page,
+which causes a component class to be generated and a hook method generated in the form page.
+In these hook methods, the action is implemented, and the follow-up page is returned
+(in most cases above, this is a new instance BookListForm page).
+For the per-row buttons editInExtraPage, editInline and editInlineAjax, hook methods are created as well.
+As these methods are inside a loop (the table row component with m:multiple set to "true"), 
+the generated hook methods obtain the BookRow Component in which the button was pressed.
 
 Architecture
 ------------
