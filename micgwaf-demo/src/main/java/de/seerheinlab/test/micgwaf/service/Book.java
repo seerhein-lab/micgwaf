@@ -1,10 +1,13 @@
 package de.seerheinlab.test.micgwaf.service;
 
+import java.io.Serializable;
+
 
 /**
  * Business-Object for a Book.
+ * Must be serializable, because it is stored in a Component.
  */
-public class Book
+public class Book implements Serializable
 {
   /** Primary key. */
   private int id;
