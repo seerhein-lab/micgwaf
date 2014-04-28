@@ -5,6 +5,8 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.seerheinlab.micgwaf.util.Assertions;
+
 /**
  * A Component consisting of a list of child components.
  */
@@ -34,6 +36,27 @@ public class ChildListComponent<T extends Component> extends Component implement
   public List<T> getChildren()
   {
     return children;
+  }
+  
+  /**
+   * Adds the given child.
+   * 
+   * @param child the child to add, not null.
+   * 
+   * @throws NullPointerException if child is null.
+   */
+  public void add(T child)
+  {
+    Assertions.assertNotNull(child, "child");
+    children.add(child);
+  }
+  
+  /**
+   * Clears the list of children.
+   */
+  public void clear()
+  {
+    children.clear();
   }
 
   @Override
