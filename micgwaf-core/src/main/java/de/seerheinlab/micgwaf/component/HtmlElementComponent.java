@@ -45,6 +45,11 @@ public class HtmlElementComponent extends Component
     super(null, parent);
   }
 
+  public HtmlElementComponent(String id, Component parent)
+  {
+    super(id, parent);
+  }
+
   public HtmlElementComponent(String elementName, String id, Component parent)
   {
     super(id, parent);

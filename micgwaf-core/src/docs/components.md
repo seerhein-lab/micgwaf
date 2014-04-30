@@ -11,13 +11,13 @@ However, components can be more simple (like just rendering HTML, e.g. a header)
 In micgwaf, a component needs to follow the component contract, laid out in the interface
 de.seerheinlab.micgwaf.component.Component.
 
-A component typically has a constructor with the parent component as parameter.
+A component typically has a constructor with the id of the component and the parent component as parameter
+(for page components instantiated by micgwaf, such a constructor is required).
+The id can be null, although for most components this is not recommended.
 The parent may be null only for standalone components like page components.
 There is a bi-directional relation between parent and child components.
 Typically, the component tree is constructed bottom-up (starting from the page component), so it is
 the responsibility of the parent component to establish the bi-directional relationship properly. 
-Also quite common are constructors with the id of the component and the parent.
-The id can be null, although for most components this is not recommended.
 
 A Component has the following responsibilities
 - Allow its children to render themselves in the render phase

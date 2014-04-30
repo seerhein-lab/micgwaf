@@ -261,7 +261,7 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
         .append("\n");
     fileContent.append("{\n");
     generateSerialVersionUid(fileContent);
-    generateComponentConstructorWithParent(extensionClassName, fileContent);
+    generateConstructorWithIdAndParent(extensionClassName, null, fileContent);
     
     List<InputComponent> buttons = new ArrayList<>();
     getButtons(component, buttons);

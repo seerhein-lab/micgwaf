@@ -137,12 +137,14 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
     fileContent.append("  /**\n");
     fileContent.append("  * Constructor. \n");
     fileContent.append("  *\n");
-    fileContent .append("  * @param parent the parent component,")
-        .append(" or null if this is a standalone component (e.g. a page)\n");
+    fileContent.append("  * @param id the id of this component, or null to use the default id \"")
+        .append(htmlElementCompont.getId()).append("\".\n");
+    fileContent.append("  * @param parent the parent component.")
+        .append(" Can be null if this is a standalone component (e.g. a page).\n");
     fileContent.append("  */\n");
-    fileContent.append("  public " + className + "(Component parent)");
+    fileContent.append("  public " + className + "(String id, Component parent)\n");
     fileContent.append("  {\n");
-    fileContent.append("    super(parent);\n");
+    fileContent.append("    super(id == null ? \"").append(htmlElementCompont.getId()).append("\" : id, parent);\n");
     if (htmlElementCompont.renderChildren == false)
     {
       fileContent.append("    renderChildren = false;\n");
@@ -153,12 +155,10 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
     }
     fileContent.append("    ").append("elementName = \"").append(htmlElementCompont.elementName)
         .append("\";\n");
-    fileContent.append("    ").append("id = \"")
-        .append(removeLoopPart(htmlElementCompont.getId())).append("\";\n");
-    for (Map.Entry<String, String> attributeEnty : htmlElementCompont.attributes.entrySet())
+    for (Map.Entry<String, String> attributeEntry : htmlElementCompont.attributes.entrySet())
     {
-      fileContent.append("    ").append("attributes.put(\"").append(attributeEnty.getKey())
-          .append("\", \"").append(attributeEnty.getValue()).append("\");\n");
+      fileContent.append("    ").append("attributes.put(\"").append(attributeEntry.getKey())
+          .append("\", \"").append(attributeEntry.getValue()).append("\");\n");
     }
     fileContent.append("  }\n\n");
 
@@ -285,7 +285,7 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
         .append("\n");
     fileContent.append("{\n");
     generateSerialVersionUid(fileContent);
-    generateComponentConstructorWithParent(extensionClassName, fileContent);
+    generateConstructorWithIdAndParent(extensionClassName, null, fileContent);
     fileContent.append("}\n");
     return fileContent.toString();
   }

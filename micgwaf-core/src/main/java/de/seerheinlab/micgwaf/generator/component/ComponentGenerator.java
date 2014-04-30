@@ -219,10 +219,19 @@ public abstract class ComponentGenerator
     }
     else
     {
+      String id = component.getId();
+      if (id == null)
+      {
+        id = "null";
+      }
+      else
+      {
+        id ="\"" + id + "\"";
+      }
       toAppendTo.append(indentString).append(modifier).append(componentClassName.getSimpleName())
           .append(" ").append(fieldName)
           .append(" = ApplicationBase.getApplication().postConstruct(\n")
-          .append(indentString).append("    ").append("new ").append(componentClassName.getSimpleName()).append("(" + parentName + "));\n");
+          .append(indentString).append("    ").append("new ").append(componentClassName.getSimpleName()).append("(").append(id).append(", ").append(parentName).append("));\n");
     }
     toAppendTo.append(generator.generateInitializer(fieldName, component, targetPackage, indent));
   }
@@ -263,24 +272,39 @@ public abstract class ComponentGenerator
   }
   
   /**
-   * Generates an empty constructor for a component with a parent argument.
+   * Generates an empty (except calling super) constructor for a component with an id and a parent argument.
    * 
    * @param className the unqualified class name of the class for which the constructor is generated.
+   * @param defaultId the id to use in the generated component if the id parameter is null in the constructor.
    * @param toAppendTo the content to which the constructor code should be appended.
    */
-  public void generateComponentConstructorWithParent(String className, StringBuilder toAppendTo)
+  public void generateConstructorWithIdAndParent(String className, String defaultId, StringBuilder toAppendTo)
   {
-    // Constructor
     toAppendTo.append("\n  /**\n");
     toAppendTo.append("  * Constructor. \n");
     toAppendTo.append("  *\n");
-    toAppendTo .append("  * @param parent the parent component,")
-        .append(" or null if this is a standalone component (e.g. a page)\n");
+    if (defaultId == null)
+    {
+      toAppendTo.append("  * @param id the id of this component, or null.\n");
+    }
+    else
+    {
+      toAppendTo.append("  * @param id the id of this component, or null to use the default id \"").append(defaultId).append("\".\n");
+    }
+    toAppendTo.append("  * @param parent the parent component.")
+        .append(" Can be null if this is a standalone component (e.g. a page).\n");
     toAppendTo.append("  */\n");
-    toAppendTo.append("  public " + className + "(Component parent)\n");
+    toAppendTo.append("  public ").append(className).append("(String id, Component parent)\n");
     toAppendTo.append("  {\n");
-    toAppendTo.append("    super(parent);\n");
-    toAppendTo.append("  }\n");
+    if (defaultId == null)
+    {
+      toAppendTo.append("    super(id, parent);\n");
+    }
+    else
+    {
+      toAppendTo.append("    super(id == null ? \"").append(defaultId).append("\" : id, parent);\n");
+    }
+    toAppendTo.append("  }\n\n");
   }
   
   /**

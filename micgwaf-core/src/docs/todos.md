@@ -8,3 +8,4 @@ TODO
 - for attributes in loops must be treated like ids (add :number) 
 - find a way how to find components higher up in the tree (e.g. messageBox outside form)
 - allow a directory tree for XHTML files (not just flat directory layout)
+- how to reference not-generated components in the project or components from a component library?

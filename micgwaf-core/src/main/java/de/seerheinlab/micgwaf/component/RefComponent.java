@@ -15,9 +15,9 @@ public class RefComponent extends Component
   
   public Component referencedComponent;
   
-  public RefComponent(String refid, Component parent)
+  public RefComponent(String refid, String id, Component parent)
   {
-    super(null, parent);
+    super(id, parent);
     this.refid = refid;
   }
   

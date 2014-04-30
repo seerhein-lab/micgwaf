@@ -46,13 +46,14 @@ public class PartListComponent extends Component
   /**
    * Constructs a SnippetListComponent with the given initial parts.
    * 
+   * @param id the id of the component, may be null. The id is not used in this component.
    * @param parts the initial parts of this component, not null. This list is copied, but it contents
    *        are not cloned in any way.
    * @param parent the parent component. May be null if this is a standalone component (e.g. a page).
    */
-  public PartListComponent(List<ComponentPart> parts, Component parent)
+  public PartListComponent(String id, List<ComponentPart> parts, Component parent)
   {
-    super(null, parent);
+    super(id, parent);
     Assertions.assertNotNull(parts, "parts");
     this.parts = new ArrayList<>(parts);
   }

@@ -51,7 +51,7 @@ public class TemplateIntegrationGenerator extends ComponentGenerator
     fileContent.append("import ").append(PartListComponent.ComponentPart.class.getCanonicalName()).append(";\n");
     
     {
-      RefComponent template = new RefComponent(comtemplateIntegration.templateId, null);
+      RefComponent template = new RefComponent(comtemplateIntegration.templateId, null, null);
       ComponentGenerator generator = Generator.getGenerator(template);
       JavaClassName componentClass = generator.getReferencableClassName(template, targetPackage);
       if (template instanceof RefComponent 
@@ -88,7 +88,7 @@ public class TemplateIntegrationGenerator extends ComponentGenerator
       {
         templateFieldName = "_" + templateFieldName;
       }
-      RefComponent template = new RefComponent(comtemplateIntegration.templateId, null);
+      RefComponent template = new RefComponent(comtemplateIntegration.templateId, null, null);
       ComponentGenerator generator = Generator.getGenerator(template);
       fileContent.append("\n");
       generator.generateFieldOrVariableFromComponent(
@@ -105,12 +105,13 @@ public class TemplateIntegrationGenerator extends ComponentGenerator
     fileContent.append("\n  /**\n");
     fileContent.append("  * Constructor. \n");
     fileContent.append("  *\n");
-    fileContent .append("  * @param parent the parent component,")
+    fileContent.append("  * @param id the id of this component, or null.\n");
+    fileContent.append("  * @param parent the parent component,")
         .append(" or null if this is a standalone component (e.g. a page)\n");
     fileContent.append("  */\n");
-    fileContent.append("  public ").append(className).append("(Component parent)\n");
+    fileContent.append("  public ").append(className).append("(String id, Component parent)\n");
     fileContent.append("  {\n");
-    fileContent.append("    super(\"").append(component.getId()).append("\", parent);\n");
+    fileContent.append("    super(id == null ? \"").append(component.getId()).append("\" : id, parent);\n");
     for (Map.Entry<String, Component> entry : comtemplateIntegration.definitions.entrySet())
     {
       Component componentDefinition = entry.getValue();
@@ -165,7 +166,7 @@ public class TemplateIntegrationGenerator extends ComponentGenerator
         .append("\n");
     fileContent.append("{\n");
     generateSerialVersionUid(fileContent);
-    generateComponentConstructorWithParent(extensionClassName, fileContent);
+    generateConstructorWithIdAndParent(extensionClassName, null, fileContent);
     fileContent.append("}\n");
 
     return fileContent.toString();

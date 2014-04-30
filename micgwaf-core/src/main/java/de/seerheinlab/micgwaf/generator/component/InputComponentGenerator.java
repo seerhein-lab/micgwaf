@@ -24,7 +24,7 @@ public class InputComponentGenerator extends HtmlElementComponentGenerator
   {
     InputComponent inputComponent = (InputComponent) component;
     // In the generated class, the value of the attribute "name" should not contain any loop parts.
-    // They will be added again by calls to the inLoop method.
+    // They will be added again when generating the name.
     inputComponent.attributes.put(
         InputComponent.NAME_ATTR, 
         removeLoopPart(inputComponent.attributes.get(InputComponent.NAME_ATTR)));
@@ -69,7 +69,7 @@ public class InputComponentGenerator extends HtmlElementComponentGenerator
         .append("\n");
     fileContent.append("{\n");
     generateSerialVersionUid(fileContent);
-    generateComponentConstructorWithParent(extensionClassName, fileContent);
+    generateConstructorWithIdAndParent(extensionClassName, null, fileContent);
     fileContent.append("}\n");
     return fileContent.toString();
   }

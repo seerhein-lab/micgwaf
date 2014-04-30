@@ -11,9 +11,13 @@ public class ComponentRefContentHandler extends ContentHandler
 {
   public static final String COMPONENT_REF_REFID_ATTR = "refid";
 
+  public static final String COMPONENT_REF_ID_ATTR = "id";
+
   public static final String COMPONENT_REF_ELEMENT_NAME = "componentRef";
   
   public String refid;
+  
+  public String id;
 
   @Override
   public void startElement(
@@ -34,6 +38,7 @@ public class ComponentRefContentHandler extends ContentHandler
       throw new SAXException("Attribute " + ComponentRefContentHandler.COMPONENT_REF_REFID_ATTR 
           + " is required on element " + qName);
     }
+    id = attributes.getValue(ComponentRefContentHandler.COMPONENT_REF_ID_ATTR);
   }
   
   
@@ -47,6 +52,6 @@ public class ComponentRefContentHandler extends ContentHandler
   @Override
   public RefComponent finished() throws SAXException
   {
-    return new RefComponent(refid, null);
+    return new RefComponent(refid, id, null);
   }
 }

@@ -18,9 +18,9 @@ import de.seerheinlab.micgwaf.parser.HtmlParser;
 public class ParseAndRenderTest
 {
   @Test
-  public void testRenderPage() throws Exception
+  public void testRenderComponentRefs() throws Exception
   {
-    File componentDir = new File("src/test/resources/de/seerheinlab/micgwaf/page");
+    File componentDir = new File("src/test/resources/de/seerheinlab/micgwaf/componentRef");
     Map<String, Component> components 
         = new HtmlParser().readComponents(componentDir);
     assertEquals(3, components.size());
@@ -76,7 +76,7 @@ public class ParseAndRenderTest
   @Test
   public void testChildAndParentReferences() throws Exception
   {
-    File componentDir = new File("src/test/resources/de/seerheinlab/micgwaf/page");
+    File componentDir = new File("src/test/resources/de/seerheinlab/micgwaf/componentRef");
     Map<String, Component> components 
         = new HtmlParser().readComponents(componentDir);
     assertEquals(3, components.size());

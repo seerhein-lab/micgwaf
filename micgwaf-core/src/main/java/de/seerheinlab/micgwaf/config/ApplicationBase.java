@@ -126,13 +126,14 @@ public abstract class ApplicationBase
     Constructor<?>[] constructors = componentClass.getConstructors();
     for (Constructor<?> constructor : constructors)
     {
-      if ((constructor.getParameterTypes().length == 1) 
-          && (constructor.getParameterTypes()[0] == Component.class))
+      if ((constructor.getParameterTypes().length == 2) 
+          && (constructor.getParameterTypes()[0] == String.class)
+          && (constructor.getParameterTypes()[1] == Component.class))
       {
         Component instance;
         try
         {
-          instance = (Component) constructor.newInstance(new Object[] {null});
+          instance = (Component) constructor.newInstance(new Object[] {null, null});
         } catch (InstantiationException | IllegalAccessException
             | IllegalArgumentException | InvocationTargetException e)
         {
@@ -143,7 +144,7 @@ public abstract class ApplicationBase
       }
     }
     throw new IllegalStateException("Component of class " + componentClass.getName() 
-        + " has no constructor with a single Component parameter");
+        + " has no constructor with two parameters (String, Component)");
   }
   
   /**

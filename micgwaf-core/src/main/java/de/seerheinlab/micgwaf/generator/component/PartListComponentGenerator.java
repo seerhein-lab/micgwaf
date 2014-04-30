@@ -87,21 +87,12 @@ public class PartListComponentGenerator extends ComponentGenerator
         String componentField = getComponentFieldName(part.component, componentCounter);
         ComponentGenerator generator = Generator.getGenerator(part.component);
         generator.generateFieldOrVariableFromComponent(part.component, targetPackage, fileContent, "public ", componentField, "this", 2);
-        componentCounter++;          
+        componentCounter++;
       }
     }
     
     // Constructor
-    fileContent.append("\n  /**\n");
-    fileContent.append("  * Constructor. \n");
-    fileContent.append("  *\n");
-    fileContent .append("  * @param parent the parent component,")
-        .append(" or null if this is a standalone component (e.g. a page)\n");
-    fileContent.append("  */\n");
-    fileContent.append("  public ").append(className).append("(Component parent)\n");
-    fileContent.append("  {\n");
-    fileContent.append("    super(\"").append(component.getId()).append("\", parent);\n");
-    fileContent.append("  }\n\n");
+    generateConstructorWithIdAndParent(className, component.getId(), fileContent);
     
     // getChildren
     fileContent.append("  @Override\n");
@@ -169,7 +160,7 @@ public class PartListComponentGenerator extends ComponentGenerator
         .append("\n");
     fileContent.append("{\n");
     generateSerialVersionUid(fileContent);
-    generateComponentConstructorWithParent(extensionClassName, fileContent);
+    generateConstructorWithIdAndParent(extensionClassName, null, fileContent);
     fileContent.append("}\n");
 
     return fileContent.toString();

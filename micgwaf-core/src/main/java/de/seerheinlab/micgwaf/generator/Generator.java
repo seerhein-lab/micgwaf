@@ -237,7 +237,7 @@ public class Generator
       JavaClassName componentClassName 
           = componentGenerator.getReferencableClassName(component, componentPackage);
       content.append("    components.put(\"").append(componentClassName.getSimpleName())
-          .append("\", new ").append(componentClassName.getSimpleName()).append("(null));\n");
+          .append("\", new ").append(componentClassName.getSimpleName()).append("(null, null));\n");
     }
     content.append("  }\n");
     content.append("}\n");

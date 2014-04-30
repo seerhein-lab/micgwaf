@@ -48,6 +48,16 @@ public class InputComponent extends HtmlElementComponent
   }
 
   /**
+   * Constructor without id. 
+   * 
+   * @param parent the parent component, or null if this is a standalone component (e.g. a page)
+   */
+  public InputComponent(String id, Component parent)
+  {
+    super(id, parent);
+  }
+
+  /**
    * Constructor. 
    * 
    * @param id the id of the component, may be null. 
