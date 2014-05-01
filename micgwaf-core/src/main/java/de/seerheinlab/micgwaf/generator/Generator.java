@@ -92,6 +92,7 @@ public class Generator
     for (Map.Entry<String, Component> entry : componentMap.entrySet())
     {
       Component component = entry.getValue();
+      component.resolveComponentReferences(componentMap);
       String componentPackage = baseComponentPackage + "." + component.getId();
       
       Map<JavaClassName, String> componentFilesToWrite = new HashMap<>();

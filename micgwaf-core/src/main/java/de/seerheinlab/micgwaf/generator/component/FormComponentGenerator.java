@@ -12,6 +12,7 @@ import de.seerheinlab.micgwaf.component.Component;
 import de.seerheinlab.micgwaf.component.FormComponent;
 import de.seerheinlab.micgwaf.component.HtmlElementComponent;
 import de.seerheinlab.micgwaf.component.InputComponent;
+import de.seerheinlab.micgwaf.component.RefComponent;
 import de.seerheinlab.micgwaf.generator.Generator;
 import de.seerheinlab.micgwaf.generator.JavaClassName;
 
@@ -35,7 +36,8 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
     StringBuilder fileContent = new StringBuilder();
     
     // replace inheritance
-    rootContent = rootContent.replace(" extends " + HtmlElementComponent.class.getSimpleName(), 
+    rootContent = rootContent.replace(
+        " extends " + HtmlElementComponent.class.getSimpleName(), 
         " extends " + FormComponent.class.getSimpleName());
 
     // remove last "}"
@@ -52,8 +54,9 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
     getButtons(component, buttons);
     Map<InputComponent, Component> buttonsInLoops = new HashMap<>();
     getButtonsInLoops(component, buttonsInLoops);
-    List<InputComponent> inputs = new ArrayList<>();
-    getInputs(component, inputs);
+    List<ComponentWithPath> inputs = new ArrayList<>();
+    List<Component> componentPath = new ArrayList<>();
+    getInputs(component, inputs, componentPath);
     
     for (InputComponent button : buttons)
     {
@@ -67,7 +70,7 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
       generateButtonInLoopHookMethod(targetPackage, fileContent, button, loopComponent, false);
     }
     
-    for (InputComponent input : inputs)
+    for (ComponentWithPath input : inputs)
     {
       generateSubmittedValueGetters(component, fileContent, input);
     }
@@ -132,30 +135,50 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
     return fileContent.toString();
   }
 
-  private void generateSubmittedValueGetters(Component component,
-      StringBuilder fileContent, InputComponent input)
+  private void generateSubmittedValueGetters(
+      Component component,
+      StringBuilder fileContent,
+      ComponentWithPath input)
   {
-    String normalizedInputId = removeLoopPart(input.getId());
+    String normalizedInputId = removeLoopPart(input.component.getId());
+    StringBuilder pathToComponent = new StringBuilder();
+    StringBuilder getterSuffix = new StringBuilder();
+    StringBuilder refComponentPath = new StringBuilder(); 
+    for (Component pathElement : input.path)
+    {
+      if (pathElement.getId() != null 
+          && pathElement.getParent() != null) // do not output ids of component root referenced by RefComponents
+      {
+        pathToComponent.append(removeLoopPart(pathElement.getId())).append(".");
+      }
+      if (pathElement instanceof RefComponent && pathElement.getId() != null)
+      {
+        getterSuffix.append(pathElement.getId().substring(0, 1).toUpperCase())
+            .append(pathElement.getId().substring(1));
+        if (refComponentPath.length() > 0)
+        {
+          refComponentPath.append(" -> ");
+        }
+        refComponentPath.append(pathElement.getId());
+      }
+    }
+    pathToComponent.append(normalizedInputId);
+    getterSuffix.append(normalizedInputId.substring(0, 1).toUpperCase())
+        .append(normalizedInputId.substring(1));
     fileContent.append("\n  /**\n");
     fileContent.append("   * Convenience method to retrieve the submitted value of the ")
-        .append(removeLoopPart(input.getId())).append(" component.\n");
+        .append(normalizedInputId).append(" component");
+    if (refComponentPath.length() > 0)
+    {
+      fileContent.append(" in the ").append(refComponentPath).append(" component");
+    }
+    fileContent.append(".\n");
     fileContent.append("   *\n");
-    fileContent.append("   * @return the submitted value of the ").append(removeLoopPart(input.getId()))
+    fileContent.append("   * @return the submitted value of the ").append(normalizedInputId)
         .append(" component.\n");;
     fileContent.append("   */\n");
-    fileContent.append("  public String get").append(normalizedInputId.substring(0, 1).toUpperCase())
-        .append(normalizedInputId.substring(1)).append("()\n");
+    fileContent.append("  public String get").append(getterSuffix).append("()\n");
     fileContent.append("  {\n");
-    String pathToComponent = normalizedInputId;
-    Component parent = input.getParent();
-    while (parent != component)
-    {
-      if (parent.getId() != null)
-      {
-        pathToComponent = removeLoopPart(parent.getId()) + "." + pathToComponent;
-      }
-      parent = parent.getParent();
-    }
     fileContent.append("    return ").append(pathToComponent).append(".submittedValue;\n");
     fileContent.append("  }\n");
   }
@@ -326,24 +349,54 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
     }
   }
   
-  public void getInputs(Component component, List<InputComponent> inputs)
+  public void getInputs(Component component, List<ComponentWithPath> inputs, List<Component> componentPath)
   {
     if (component instanceof InputComponent)
     {
       InputComponent inputComponent = (InputComponent) component;
       if (!inputComponent.isButton())
       {
-        inputs.add(inputComponent);
+        // use subList because path contains base component, which we do not want to store as path member 
+        inputs.add(new ComponentWithPath(
+            inputComponent, 
+            new ArrayList<>(componentPath.subList(1, componentPath.size() - 1))));
       }
     }
     if (component instanceof ChildListComponent)
     {
-      // do not consider buttons in loops
+      // do not consider inputs in loops
       return;
+    }
+    componentPath.add(component);
+    if (component instanceof RefComponent)
+    {
+      RefComponent refComponent = (RefComponent) component;
+      if (refComponent.referencedComponent != null)
+      {
+        getInputs(refComponent.referencedComponent, inputs, componentPath);
+      }
+      else
+      {
+        throw new IllegalStateException("Component reference " + refComponent + " is not resolved");
+      }
     }
     for (Component child : component.getChildren())
     {
-      getInputs(child, inputs);
+      getInputs(child, inputs, componentPath);
+    }
+    componentPath.remove(componentPath.size() - 1);
+  }
+  
+  private static class ComponentWithPath
+  {
+    public Component component;
+    
+    public List<Component> path;
+    
+    public ComponentWithPath(Component component, List<Component> path)
+    {
+      this.component = component;
+      this.path = path;
     }
   }
 }

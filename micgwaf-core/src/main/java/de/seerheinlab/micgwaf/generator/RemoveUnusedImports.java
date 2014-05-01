@@ -30,8 +30,11 @@ public class RemoveUnusedImports
    */
   public String removeUnusedImports(String toProcess)
   {
-    Map<Integer, String> importedClasses = new LinkedHashMap<>();
+    // key is the line number of the import, value is the unqualified name of the imported class.
+    Map<Integer, String> unqualifiedImportedClasses = new LinkedHashMap<>();
+    Set<String> qualifiedImportedClasses = new HashSet<>();
     StringTokenizer tokenizer = new StringTokenizer(toProcess, "\n", true);
+    Set<Integer> linesToRemove = new HashSet<>();
     int lineNumber = 0;
     while (tokenizer.hasMoreTokens())
     {
@@ -45,17 +48,25 @@ public class RemoveUnusedImports
         token = token.replace("\r ", "");
         token = token.substring(IMPORT.length(), token.length() - SEMICOLON.length());
         token = token.replace("static ", "");
-        int classNameStart = token.lastIndexOf(".") + 1;
-        if (classNameStart > 0)
+        if (qualifiedImportedClasses.contains(token))
         {
-          String className = token.substring(classNameStart);
-          importedClasses.put(lineNumber, className);
+          // duplicate import, remove
+          linesToRemove.add(lineNumber);
+        }
+        else
+        {
+          qualifiedImportedClasses.add(token.trim());
+          int classNameStart = token.lastIndexOf(".") + 1;
+          if (classNameStart > 0)
+          {
+            String className = token.substring(classNameStart);
+            unqualifiedImportedClasses.put(lineNumber, className);
+          }
         }
       }
       lineNumber++;
     }
-    Set<Integer> linesToRemove = new HashSet<>();
-    for (Map.Entry<Integer, String> importedClassEntry : importedClasses.entrySet())
+    for (Map.Entry<Integer, String> importedClassEntry : unqualifiedImportedClasses.entrySet())
     {
       String className = importedClassEntry.getValue();
       if (toProcess.indexOf(className) == toProcess.lastIndexOf(className))
