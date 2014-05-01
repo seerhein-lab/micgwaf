@@ -72,7 +72,7 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
     
     for (ComponentWithPath input : inputs)
     {
-      generateSubmittedValueGetters(component, fileContent, input);
+      generateSubmittedValueGettersAndSetters(component, fileContent, input);
     }
     
     fileContent.append("\n  /**\n");
@@ -135,14 +135,14 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
     return fileContent.toString();
   }
 
-  private void generateSubmittedValueGetters(
+  private void generateSubmittedValueGettersAndSetters(
       Component component,
       StringBuilder fileContent,
       ComponentWithPath input)
   {
     String normalizedInputId = removeLoopPart(input.component.getId());
     StringBuilder pathToComponent = new StringBuilder();
-    StringBuilder getterSuffix = new StringBuilder();
+    StringBuilder getterSetterSuffix = new StringBuilder();
     StringBuilder refComponentPath = new StringBuilder(); 
     for (Component pathElement : input.path)
     {
@@ -153,7 +153,7 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
       }
       if (pathElement instanceof RefComponent && pathElement.getId() != null)
       {
-        getterSuffix.append(pathElement.getId().substring(0, 1).toUpperCase())
+        getterSetterSuffix.append(pathElement.getId().substring(0, 1).toUpperCase())
             .append(pathElement.getId().substring(1));
         if (refComponentPath.length() > 0)
         {
@@ -163,7 +163,7 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
       }
     }
     pathToComponent.append(normalizedInputId);
-    getterSuffix.append(normalizedInputId.substring(0, 1).toUpperCase())
+    getterSetterSuffix.append(normalizedInputId.substring(0, 1).toUpperCase())
         .append(normalizedInputId.substring(1));
     fileContent.append("\n  /**\n");
     fileContent.append("   * Convenience method to retrieve the submitted value of the ")
@@ -177,9 +177,26 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
     fileContent.append("   * @return the submitted value of the ").append(normalizedInputId)
         .append(" component.\n");;
     fileContent.append("   */\n");
-    fileContent.append("  public String get").append(getterSuffix).append("()\n");
+    fileContent.append("  public String get").append(getterSetterSuffix).append("()\n");
     fileContent.append("  {\n");
     fileContent.append("    return ").append(pathToComponent).append(".submittedValue;\n");
+    fileContent.append("  }\n");
+
+    fileContent.append("\n  /**\n");
+    fileContent.append("   * Convenience method to set the value of the ")
+        .append(normalizedInputId).append(" component");
+    if (refComponentPath.length() > 0)
+    {
+      fileContent.append(" in the ").append(refComponentPath).append(" component");
+    }
+    fileContent.append(".\n");
+    fileContent.append("   *\n");
+    fileContent.append("   * @param value the value of the ").append(normalizedInputId)
+        .append(" component.\n");;
+    fileContent.append("   */\n");
+    fileContent.append("  public void set").append(getterSetterSuffix).append("(String value)\n");
+    fileContent.append("  {\n");
+    fileContent.append("    ").append(pathToComponent).append(".setValue(value);\n");
     fileContent.append("  }\n");
   }
 
