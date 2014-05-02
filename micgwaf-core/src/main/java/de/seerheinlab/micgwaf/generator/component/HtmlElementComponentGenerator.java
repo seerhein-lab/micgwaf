@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import de.seerheinlab.micgwaf.component.ChangesChildHtmlId;
 import de.seerheinlab.micgwaf.component.ChildListComponent;
 import de.seerheinlab.micgwaf.component.Component;
 import de.seerheinlab.micgwaf.component.GenerationParameters;
@@ -52,6 +53,7 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
     String className = javaClassName.getSimpleName();
     StringBuilder fileContent = new StringBuilder();
     fileContent.append("package ").append(targetPackage).append(";\n\n");
+    fileContent.append("import ").append(ChangesChildHtmlId.class.getName()).append(";\n");
     fileContent.append("import ").append(Component.class.getName()).append(";\n");
     fileContent.append("import ").append(HtmlElementComponent.class.getName()).append(";\n");
     fileContent.append("import ").append(SnippetComponent.class.getName()).append(";\n");
@@ -94,8 +96,12 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
     fileContent.append("\n");
     generateClassJavadoc(component, fileContent, false);
     fileContent.append("public class ").append(className)
-        .append(" extends ").append(HtmlElementComponent.class.getSimpleName())
-        .append("\n");
+        .append(" extends ").append(HtmlElementComponent.class.getSimpleName());
+    if (htmlElementCompont.getParent() == null)
+    {
+      fileContent.append(" implements ChangesChildHtmlId");
+    }
+    fileContent.append("\n");
     fileContent.append("{\n");
     
     generateSerialVersionUid(fileContent);
@@ -195,9 +201,36 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
     }
     fileContent.append("    return result;\n");
     fileContent.append("  }\n");
+    
+    if (htmlElementCompont.getParent() == null)
+    {
+      generateChangeChildHtmlId(fileContent);
+    }
     generateConvenienceMethods(htmlElementCompont, fileContent);
     fileContent.append("}\n");
     return fileContent.toString();
+  }
+
+  private void generateChangeChildHtmlId(StringBuilder fileContent)
+  {
+    fileContent.append("    /**\n");
+    fileContent.append("     * If the id of this component is non null, the id of this component is added as a prefix to the passed id\n");
+    fileContent.append("     * and returned; otherwise, the passed id is returned unchanged.\n");
+    fileContent.append("     *\n");
+    fileContent.append("     * @param child the child component, not used here.\n");
+    fileContent.append("     * @param htmlId the id to prepend the id to, not null.\n");
+    fileContent.append("     *\n");
+    fileContent.append("     * @returned the prefixed id, not null.\n");
+    fileContent.append("     */\n");
+    fileContent.append("    @Override\n");
+    fileContent.append("    public String changeChildHtmlId(Component child, String htmlId)\n");
+    fileContent.append("    {\n");
+    fileContent.append("      if (id != null)\n");
+    fileContent.append("      {\n");
+    fileContent.append("        return id + \":\" + htmlId;\n");
+    fileContent.append("      }\n");
+    fileContent.append("      return htmlId;\n");
+    fileContent.append("    }\n");
   }
 
   protected void generateConvenienceMethods(
