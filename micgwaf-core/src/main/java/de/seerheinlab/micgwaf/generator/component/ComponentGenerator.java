@@ -403,4 +403,34 @@ public abstract class ComponentGenerator
     toAppendTo.append("  /** Serial Version UID. */\n");
     toAppendTo.append("  private static final long serialVersionUID = 1L;\n\n");
   }
+  
+  /**
+   * Generates the changeChildHtmlId method for a component. 
+   * The method adds the id of the component as prefix if the id is not null.
+   * 
+   * @param fileContent the StringBuilder to which the code should be appended.
+   */
+  public void generateChangeChildHtmlId(StringBuilder fileContent)
+  {
+    fileContent.append("    /**\n");
+    fileContent.append("     * If the id of this component is non null, the id of this component is added as a prefix to the passed id\n");
+    fileContent.append("     * and returned; otherwise, the passed id is returned unchanged.\n");
+    fileContent.append("     *\n");
+    fileContent.append("     * @param child the child component, not used here.\n");
+    fileContent.append("     * @param htmlId the id to prepend the id to, not null.\n");
+    fileContent.append("     *\n");
+    fileContent.append("     * @returned the prefixed id, not null.\n");
+    fileContent.append("     */\n");
+    fileContent.append("    @Override\n");
+    fileContent.append("    public String changeChildHtmlId(Component child, String htmlId)\n");
+    fileContent.append("    {\n");
+    fileContent.append("      if (id != null)\n");
+    fileContent.append("      {\n");
+    fileContent.append("        return id + \":\" + htmlId;\n");
+    fileContent.append("      }\n");
+    fileContent.append("      return htmlId;\n");
+    fileContent.append("    }\n");
+  }
+
+
 }
