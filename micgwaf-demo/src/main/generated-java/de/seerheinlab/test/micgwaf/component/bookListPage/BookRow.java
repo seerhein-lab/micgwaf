@@ -20,16 +20,17 @@ public class BookRow extends BaseBookRow
   /**
   * Constructor. 
   *
+  * @param id the id of this component, or null.
   * @param parent the parent component, or null if this is a standalone component (e.g. a page)
   */
-  public BookRow(Component parent)
+  public BookRow(String id, Component parent)
   {
-    super(parent);
+    super(id, parent);
   }
   
-  public BookRow(Component parent, Book book)
+  public BookRow(String id, Component parent, Book book)
   {
-    super(parent);
+    super(id, parent);
     setBook(book);
   }
 

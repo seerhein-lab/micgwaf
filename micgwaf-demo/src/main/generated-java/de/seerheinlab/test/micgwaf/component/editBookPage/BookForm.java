@@ -13,29 +13,20 @@ public class BookForm extends BaseBookForm
   private static final long serialVersionUID = 1L;
 
   public Book book;
+  
+  public int messageIdCounter;
 
   /**
   * Constructor. 
   *
   * @param baseEditBookPage the parent component, not null.
   */
-  public BookForm(BaseEditBookPage baseEditBookPage)
+  public BookForm(String id, BaseEditBookPage baseEditBookPage)
   {
-    super(baseEditBookPage);
+    super(id, baseEditBookPage);
     Assertions.assertNotNull(baseEditBookPage, "baseEditBookPage");
     setBook(null);
-  }
-
-  /**
-  * Constructor. 
-  *
-  * @param parent the parent component, or null if this is a standalone component (e.g. a page)
-  * @param book the book to edit, or null for creating a new book from scratch.
-  */
-  public BookForm(Component parent, Book book)
-  {
-    super(parent);
-    setBook(book);
+    clearErrorMessages();
   }
 
   /**
@@ -53,12 +44,11 @@ public class BookForm extends BaseBookForm
     else
     {
       this.book = book;
-      // TODO why go via groups
       // TODO simplify mapping
-      authorGroup.authorInput.setValue(book.getAuthor());
-      titleGroup.titleInput.setValue(book.getTitle());
-      publisherGroup.publisherInput.setValue(book.getPublisher());
-      isbnGroup.isbnInput.setValue(book.getIsbn());
+      setAuthorInput(book.getAuthor());
+      setTitleInput(book.getTitle());
+      setPublisherInput(book.getPublisher());
+      setIsbnInput(book.getIsbn());
     }
   }
 
@@ -76,7 +66,7 @@ public class BookForm extends BaseBookForm
       return null;
     }
     BookService.instance.save(book);
-    return new BookListPage(null);
+    return new BookListPage(null, null);
   }
 
   /**
@@ -88,7 +78,7 @@ public class BookForm extends BaseBookForm
   @Override
   public Component cancelButtonPressed()
   {
-    return new BookListPage(null);
+    return new BookListPage(null, null);
   }
   
   /**
@@ -97,7 +87,7 @@ public class BookForm extends BaseBookForm
    * If validation was not successful, the erroneous fields are marked and an error message is printed.
    * 
    * @return true if the input is valid and the form data was copied into the book, 
-   *         or false if an validation error occured.
+   *         or false if an validation error occurred.
    */
   public boolean processInput()
   {
@@ -107,13 +97,13 @@ public class BookForm extends BaseBookForm
     if (getAuthorInput() == null || getAuthorInput().trim().isEmpty())
     {
       valid = false;
-      authorGroup.addClass("has-error");
-      ((EditBookPage) parent).messageBox.errorMessageList.add(new ErrorMessage(parent, "Author must be filled"));
+      author.addClass("has-error");
+      addErrorMessage("Author must be filled");
     }
     if (getTitleInput() == null || getTitleInput().trim().isEmpty())
     {
       valid = false;
-      titleGroup.addClass("has-error");
+      title.addClass("has-error");
       addErrorMessage("Title must be filled");
     }
     if (valid)
@@ -132,10 +122,10 @@ public class BookForm extends BaseBookForm
    */
   public void hideErrorBoxes()
   {
-    authorGroup.removeClass("has-error");
-    titleGroup.removeClass("has-error");
-    publisherGroup.removeClass("has-error");
-    isbnGroup.removeClass("has-error");
+    author.removeClass("has-error");
+    title.removeClass("has-error");
+    publisher.removeClass("has-error");
+    isbn.removeClass("has-error");
   }
 
   /**
@@ -145,7 +135,8 @@ public class BookForm extends BaseBookForm
    */
   public void addErrorMessage(String message)
   {
-    ((EditBookPage) parent).messageBox.errorMessageList.add(new ErrorMessage(parent, message));
+    ((EditBookPage) parent).messageBox.errorMessageList.add(new ErrorMessage("message" + messageIdCounter, parent, message));
+    messageIdCounter++;
   }
   
   /**

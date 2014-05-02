@@ -17,11 +17,12 @@ public class BookListForm extends BaseBookListForm
   /**
   * Constructor. 
   *
+  * @param id the id of this component, or null.
   * @param parent the parent component, or null if this is a standalone component (e.g. a page)
   */
-  public BookListForm(Component parent)
+  public BookListForm(String id, Component parent)
   {
-    super(parent);
+    super(id, parent);
   }
 
   /**
@@ -36,7 +37,7 @@ public class BookListForm extends BaseBookListForm
   @Override
   public Component hinzufuegenButtonPressed()
   {
-    return new EditBookPage(null);
+    return new EditBookPage(null, null);
   }
 
   /**
@@ -64,7 +65,7 @@ public class BookListForm extends BaseBookListForm
   public Component resetButtonPressed()
   {
     BookService.instance.resetBooks();
-    return new BookListPage(null);
+    return new BookListPage(null, null);
   }
 
   /**
@@ -78,7 +79,7 @@ public class BookListForm extends BaseBookListForm
   @Override
   public Component editExtraPageButtonPressed(BookRow bookRow)
   {
-    EditBookPage targetPage = new EditBookPage(null, bookRow.getBook());
+    EditBookPage targetPage = new EditBookPage(null, null, bookRow.getBook());
     return targetPage;
  }
 
@@ -161,7 +162,7 @@ public class BookListForm extends BaseBookListForm
     bookRowList.children.clear();
     for (Book book : toDisplay)
     {
-      bookRowList.children.add(new BookRow(bookRowList, book));
+      bookRowList.children.add(new BookRow(null, bookRowList, book));
     }
   }
 }

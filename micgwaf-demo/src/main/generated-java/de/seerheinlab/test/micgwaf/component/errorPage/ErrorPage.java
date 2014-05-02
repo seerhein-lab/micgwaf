@@ -17,10 +17,12 @@ public class ErrorPage extends BaseErrorPage
   /**
   * Constructor. 
   *
-  * @param parent the parent component, or null if this is a standalone component (e.g. a page)
+  * @param id the id of this component, or null.
+  * @param parent the parent component. Can be null if this is a standalone component (e.g. a page).
   */
-  public ErrorPage(Component parent)
+  public ErrorPage(String id, Component parent)
   {
-    super(parent);
+    super(id, parent);
   }
+
 }

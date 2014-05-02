@@ -20,20 +20,21 @@ public class EditBookPage extends BaseEditBookPage
   *
   * @param parent the parent component, or null if this is a standalone component (e.g. a page)
   */
-  public EditBookPage(Component parent)
+  public EditBookPage(String id, Component parent)
   {
-    this(parent, null);
+    this(id, parent, null);
   }
 
   /**
   * Creates a EditBookPage which edits the specified book.
   *
+  * @param id the id of this component, or null.
   * @param parent the parent component, or null if this is a standalone component (e.g. a page)
   * @param book the book to edit, or null for creating a new Book.
   */
-  public EditBookPage(Component parent, Book book)
+  public EditBookPage(String id, Component parent, Book book)
   {
-    super(parent);
+    super(id, parent);
     bookForm.setBook(book);
   }
 }

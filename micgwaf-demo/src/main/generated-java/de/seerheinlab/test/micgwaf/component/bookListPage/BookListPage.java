@@ -18,11 +18,12 @@ public class BookListPage extends BaseBookListPage
   /**
   * Constructor. 
   *
+  * @param id the id of this component, or null.
   * @param parent the parent component, or null if this is a standalone component (e.g. a page)
   */
-  public BookListPage(Component parent)
+  public BookListPage(String id, Component parent)
   {
-    super(parent);
+    super(id, parent);
     bookListForm.display(BookService.instance.getBookList());
   }
 }

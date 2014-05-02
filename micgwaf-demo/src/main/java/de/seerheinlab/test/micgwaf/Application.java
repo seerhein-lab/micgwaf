@@ -25,7 +25,7 @@ public class Application extends ApplicationBase
     exception.printStackTrace(new PrintWriter(writer));
     System.out.println(writer.toString());
     // forward to error page
-    return new ErrorPage(null);
+    return new ErrorPage(null, null);
   }
 
 }

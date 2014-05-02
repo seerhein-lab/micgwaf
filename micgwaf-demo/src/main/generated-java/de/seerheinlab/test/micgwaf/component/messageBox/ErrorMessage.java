@@ -16,22 +16,25 @@ public class ErrorMessage extends BaseErrorMessage
   /**
   * Constructor. 
   *
-  * @param parent the parent component, or null if this is a standalone component (e.g. a page)
+  * @param id the id of this component, or null.
+  * @param parent the parent component. Can be null if this is a standalone component (e.g. a page).
   */
-  public ErrorMessage(Component parent)
+  public ErrorMessage(String id, Component parent)
   {
-    super(parent);
+    super(id, parent);
   }
-  
+
   /**
   * Constructor. 
   *
-  * @param parent the parent component, or null if this is a standalone component (e.g. a page)
-  * @param text the text of the message, not null.
+  * @param id the id of this component, or null.
+  * @param parent the parent component. Can be null if this is a standalone component (e.g. a page).
+  * @param message the error message to set, not null.
   */
-  public ErrorMessage(Component parent, String text)
+  public ErrorMessage(String id, Component parent, String message)
   {
-    super(parent);
-    this.setTextContent(text);
+    super(id, parent);
+    setTextContent(message);
   }
+
 }

@@ -14,24 +14,12 @@
       <form m:id="bookForm">
         <div class="row">
           <div class="col-md-6">
-            <div m:id="authorGroup" class="form-group">
-              <label for="authorInput">Author</label>
-              <input m:id="authorInput" class="form-control" placeholder="Enter author"/>
-            </div>
-            <div m:id="titleGroup" class="form-group">
-              <label for="titleInput">Title</label>
-              <input m:id="titleInput" class="form-control" placeholder="Enter title"/>
-            </div>
+            <m:componentRef refid="validatedInput" id="author"/>
+            <m:componentRef refid="validatedInput" id="title"/>
           </div>
           <div class="col-md-6">
-            <div m:id="publisherGroup" class="form-group">
-              <label for="publisherInput">Publisher</label>
-              <input m:id="publisherInput" class="form-control" placeholder="Enter publisher"/>
-            </div>
-            <div m:id="isbnGroup" class="form-group">
-              <label for="isbnInput">ISBN</label>
-              <input m:id="isbnInput" class="form-control" placeholder="Enter ISBN"/>
-            </div>
+            <m:componentRef refid="validatedInput" id="publisher"/>
+            <m:componentRef refid="validatedInput" id="isbn"/>
           </div>
         </div>      
         <button m:id="okButton" type="submit" title="Save this book" class="btn btn-default">Save</button>

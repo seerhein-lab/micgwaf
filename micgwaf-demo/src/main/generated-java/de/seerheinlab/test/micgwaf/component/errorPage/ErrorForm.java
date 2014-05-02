@@ -12,12 +12,14 @@ public class ErrorForm extends BaseErrorForm
   /**
   * Constructor. 
   *
-  * @param parent the parent component, or null if this is a standalone component (e.g. a page)
+  * @param id the id of this component, or null.
+  * @param parent the parent component. Can be null if this is a standalone component (e.g. a page).
   */
-  public ErrorForm(Component parent)
+  public ErrorForm(String id, Component parent)
   {
-    super(parent);
+    super(id, parent);
   }
+
 
   /**
    * Hook method which is called when the button okButton was pressed.
