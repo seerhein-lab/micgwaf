@@ -165,8 +165,12 @@ simply remove the unused filter and filter-mapping:
 Further references
 ------------------
 [Request processing](requestProcessing.md)
+
 [Components](components.md)
+
 [Parsing and Generating](parsingGenerating.md)
+
 [Gotchas](gotchas.md)
+
 [Dependency Injection](dependencyInjection.md)
   
