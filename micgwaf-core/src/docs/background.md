@@ -23,12 +23,14 @@ In my mind, a java web application framework should be designed along the follow
    - conditions
    - page frames
    - ignore parts (for templating)
+
+5) The framework should not use excessive space in the HTML session or create excessive traffic.
    
-5) As far as possible, HTML mockups should be easy to be re-used in application code.
+6) As far as possible, HTML mockups should be easy to be re-used in application code.
    So any mock-ups shown to discuss features of the web application can easily be used
    to build the real application afterwards and are not "lost work".
    
-6) The framework should handle a pressed browser back button gracefully, not re-executing the business methods
+7) The framework should handle a pressed browser back button gracefully, not re-executing the business methods
    which were executed prior to rendering the re-displayed page.
 
 Micgwaf addresses these points in the following fashion:
@@ -42,5 +44,16 @@ Micgwaf addresses these points in the following fashion:
    an id attribute in the special micgwaf namespace.
    So the markup still stays as much HTML as possible (it is even valid HTML which can be displayed
    by a web browser).
+   
+5) Using a component-oriented PRG approach which handles the back button, 
+   page states needs to be saved somewhere to be able to re-render a former state of a page. 
+   Typical places to store component state are the HTML session or in the client.
+   In micgwaf, per default the HTML session is used, and the component tree is saved to be able
+   to re-render the page. In contrast to other frameworks, however, the generated classes know all
+   state which was defined in the HTML source page from which the page components were generated,
+   so the real saved state is just the difference needed to create the difference between source HTML
+   and actual generated HTML, which is few information 
+   (unlike e.G. JSF which stores the whole component state ih the session or in the client).
+   
    
 TODO further objectives
