@@ -68,6 +68,49 @@ If HTML text is encountered which does not fit into the above categories, a Part
 There are other elements in the m namespace which do not get translated into own components.
 These are: TODO
 
+The following attributes in the m namespace do not create a component on their own, 
+but define behaviour of an existing handler: 
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Possible values</th>
+    <th>Supported by Component</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>multiple</td>
+    <td>false (default), true</td>
+    <td>HtmlElementComponent</td>
+    <td>The component defined by this handler can be repeated multiple (0..n) times.</td>
+  </tr>
+  <tr>
+    <td>defaultRender</td>
+    <td>true (default), false</td>
+    <td>HtmlElementComponent</td>
+    <td>Whether by default render this component and its children (true) or not (false).</td>
+  </tr>
+  <tr>
+    <td>defaultRenderSelf</td>
+    <td>true (default), false</td>
+    <td>HtmlElementComponent</td>
+    <td>Whether by default render this component (true) or not (false); rendering the children remains unaffected.</td>
+  </tr>
+  <tr>
+    <td>defaultRenderChildren</td>
+    <td>true (default), false</td>
+    <td>HtmlElementComponent</td>
+    <td>Whether by default render the children of this component (true) or not (false).</td>
+  </tr>
+  <tr>
+    <td>generateExtensionClass</td>
+    <td>true (default for form and page root component), false (default for all other)</td>
+    <td>HtmlElementComponent</td>
+    <td>Whether to create an extension class which can then be overwritten to change its behavior.</td>
+  </tr>
+</table>
+
+
 As already mentioned, the parsed component tree can be rendered as is.
 This is useful for creating HTML mockups which can later be filled with behavior.
 
