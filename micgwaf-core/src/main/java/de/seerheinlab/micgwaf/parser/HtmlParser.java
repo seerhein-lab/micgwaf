@@ -17,10 +17,25 @@ import org.xml.sax.XMLReader;
 
 import de.seerheinlab.micgwaf.component.Component;
 
+/**
+ * Parses HTML files and generates components from them.
+ * The parsed components can render the HTML source file again.
+ */
 public class HtmlParser
 {
   private static final String SAX_NAMESPACE_FEATURE_NAME = "http://xml.org/sax/features/namespaces";
   
+  /**
+   * Parses the HTML files in a directory and generates components from them.
+   * Only files directly in the given directory with the suffix .xhtml are parsed,
+   * all other files are ignored.
+   * The created components are stored in the returned map.
+   * The map key is the component id, and the map value is the root component for a HTML source file.
+   * 
+   * @param sourceDirectory the directory where the parsed files reside, not null.
+   * 
+   * @return the map with the parsed components, one entry for each parsed file.
+   */
   public Map<String, Component> readComponents(File sourceDirectory)
   {
     if (sourceDirectory == null)
@@ -59,6 +74,17 @@ public class HtmlParser
     return result;
   }  
   
+  /**
+   * Parses a HTML file and returns the root component.
+   * 
+   * @param inputStream the input stream with the content of the file, not null.
+   * 
+   * @return the root component, not null.
+   * 
+   * @throws SAXException if XML parsing fails.
+   * @throws IOException if reading from the stream fails.
+   * @throws ParserConfigurationException if the SAX parser cannot be configured.
+   */
   public Component parse(InputStream inputStream) 
       throws SAXException, IOException, ParserConfigurationException
   {
