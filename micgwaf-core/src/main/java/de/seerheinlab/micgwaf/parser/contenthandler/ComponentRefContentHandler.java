@@ -1,5 +1,8 @@
 package de.seerheinlab.micgwaf.parser.contenthandler;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
@@ -18,6 +21,8 @@ public class ComponentRefContentHandler extends ContentHandler
   public String refid;
   
   public String id;
+  
+  public Map<String, String> variableValues = new HashMap<>();
 
   @Override
   public void startElement(
@@ -27,18 +32,33 @@ public class ComponentRefContentHandler extends ContentHandler
         Attributes attributes) 
       throws SAXException 
   {
-    // check for componentRef elements
-    if (!Constants.XML_NAMESPACE.equals(uri) || !ComponentRefContentHandler.COMPONENT_REF_ELEMENT_NAME.equals(localName)) 
+    if (!Constants.XML_NAMESPACE.equals(uri) 
+        || !ComponentRefContentHandler.COMPONENT_REF_ELEMENT_NAME.equals(localName)) 
     {
       throw new SAXException("unknown Element " + uri + ":" + localName);
     }
-    refid = attributes.getValue(ComponentRefContentHandler.COMPONENT_REF_REFID_ATTR);
+    for (int i = 0; i < attributes.getLength(); ++i)
+    {
+      String attributeQName = attributes.getQName(i);
+      String value = attributes.getValue(i);
+      if (ComponentRefContentHandler.COMPONENT_REF_REFID_ATTR.equals(attributeQName))
+      {
+        refid = value;
+      }
+      else if (ComponentRefContentHandler.COMPONENT_REF_ID_ATTR.equals(attributeQName))
+      {
+        id = value;
+      }
+      else
+      {
+        variableValues.put(attributeQName, value);
+      }
+    }
     if (refid == null || "".equals(refid.trim()))
     {
       throw new SAXException("Attribute " + ComponentRefContentHandler.COMPONENT_REF_REFID_ATTR 
           + " is required on element " + qName);
     }
-    id = attributes.getValue(ComponentRefContentHandler.COMPONENT_REF_ID_ATTR);
   }
   
   
@@ -52,6 +72,8 @@ public class ComponentRefContentHandler extends ContentHandler
   @Override
   public RefComponent finished() throws SAXException
   {
-    return new RefComponent(refid, id, null);
+    RefComponent result = new RefComponent(refid, id, null);
+    result.variableValues = variableValues;
+    return result;
   }
 }

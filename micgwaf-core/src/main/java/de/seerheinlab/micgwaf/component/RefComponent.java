@@ -3,6 +3,7 @@ package de.seerheinlab.micgwaf.component;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,8 @@ public class RefComponent extends Component
   public String refid;
   
   public Component referencedComponent;
+  
+  public Map<String, String> variableValues = new HashMap<>();
   
   public RefComponent(String refid, String id, Component parent)
   {
