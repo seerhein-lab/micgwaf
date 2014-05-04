@@ -116,7 +116,9 @@ This is useful for creating HTML mockups which can later be filled with behavior
 
 ### Parsing Variables
 
-Variables are of the form ${variableName}, and are used to insert variable text or HTML at these places.
+Variables are of the form ${variableName:defaultValue}, where the :defaultValue part can be omitted 
+(the default value is set to ${variableName} if not specified).
+Variables are used to insert variable text or HTML at these places.
 Currently, variables can appear in plain HTML text only.
 Variables are parsed as a ComponentPart with the variable field set in the PartListComponent.
 Variable values can be defined in componentRef tags, where an attribute with the name of the variable

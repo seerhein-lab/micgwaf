@@ -10,6 +10,7 @@ import de.seerheinlab.micgwaf.component.ChildListComponent;
 import de.seerheinlab.micgwaf.component.Component;
 import de.seerheinlab.micgwaf.component.PartListComponent;
 import de.seerheinlab.micgwaf.component.RefComponent;
+import de.seerheinlab.micgwaf.component.SnippetComponent;
 import de.seerheinlab.micgwaf.config.ApplicationBase;
 import de.seerheinlab.micgwaf.generator.Generator;
 import de.seerheinlab.micgwaf.generator.JavaClassName;
@@ -37,20 +38,21 @@ public class PartListComponentGenerator extends ComponentGenerator
     {
       return null;
     }
-    PartListComponent snippetListComponent = (PartListComponent) component;
+    PartListComponent partListComponent = (PartListComponent) component;
     JavaClassName javaClassName = getClassName(component, targetPackage);
     String className = getClassName(component, targetPackage).getSimpleName();
     StringBuilder fileContent = new StringBuilder();
     fileContent.append("package ").append(javaClassName.getPackage()).append(";\n\n");
     fileContent.append("import ").append(ChangesChildHtmlId.class.getName()).append(";\n");
     fileContent.append("import ").append(Component.class.getName()).append(";\n");
+    fileContent.append("import ").append(SnippetComponent.class.getName()).append(";\n");
     fileContent.append("import ").append(ApplicationBase.class.getName()).append(";\n");
     fileContent.append("import ").append(IOException.class.getName()).append(";\n");
     fileContent.append("import ").append(Writer.class.getName()).append(";\n");
     fileContent.append("import ").append(List.class.getName()).append(";\n");
     fileContent.append("import ").append(ArrayList.class.getName()).append(";\n");
     fileContent.append("import ").append(ChildListComponent.class.getName()).append(";\n");
-    for (PartListComponent.ComponentPart part : snippetListComponent.parts)
+    for (PartListComponent.ComponentPart part : partListComponent.parts)
     {
       if (part.component != null)
       {
@@ -79,7 +81,7 @@ public class PartListComponentGenerator extends ComponentGenerator
     
     int snippetCounter = 1;
     int componentCounter = 1;
-    for (PartListComponent.ComponentPart part : snippetListComponent.parts)
+    for (PartListComponent.ComponentPart part : partListComponent.parts)
     {
       if (part.htmlSnippet != null)
       {
@@ -87,16 +89,16 @@ public class PartListComponentGenerator extends ComponentGenerator
             .append(" = ").append(asConstant(part.htmlSnippet)).append(";\n");
         ++snippetCounter;
       }
-      else if (part.variable != null)
+      else if (part.variableName != null)
       {
-        fileContent.append("\n  public static final String SNIPPET_").append(snippetCounter)
-            .append(" = ").append(asConstant(part.variable)).append(";\n");
-        ++snippetCounter;
+        String componentField = getComponentFieldName(part, componentCounter);
+        generateVariableComponentField(part, componentField, fileContent);
+        componentCounter++;
       }
       else if (part.component != null)
       {
         fileContent.append("\n");
-        String componentField = getComponentFieldName(part.component, componentCounter);
+        String componentField = getComponentFieldName(part, componentCounter);
         ComponentGenerator generator = Generator.getGenerator(part.component);
         generator.generateFieldOrVariableFromComponent(part.component, targetPackage, fileContent, "public ", componentField, "this", 2);
         componentCounter++;
@@ -112,11 +114,11 @@ public class PartListComponentGenerator extends ComponentGenerator
     fileContent.append("  {\n");
     fileContent.append("    List<Component> result = new ArrayList<>();\n");
     componentCounter = 1;
-    for (PartListComponent.ComponentPart part : snippetListComponent.parts)
+    for (PartListComponent.ComponentPart part : partListComponent.parts)
     {
-      if (part.component != null)
+      if (part.component != null || part.variableName != null)
       {
-        String componentField = getComponentFieldName(part.component, componentCounter);
+        String componentField = getComponentFieldName(part, componentCounter);
         fileContent.append("    result.add(").append(componentField).append(");\n");
         componentCounter++;
       }
@@ -130,7 +132,7 @@ public class PartListComponentGenerator extends ComponentGenerator
     
     snippetCounter = 1;
     componentCounter = 1;
-    for (PartListComponent.ComponentPart part : snippetListComponent.parts)
+    for (PartListComponent.ComponentPart part : partListComponent.parts)
     {
       if (part.htmlSnippet != null)
       {
@@ -138,9 +140,9 @@ public class PartListComponentGenerator extends ComponentGenerator
             .append(");\n");
         ++snippetCounter;
       }
-      else if (part.component != null)
+      else if (part.component != null || part.variableName != null)
       {
-        String componentField = getComponentFieldName(part.component, componentCounter);
+        String componentField = getComponentFieldName(part, componentCounter);
         fileContent.append("    if (").append(componentField).append(" != null)\n");
         fileContent.append("    {\n");
         fileContent.append("      ").append(componentField)
@@ -150,6 +152,21 @@ public class PartListComponentGenerator extends ComponentGenerator
       }
     }
     fileContent.append("  }\n");
+    
+    componentCounter = 1;
+    for (PartListComponent.ComponentPart part : partListComponent.parts)
+    {
+      if (part.variableName != null)
+      {
+        String componentField = getComponentFieldName(part, componentCounter);
+        generateVariableGetterSetter(part, componentField, fileContent);
+        componentCounter++;
+      }
+      else if (part.component != null)
+      {
+        componentCounter++;
+      }
+    }
     
     if (component.getParent() == null)
     {
@@ -213,11 +230,11 @@ public class PartListComponentGenerator extends ComponentGenerator
             .append(".parts.add(ComponentPart.fromHtmlSnippet(")
             .append(asConstant(part.htmlSnippet)).append("));\n");
       }
-      else if (part.variable != null)
+      else if (part.variableName != null)
       {
         result.append(indentString).append("  ").append(componentField)
             .append(".parts.add(ComponentPart.fromHtmlSnippet(")
-            .append(asConstant(part.variable)).append("));\n");
+            .append(asConstant(part.variableName)).append("));\n");
       }
     }
     result.append(indentString).append("}\n");

@@ -202,11 +202,11 @@ public class TemplateIntegrationGenerator extends ComponentGenerator
             .append(".parts.add(ComponentPart.fromHtmlSnippet(")
             .append(asConstant(part.htmlSnippet)).append("));\n");
       }
-      else if (part.variable != null)
+      else if (part.variableName != null)
       {
         result.append(indentString).append("  ").append(componentField)
             .append(".parts.add(ComponentPart.fromHtmlSnippet(")
-            .append(asConstant(part.variable)).append("));\n");
+            .append(asConstant(part.variableName)).append("));\n");
       }
     }
     result.append(indentString).append("}\n");

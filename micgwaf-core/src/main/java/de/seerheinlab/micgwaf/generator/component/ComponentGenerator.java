@@ -5,6 +5,7 @@ import java.util.List;
 import de.seerheinlab.micgwaf.component.Component;
 import de.seerheinlab.micgwaf.component.RefComponent;
 import de.seerheinlab.micgwaf.component.PartListComponent;
+import de.seerheinlab.micgwaf.component.SnippetComponent;
 import de.seerheinlab.micgwaf.generator.Generator;
 import de.seerheinlab.micgwaf.generator.JavaClassName;
 
@@ -389,7 +390,7 @@ public abstract class ComponentGenerator
     {
       return getComponentFieldName(part.component, componentCounter);
     }
-    return  "snippet" + componentCounter;
+    return "snippet" + componentCounter;
   }
 
   /**
@@ -432,4 +433,59 @@ public abstract class ComponentGenerator
     fileContent.append("    return htmlId;\n");
     fileContent.append("  }\n");
   }
+  
+  protected void generateVariableComponentField(
+      PartListComponent.ComponentPart part,
+      String componentField, 
+      StringBuilder fileContent)
+  {
+    fileContent.append("  public ").append(SnippetComponent.class.getSimpleName())
+        .append(" ").append(componentField)
+        .append(" = (").append(SnippetComponent.class.getSimpleName())
+        .append(") ApplicationBase.getApplication().postConstruct(\n")
+        .append("      ")
+        .append("new ").append(SnippetComponent.class.getSimpleName())
+        .append("(null, ").append(asConstant(part.variableDefaultValue)).append(", this));\n\n");
+  }
+
+  /**
+   * Generates getters and setters for variable parts.
+   * 
+   * @param part the ComponentPart containing variable name, not null.
+   * @param snippetVariableName the name of the snippet constant or field, not null.
+   * @param fileContent the StringBuilder to which the code should be appended.
+   */
+  public void generateVariableGetterSetter(
+      PartListComponent.ComponentPart part,
+      String snippetVariableName, 
+      StringBuilder fileContent)
+  {
+    String getterSetterSuffix 
+        = part.variableName.substring(0,1).toUpperCase() + part.variableName.substring(1);
+    fileContent.append("\n  /**\n")
+        .append("   * Returns the text content of the html text content variable ${")
+        .append(part.variableName).append("}.\n")
+        .append("   *\n")
+        .append("   * @return the text content of the variable ").append(part.variableName).append(".\n")
+        .append("   **/\n")
+        .append("  public String get").append(getterSetterSuffix).append("()\n")
+        .append("  {\n")
+        .append("    return ").append(snippetVariableName).append(".text;\n")
+        .append("  }\n\n")
+        .append("  /**\n")
+        .append("   * Sets the text content of the html text content variable ${")
+        .append(part.variableName).append("}.\n")
+        .append("   *\n")
+        .append("   * @param text the new text content of the variable ")
+        .append(part.variableName).append(", or null to not output anything.\n")
+        .append("   *\n")
+        .append("   * @return this component, never null.\n")
+        .append("   **/\n")
+        .append("  public Component set").append(getterSetterSuffix).append("(String text)\n")
+        .append("  {\n")
+        .append("    ").append(snippetVariableName).append(".text = text;\n")
+        .append("    return this;\n")
+        .append("  }\n");
+  }
+
 }

@@ -11,6 +11,14 @@ import de.seerheinlab.micgwaf.util.Constants;
 
 public class PartListContentHandler extends ContentHandler
 {
+  private static final char ESCAPE_CHAR = '\\';
+
+  private static final String VARIABLE_START = "${";
+
+  private static final char VARIABLE_END = '}';
+
+  private static final char VARIABLE_DEFAULT_VALUE_SEPARATOR = ':';
+
   public StringBuilder currentStringPart = new StringBuilder();
   
   private PartListComponent component = new PartListComponent(null);
@@ -61,8 +69,8 @@ public class PartListContentHandler extends ContentHandler
     String characterString = new String(Arrays.copyOfRange(ch, start, start + length));
     while (true)
     {
-      int indexOfStart = characterString.indexOf("${");
-      if ((indexOfStart > 0 && characterString.charAt(indexOfStart - 1) == '\\'))
+      int indexOfStart = characterString.indexOf(VARIABLE_START);
+      if ((indexOfStart > 0 && characterString.charAt(indexOfStart - 1) == ESCAPE_CHAR))
       {
         currentStringPart.append(characterString.substring(0, indexOfStart + 2));
         characterString = characterString.substring(indexOfStart + 2);
@@ -73,18 +81,34 @@ public class PartListContentHandler extends ContentHandler
         currentStringPart.append(characterString);
         break; 
       }
-      int indexOfEnd = characterString.indexOf('}', indexOfStart);
+      int indexOfEnd = characterString.indexOf(VARIABLE_END, indexOfStart);
       if (indexOfEnd == -1)
       {
-        throw new SAXException("unbalanced ${ in text");
+        throw new SAXException("unbalanced " + VARIABLE_START + " in text");
       }
       if (indexOfEnd == indexOfStart + 2)
       {
-        throw new SAXException("empty variable (${}) in text");
+        throw new SAXException("empty variable (" + VARIABLE_START + VARIABLE_END + ") in text");
       }
       currentStringPart.append(characterString.substring(0, indexOfStart));
-      component.parts.add(PartListComponent.ComponentPart.fromHtmlSnippet(currentStringPart.toString()));
-      component.parts.add(PartListComponent.ComponentPart.fromVariable(characterString.substring(indexOfStart, indexOfEnd + 1)));
+      if (currentStringPart.length() > 0)
+      {
+        component.parts.add(PartListComponent.ComponentPart.fromHtmlSnippet(currentStringPart.toString()));
+        currentStringPart = new StringBuilder();
+      }
+      String variableContent 
+          = characterString.substring(indexOfStart + VARIABLE_START.length(), indexOfEnd);
+      int indexOfColon = variableContent.indexOf(VARIABLE_DEFAULT_VALUE_SEPARATOR);
+      if (indexOfColon == -1)
+      {
+        component.parts.add(PartListComponent.ComponentPart.fromVariable(
+            variableContent, VARIABLE_START + variableContent + VARIABLE_END));
+      }
+      else
+      {
+        component.parts.add(PartListComponent.ComponentPart.fromVariable(
+            variableContent.substring(0, indexOfColon), variableContent.substring(indexOfColon + 1)));
+      }
       characterString = characterString.substring(indexOfEnd + 1);
     }
   }

@@ -12,5 +12,5 @@ TODO
 
 - multiple should also work on componentRef
 - error should be output when variables are accessed in componentRef which do not exist in referenced component
-- variables should support default content (${variableName:defaultContent})
 - create setters for escaped/unescaped content of variables.
+- handle escape character in variables properly

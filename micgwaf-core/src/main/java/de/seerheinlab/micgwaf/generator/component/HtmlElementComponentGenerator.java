@@ -122,22 +122,16 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
           else if (part.htmlSnippet != null)
           {
             fileContent.append("  public ").append(SnippetComponent.class.getSimpleName())
-                    .append(" snippet").append(componentCounter)
+                    .append(" ").append(componentField)
                     .append(" = (").append(SnippetComponent.class.getSimpleName())
                     .append(") ApplicationBase.getApplication().postConstruct(\n")
                     .append("      ")
                     .append("new ").append(SnippetComponent.class.getSimpleName())
                     .append("(null, ").append(asConstant(part.htmlSnippet)).append(", this));\n\n");
           }
-          else
+          else // variable
           {
-            fileContent.append("  public ").append(SnippetComponent.class.getSimpleName())
-            .append(" snippet").append(componentCounter)
-            .append(" = (").append(SnippetComponent.class.getSimpleName())
-            .append(") ApplicationBase.getApplication().postConstruct(\n")
-            .append("      ")
-            .append("new ").append(SnippetComponent.class.getSimpleName())
-            .append("(null, ").append(asConstant(part.variable)).append(", this));\n\n");
+            generateVariableComponentField(part, componentField, fileContent);
           }
           componentCounter++;
         }
@@ -219,34 +213,9 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
         PartListComponent snippetListChild = (PartListComponent) child;
         for (PartListComponent.ComponentPart part : snippetListChild.parts)
         {
-          if (part.variable != null)
+          if (part.variableName != null)
           {
-            String variableName = part.variable.substring(2, part.variable.length() - 1);
-            String getterSetterSuffix = variableName.substring(0,1).toUpperCase() + variableName.substring(1);
-            fileContent.append("\n  /**\n")
-                .append("   * Returns the text content of the html text content variable ${")
-                .append(variableName).append("}.\n")
-                .append("   *\n")
-                .append("   * @return the text content of the variable ").append(variableName).append(".\n")
-                .append("   **/\n")
-                .append("  public String get").append(getterSetterSuffix).append("()\n")
-                .append("  {\n")
-                .append("    return snippet").append(componentCounter).append(".text;\n")
-                .append("  }\n\n")
-                .append("  /**\n")
-                .append("   * Sets the text content of the html text content variable ${")
-                .append(variableName).append("}.\n")
-                .append("   *\n")
-                .append("   * @param text the new text content of the variable ")
-                .append(variableName).append(", or null to not output anything.\n")
-                .append("   *\n")
-                .append("   * @return this component, never null.\n")
-                .append("   **/\n")
-                .append("  public Component set").append(getterSetterSuffix).append("(String text)\n")
-                .append("  {\n")
-                .append("    snippet").append(componentCounter).append(".text = text;\n")
-                .append("    return this;\n")
-                .append("  }\n");
+            generateVariableGetterSetter(part, getComponentFieldName(part, componentCounter), fileContent);
           }
           componentCounter++;
         }

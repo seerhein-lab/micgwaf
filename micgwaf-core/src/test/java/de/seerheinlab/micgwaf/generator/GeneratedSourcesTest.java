@@ -68,6 +68,22 @@ public class GeneratedSourcesTest
     assertEquals(expected, pageContent);
   }
 
+  @Test
+  public void testRenderVariables() throws Exception
+  {
+    GeneratorAndCompiler.generateAndCompile("src/test/resources/de/seerheinlab/micgwaf/variable");
+
+    URLClassLoader classLoader = getClassLoader();
+    initMicgwaf(classLoader);
+    String pageContent = invokeRenderForPage(
+        "de.seerheinlab.micgwaf.test.generated.body.ExtensionClassPrefixBodyExtensionClassSuffix", 
+        classLoader);
+    File componentDir = new File("src/test/resources/de/seerheinlab/micgwaf/variable");
+    String expected = FileUtils.readFileToString(new File(componentDir, "expected/variableExpected.xhtml"));
+    expected = expected.replace("\r\n", "\n");
+    assertEquals(expected, pageContent);
+  }
+
   private URLClassLoader getClassLoader() throws MalformedURLException 
   {
     URL httpServletRequestUrl = GeneratedSourcesTest.class.getClassLoader().getResource("javax/servlet/http/HttpServletRequest.class");

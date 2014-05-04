@@ -129,7 +129,9 @@ public class PartListComponent extends Component
   {
     public String htmlSnippet;
     
-    public String variable;
+    public String variableName;
+    
+    public String variableDefaultValue;
     
     public Component component;
     
@@ -140,10 +142,33 @@ public class PartListComponent extends Component
       return result;
     }
     
-    public static ComponentPart fromVariable(String variableSnippet)
+    /**
+     * Creates a component part from a variable.
+     * 
+     * @param variableName the name of the variable to create the part from, not null.
+     * @param variableDefaultValue the default value of the variable, not null.
+     * 
+     * @return the created ComponentPart, not null.
+     */
+    public static ComponentPart fromVariable(String variableName, String variableDefaultValue)
     {
       ComponentPart result = new ComponentPart();
-      result.variable = variableSnippet;
+      result.variableName = variableName;
+      result.variableDefaultValue = variableDefaultValue;
+      return result;
+    }
+
+    /**
+     * Creates a component part from a component.
+     * 
+     * @param component the component to create the part from, not null.
+     * 
+     * @return the created ComponentPart, not null.
+     */
+    public static ComponentPart fromComponent(Component component)
+    {
+      ComponentPart result = new ComponentPart();
+      result.component = component;
       return result;
     }
 
@@ -160,18 +185,11 @@ public class PartListComponent extends Component
       }
     }
 
-    public static ComponentPart fromComponent(Component component)
-    {
-      ComponentPart result = new ComponentPart();
-      result.component = component;
-      return result;
-    }
-
     @Override
     public String toString()
     {
       return "ComponentPart [htmlSnippet=" + htmlSnippet + ", variable="
-          + variable + ", component=" + component + "]";
+          + variableName + ", component=" + component + "]";
     }
   }
 }
