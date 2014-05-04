@@ -96,6 +96,10 @@ public class PartListComponent extends Component
       {
         part.component.render(writer);
       }
+      else if (part.variableName != null)
+      {
+        writer.write(part.variableDefaultValue);
+      }
       else
       {
         throw new IllegalStateException(
