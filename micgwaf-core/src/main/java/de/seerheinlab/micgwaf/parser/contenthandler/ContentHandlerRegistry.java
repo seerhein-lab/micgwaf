@@ -14,8 +14,6 @@ public class ContentHandlerRegistry
   
   public static final String DEFAULT_RENDER_CHILDREN_ATTR = "defaultRenderChildren";
   
-  public static final String REMOVE_ELEM = "remove";
-  
   public static final String GENRATE_EXTENSION_CLASS_ATTR = "generateExtensionClass";
 
   /**
