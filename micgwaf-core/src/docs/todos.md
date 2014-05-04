@@ -9,3 +9,8 @@ TODO
 - find a way how to find components higher up in the tree (e.g. messageBox outside form)
 - allow a directory tree for XHTML files (not just flat directory layout)
 - how to reference not-generated components in the project or components from a component library?
+
+- multiple should also work on componentRef
+- error should be output when variables are accessed in componentRef which do not exist in referenced component
+- variables should support default content (${variableName:defaultContent})
+- create setters for escaped/unescaped content of variables.

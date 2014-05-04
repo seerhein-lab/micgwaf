@@ -12,7 +12,6 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
 import de.seerheinlab.micgwaf.component.Component;
-import de.seerheinlab.micgwaf.component.RefComponent;
 import de.seerheinlab.micgwaf.parser.HtmlParser;
 
 public class ParseAndRenderTest
