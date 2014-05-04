@@ -129,6 +129,8 @@ public class PartListComponent extends Component
   {
     public String htmlSnippet;
     
+    public String variable;
+    
     public Component component;
     
     public static ComponentPart fromHtmlSnippet(String htmlSnippet)
@@ -138,6 +140,13 @@ public class PartListComponent extends Component
       return result;
     }
     
+    public static ComponentPart fromVariable(String variableSnippet)
+    {
+      ComponentPart result = new ComponentPart();
+      result.variable = variableSnippet;
+      return result;
+    }
+
     public ComponentPart clone()
     {
       try
@@ -146,7 +155,7 @@ public class PartListComponent extends Component
       }
       catch (CloneNotSupportedException e)
       {
-        // should not happen as we implement Cloneaable
+        // should not happen as we implement Cloneable
         throw new RuntimeException(e);
       }
     }
@@ -157,12 +166,12 @@ public class PartListComponent extends Component
       result.component = component;
       return result;
     }
-    
+
     @Override
     public String toString()
     {
-      return "ComponentPart [htmlSnippet="
-          + htmlSnippet + ", component=" + component + "]";
+      return "ComponentPart [htmlSnippet=" + htmlSnippet + ", variable="
+          + variable + ", component=" + component + "]";
     }
   }
 }
