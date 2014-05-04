@@ -114,6 +114,15 @@ but define behaviour of an existing handler:
 As already mentioned, the parsed component tree can be rendered as is.
 This is useful for creating HTML mockups which can later be filled with behavior.
 
+### Parsing Variables
+
+Variables are of the form ${variableName}, and are used to insert variable text or HTML at these places.
+Currently, variables can appear in plain HTML text only.
+Variables are parsed as a ComponentPart with the variable field set in the PartListComponent.
+Variable values can be defined in componentRef tags, where an attribute with the name of the variable
+can be used to define the variable value.
+These additional attributes are stored in the variableValues field of the RefComponent component.
+
 Generation of source files
 --------------------------
 

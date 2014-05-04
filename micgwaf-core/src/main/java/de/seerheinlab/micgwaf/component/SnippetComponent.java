@@ -7,15 +7,15 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A component representing a fixed html snippet.
+ * A component representing a text snippet which is simply rendered to the output.
  */
 public class SnippetComponent extends Component
 {
   /** Serial Version UID. */
   private static final long serialVersionUID = 1L;
 
-  /** The referenced snippet. */
-  public String snippet;
+  /** The text which is rendered to the output. */
+  public String text;
   
   /**
    * Constructor.
@@ -31,12 +31,15 @@ public class SnippetComponent extends Component
    * Constructor. 
    * 
    * @param id the id of the component, may be null. The id is not used in this component.
+   * @param text the text to be written to the output, or null to not write any text to the output.
    * @param parent the parent component. May be null if this is a standalone component (e.g. a page).
+   * 
+   * @throws NullPointerException if text is null.
    */
-  public SnippetComponent(String id, String snippet, Component parent)
+  public SnippetComponent(String id, String text, Component parent)
   {
     super(id, parent);
-    this.snippet = snippet;
+    this.text = text;
   }
   
   /**
@@ -55,9 +58,9 @@ public class SnippetComponent extends Component
   @Override
   public void render(Writer writer) throws IOException
   {
-    if (snippet != null)
+    if (text != null)
     {
-      writer.write(snippet);
+      writer.write(text);
     }
   }
 }

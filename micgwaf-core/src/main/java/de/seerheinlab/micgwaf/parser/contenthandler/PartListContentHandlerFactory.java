@@ -9,7 +9,7 @@ public class PartListContentHandlerFactory implements ContentHandlerFactory
   public ContentHandler create(String uri, String localName,
       String qName, Attributes attributes)
   {
-    return new SnippetListContentHandler();
+    return new PartListContentHandler();
   }
 
 }

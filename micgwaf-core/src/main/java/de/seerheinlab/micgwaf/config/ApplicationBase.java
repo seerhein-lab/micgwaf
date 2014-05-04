@@ -173,7 +173,7 @@ public abstract class ApplicationBase
     StringWriter writer = new StringWriter();
     writer.write("An error occurred\n");
     exception.printStackTrace(new PrintWriter(writer));
-    result.snippet = writer.toString();
+    result.text = writer.toString();
     return result;
   }
   

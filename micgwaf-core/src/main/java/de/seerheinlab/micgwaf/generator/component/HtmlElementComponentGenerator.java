@@ -38,9 +38,8 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
       {
         return generationParameters.generateExtensionClass;
       }
-      return false;
     }
-    return true;
+    return component.getParent() == null;
   }
   
   @Override
@@ -120,7 +119,7 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
           {
             generateFieldOrVariableFromComponent(part.component, targetPackage, fileContent, "public ", componentField, "this", 2);
           }
-          else
+          else if (part.htmlSnippet != null)
           {
             fileContent.append("  public ").append(SnippetComponent.class.getSimpleName())
                     .append(" snippet").append(componentCounter)
@@ -129,6 +128,16 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
                     .append("      ")
                     .append("new ").append(SnippetComponent.class.getSimpleName())
                     .append("(null, ").append(asConstant(part.htmlSnippet)).append(", this));\n\n");
+          }
+          else
+          {
+            fileContent.append("  public ").append(SnippetComponent.class.getSimpleName())
+            .append(" snippet").append(componentCounter)
+            .append(" = (").append(SnippetComponent.class.getSimpleName())
+            .append(") ApplicationBase.getApplication().postConstruct(\n")
+            .append("      ")
+            .append("new ").append(SnippetComponent.class.getSimpleName())
+            .append("(null, ").append(asConstant(part.variable)).append(", this));\n\n");
           }
           componentCounter++;
         }
@@ -202,6 +211,50 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
     fileContent.append("    return result;\n");
     fileContent.append("  }\n");
     
+    componentCounter = 1;
+    for (Component child : htmlElementCompont.children)
+    {
+      if (child instanceof PartListComponent)
+      {
+        PartListComponent snippetListChild = (PartListComponent) child;
+        for (PartListComponent.ComponentPart part : snippetListChild.parts)
+        {
+          if (part.variable != null)
+          {
+            String variableName = part.variable.substring(2, part.variable.length() - 1);
+            String getterSetterSuffix = variableName.substring(0,1).toUpperCase() + variableName.substring(1);
+            fileContent.append("\n  /**\n")
+                .append("   * Returns the text content of the html text content variable ${")
+                .append(variableName).append("}.\n")
+                .append("   *\n")
+                .append("   * @return the text content of the variable ").append(variableName).append(".\n")
+                .append("   **/\n")
+                .append("  public String get").append(getterSetterSuffix).append("()\n")
+                .append("  {\n")
+                .append("    return snippet").append(componentCounter).append(".text;\n")
+                .append("  }\n\n")
+                .append("  /**\n")
+                .append("   * Sets the text content of the html text content variable ${")
+                .append(variableName).append("}.\n")
+                .append("   *\n")
+                .append("   * @param text the new text content of the variable ")
+                .append(variableName).append(", or null to not output anything.\n")
+                .append("   *\n")
+                .append("   * @return this component, never null.\n")
+                .append("   **/\n")
+                .append("  public Component set").append(getterSetterSuffix).append("(String text)\n")
+                .append("  {\n")
+                .append("    snippet").append(componentCounter).append(".text = text;\n")
+                .append("    return this;\n")
+                .append("  }\n");
+          }
+          componentCounter++;
+        }
+        continue;
+      }
+      componentCounter++;
+    }
+
     if (htmlElementCompont.getParent() == null)
     {
       generateChangeChildHtmlId(fileContent);
@@ -237,7 +290,7 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
               stringBuilder.append("   */\n");
               stringBuilder.append("\n").append("  public String getInnerContent()\n")
                   .append("  {\n")
-                  .append("    return ").append(componentField).append(".snippet;\n")
+                  .append("    return ").append(componentField).append(".text;\n")
                   .append("  }\n");
               stringBuilder.append("  /**\n");
               stringBuilder.append("   * Sets the HTML snippet which is the inner content of this HTML element.\n");
@@ -246,20 +299,20 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
               stringBuilder.append("   */\n");
               stringBuilder.append("\n").append("  public void setInnerContent(String innerContent)\n")
                   .append("  {\n")
-                  .append("    ").append(componentField).append(".snippet = innerContent;\n")
+                  .append("    ").append(componentField).append(".text = innerContent;\n")
                   .append("  }\n");
             }
             else
             {
               stringBuilder.append("\n  /**\n");
               stringBuilder.append("   * Returns the text content of this HTML element.\n");
-              stringBuilder.append("   * HTML entities are resoved in the returned text.\n");
+              stringBuilder.append("   * HTML entities are resolved in the returned text.\n");
               stringBuilder.append("   *\n");
               stringBuilder.append("   * @return the text content, not null.\n");
               stringBuilder.append("   */\n");
               stringBuilder.append("  public String getTextContent()\n")
                   .append("  {\n")
-                  .append("    return resolveEntities(").append(componentField).append(".snippet);\n")
+                  .append("    return resolveEntities(").append(componentField).append(".text);\n")
                   .append("  }\n");
               stringBuilder.append("\n  /**\n");
               stringBuilder.append("   * Sets the text content of this HTML element.\n");
@@ -269,7 +322,7 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
               stringBuilder.append("   */\n");
               stringBuilder.append("  public void setTextContent(String text)\n")
                   .append("  {\n")
-                  .append("    ").append(componentField).append(".snippet = escapeHtml(text);\n")
+                  .append("    ").append(componentField).append(".text = escapeHtml(text);\n")
                   .append("  }\n");
             }
           }

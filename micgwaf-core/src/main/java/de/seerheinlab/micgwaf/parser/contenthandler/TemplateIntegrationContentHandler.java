@@ -63,6 +63,19 @@ public class TemplateIntegrationContentHandler extends ContentHandler
           // ignore whitespace
           continue;
         }
+        else if (part.variable != null)
+        {
+          if (!"".equals(part.variable.trim()))
+          {
+            throw new IllegalArgumentException(
+                "Children of "
+                + TemplateIntegrationContentHandler.USE_TEMPLATE_ELEMENT_NAME
+                + " elements must not be markup, found "
+                + part.variable);
+          }
+          // ignore whitespace
+          continue;
+        }
         else
         {
           handleComponentChild(part.component);

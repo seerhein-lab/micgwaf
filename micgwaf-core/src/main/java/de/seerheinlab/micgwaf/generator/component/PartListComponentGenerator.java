@@ -5,10 +5,11 @@ import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.seerheinlab.micgwaf.component.ChangesChildHtmlId;
 import de.seerheinlab.micgwaf.component.ChildListComponent;
 import de.seerheinlab.micgwaf.component.Component;
-import de.seerheinlab.micgwaf.component.RefComponent;
 import de.seerheinlab.micgwaf.component.PartListComponent;
+import de.seerheinlab.micgwaf.component.RefComponent;
 import de.seerheinlab.micgwaf.config.ApplicationBase;
 import de.seerheinlab.micgwaf.generator.Generator;
 import de.seerheinlab.micgwaf.generator.JavaClassName;
@@ -41,6 +42,7 @@ public class PartListComponentGenerator extends ComponentGenerator
     String className = getClassName(component, targetPackage).getSimpleName();
     StringBuilder fileContent = new StringBuilder();
     fileContent.append("package ").append(javaClassName.getPackage()).append(";\n\n");
+    fileContent.append("import ").append(ChangesChildHtmlId.class.getName()).append(";\n");
     fileContent.append("import ").append(Component.class.getName()).append(";\n");
     fileContent.append("import ").append(ApplicationBase.class.getName()).append(";\n");
     fileContent.append("import ").append(IOException.class.getName()).append(";\n");
@@ -66,8 +68,12 @@ public class PartListComponentGenerator extends ComponentGenerator
     fileContent.append("\n");
     generateClassJavadoc(component, fileContent, false);
     fileContent.append("public class ").append(className)
-        .append(" extends ").append(Component.class.getSimpleName())
-        .append("\n");
+        .append(" extends ").append(Component.class.getSimpleName());
+    if (component.getParent() == null)
+    {
+      fileContent.append(" implements ChangesChildHtmlId");
+    }
+    fileContent.append("\n");
     fileContent.append("{\n");
     generateSerialVersionUid(fileContent);
     
@@ -79,6 +85,12 @@ public class PartListComponentGenerator extends ComponentGenerator
       {
         fileContent.append("\n  public static final String SNIPPET_").append(snippetCounter)
             .append(" = ").append(asConstant(part.htmlSnippet)).append(";\n");
+        ++snippetCounter;
+      }
+      else if (part.variable != null)
+      {
+        fileContent.append("\n  public static final String SNIPPET_").append(snippetCounter)
+            .append(" = ").append(asConstant(part.variable)).append(";\n");
         ++snippetCounter;
       }
       else if (part.component != null)
@@ -138,6 +150,11 @@ public class PartListComponentGenerator extends ComponentGenerator
       }
     }
     fileContent.append("  }\n");
+    
+    if (component.getParent() == null)
+    {
+      generateChangeChildHtmlId(fileContent);
+    }
     fileContent.append("}\n");
     return fileContent.toString();
   }
@@ -195,6 +212,12 @@ public class PartListComponentGenerator extends ComponentGenerator
         result.append(indentString).append("  ").append(componentField)
             .append(".parts.add(ComponentPart.fromHtmlSnippet(")
             .append(asConstant(part.htmlSnippet)).append("));\n");
+      }
+      else if (part.variable != null)
+      {
+        result.append(indentString).append("  ").append(componentField)
+            .append(".parts.add(ComponentPart.fromHtmlSnippet(")
+            .append(asConstant(part.variable)).append("));\n");
       }
     }
     result.append(indentString).append("}\n");

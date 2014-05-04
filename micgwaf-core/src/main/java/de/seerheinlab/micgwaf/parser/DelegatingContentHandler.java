@@ -15,12 +15,14 @@ import de.seerheinlab.micgwaf.component.EmptyComponent;
 import de.seerheinlab.micgwaf.parser.contenthandler.ContentHandler;
 import de.seerheinlab.micgwaf.parser.contenthandler.ContentHandlerFactory;
 import de.seerheinlab.micgwaf.parser.contenthandler.ContentHandlerRegistry;
-import de.seerheinlab.micgwaf.parser.contenthandler.SnippetListContentHandler;
+import de.seerheinlab.micgwaf.parser.contenthandler.PartListContentHandler;
 import de.seerheinlab.micgwaf.util.Constants;
 
+/**
+ * A SAX Handler which creates the component tree from a XHTML-like input file.
+ */
 public class DelegatingContentHandler extends DefaultHandler
 {
-
   public static final String REMOVE_ELEMENT_NAME = "remove";
 
   public List<DelegateReference> delegateList = new ArrayList<>();
@@ -30,10 +32,6 @@ public class DelegatingContentHandler extends DefaultHandler
   public int contentDepth = -1;
   
   public Component currentResult;
-  
-  {
-    // currentDelegate = new DelegateReference(-1, new SnippetListContentHandler(), false);
-  }
   
   @Override
   public void startElement(
@@ -61,7 +59,7 @@ public class DelegatingContentHandler extends DefaultHandler
       currentDelegate = new DelegateReference(contentDepth, contentHandler, false);
       newHandlerFound = true;
     }
-    // check for attributes with our namespace    
+    // check for attributes with our namespace
     if (attributes != null && !newHandlerFound) 
     {
       for (int i = 0; i < attributes.getLength(); i++)
@@ -95,15 +93,15 @@ public class DelegatingContentHandler extends DefaultHandler
       }
     }
     if (!newHandlerFound 
-        && ((currentDelegate == null) || !(currentDelegate.contentHandler instanceof SnippetListContentHandler)))
+        && ((currentDelegate == null) || !(currentDelegate.contentHandler instanceof PartListContentHandler)))
     {
-      ContentHandler contentHandler = new SnippetListContentHandler();
+      ContentHandler contentHandler = new PartListContentHandler();
       if (currentDelegate != null)
       {
         delegateList.add(currentDelegate);
       }
       currentDelegate = new DelegateReference(contentDepth, contentHandler, false);
-      newHandlerFound = true;      
+      newHandlerFound = true;
     }
 
     currentDelegate.contentHandler.startElement(uri, localName, qName, attributes);
@@ -147,12 +145,6 @@ public class DelegatingContentHandler extends DefaultHandler
 
   public void endDocument() throws SAXException
   {
-//    currentDelegate.contentHandler.endDocument();
-//    for (int i = delegateList.size() - 1; i > 0; i--)
-//    {
-//      currentDelegate.contentHandler.finished();
-//      currentDelegate = delegateList.remove(delegateList.size() - 1);
-//    }
     currentResult = currentDelegate.contentHandler.finished();
     for (Component child : currentResult.getChildren())
     {
@@ -163,9 +155,9 @@ public class DelegatingContentHandler extends DefaultHandler
   public void characters (char[] ch, int start, int length)
       throws SAXException
   {
-    if (!(currentDelegate.contentHandler instanceof SnippetListContentHandler))
+    if (!(currentDelegate.contentHandler instanceof PartListContentHandler))
     {
-      ContentHandler contentHandler = new SnippetListContentHandler();
+      ContentHandler contentHandler = new PartListContentHandler();
       delegateList.add(currentDelegate);
       // -1 because text is same content depth as start of previous element
       currentDelegate = new DelegateReference(contentDepth - 1, contentHandler, true);
@@ -217,5 +209,4 @@ public class DelegatingContentHandler extends DefaultHandler
   {
     currentDelegate.contentHandler.notationDecl(name, publicId, systemId);
   }
-
 }
