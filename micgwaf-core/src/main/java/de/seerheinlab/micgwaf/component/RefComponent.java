@@ -7,6 +7,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import de.seerheinlab.micgwaf.component.PartListComponent.ComponentPart;
+
+/**
+ * Component which references another component by its id.
+ * 
+ * WARNING this component temporarily changes the component tree while rendering. 
+ */
 public class RefComponent extends Component implements ChangesChildHtmlId
 {
   /** Serial Version UID. */
@@ -55,9 +62,49 @@ public class RefComponent extends Component implements ChangesChildHtmlId
       throw new IllegalStateException("No component bound to component reference, refid=" + refid);
     }
     Component oldParent= referencedComponent.getParent();
+    Map<String, String> referencedComponentOldVariableValues = new HashMap<>();
     referencedComponent.setParent(this);
+    setVariablesInPartListComponent(referencedComponent, variableValues, referencedComponentOldVariableValues);
+    Map<String, String> childComponentOldVariableValues = new HashMap<>();
+    if (referencedComponent instanceof HtmlElementComponent)
+    {
+      for (Component child : referencedComponent.getChildren())
+      {
+        setVariablesInPartListComponent(child, variableValues, childComponentOldVariableValues);
+      }
+    }
     referencedComponent.render(writer);
+    // restore original state
     referencedComponent.setParent(oldParent);
+    setVariablesInPartListComponent(referencedComponent, referencedComponentOldVariableValues, null);
+    if (referencedComponent instanceof HtmlElementComponent)
+    {
+      for (Component child : referencedComponent.getChildren())
+      {
+        setVariablesInPartListComponent(child, childComponentOldVariableValues, null);
+      }
+    }
+  }
+
+  private void setVariablesInPartListComponent(
+      Component component, 
+      Map<String, String> variableValues, 
+      Map<String, String> oldVariableValues)
+  {
+    if (component instanceof PartListComponent)
+    {
+      for (ComponentPart part : ((PartListComponent) component).parts)
+      {
+        if (variableValues.containsKey(part.variableName))
+        {
+          if (oldVariableValues != null)
+          {
+            oldVariableValues.put(part.variableName, variableValues.get(part.variableName));
+          }
+          part.variableDefaultValue = variableValues.get(part.variableName);
+        }
+      }
+    }
   }
 
   @Override

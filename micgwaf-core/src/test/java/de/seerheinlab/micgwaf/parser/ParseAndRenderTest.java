@@ -73,6 +73,26 @@ public class ParseAndRenderTest
   }
 
   @Test
+  public void testRenderVariables() throws Exception
+  {
+    File componentDir = new File("src/test/resources/de/seerheinlab/micgwaf/variable");
+    Map<String, Component> components 
+        = new HtmlParser().readComponents(componentDir);
+    assertEquals(3, components.size());
+    for (Component component : components.values())
+    {
+      component.resolveComponentReferences(components);
+    }
+    StringWriter stringWriter = new StringWriter();
+    components.get("body").render(stringWriter);
+    String actual = stringWriter.toString();
+    actual = actual.replace("\r\n", "\n");
+    String expected = FileUtils.readFileToString(new File(componentDir, "expected/variableExpected.xhtml"));
+    expected = expected.replace("\r\n", "\n");
+    assertEquals(expected, stringWriter.toString());
+  }
+
+  @Test
   public void testChildAndParentReferences() throws Exception
   {
     File componentDir = new File("src/test/resources/de/seerheinlab/micgwaf/componentRef");
