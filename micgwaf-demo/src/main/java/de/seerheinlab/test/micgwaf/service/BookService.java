@@ -3,8 +3,7 @@ package de.seerheinlab.test.micgwaf.service;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-
-import com.sun.org.apache.xalan.internal.utils.Objects;
+import java.util.Objects;
 
 /**
  * Stores books.
