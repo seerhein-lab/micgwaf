@@ -119,7 +119,7 @@ This is useful for creating HTML mockups which can later be filled with behavior
 Variables are of the form ${variableName:defaultValue}, where the :defaultValue part can be omitted 
 (the default value is set to ${variableName} if not specified).
 Variables are used to insert variable text or HTML at these places.
-Currently, variables can appear in plain HTML text only.
+Currently, variables can appear in XHTML character sections or in attribute values only.
 Variables are parsed as a ComponentPart with the variable field set in the PartListComponent.
 Variable values can be defined in componentRef tags, where an attribute with the name of the variable
 can be used to define the variable value.
