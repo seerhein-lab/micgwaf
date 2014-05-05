@@ -49,9 +49,9 @@ public class PartListContentHandler extends ContentHandler
         }
         currentStringPart.append(" ")
             .append(attributeName)
-            .append("=\"")
-            .append(attributeValue)
-            .append("\"");
+            .append("=\"");
+        extractVariablesAndSnippets(attributeValue);
+        currentStringPart.append("\"");
       }
     }
     currentStringPart.append(">");
@@ -67,21 +67,34 @@ public class PartListContentHandler extends ContentHandler
       throws SAXException
   {
     String characterString = new String(Arrays.copyOfRange(ch, start, start + length));
+    extractVariablesAndSnippets(characterString);
+  }
+
+  /**
+   * Extracts variables and snippets from a String.
+   * 
+   * @param toParse the String to parse, not null.
+   * 
+   * @throws SAXException if an imcomplete variable definition is found.
+   */
+  protected void extractVariablesAndSnippets(String toParse)
+      throws SAXException
+  {
     while (true)
     {
-      int indexOfStart = characterString.indexOf(VARIABLE_START);
-      if ((indexOfStart > 0 && characterString.charAt(indexOfStart - 1) == ESCAPE_CHAR))
+      int indexOfStart = toParse.indexOf(VARIABLE_START);
+      if ((indexOfStart > 0 && toParse.charAt(indexOfStart - 1) == ESCAPE_CHAR))
       {
-        currentStringPart.append(characterString.substring(0, indexOfStart + 2));
-        characterString = characterString.substring(indexOfStart + 2);
+        currentStringPart.append(toParse.substring(0, indexOfStart + 2));
+        toParse = toParse.substring(indexOfStart + 2);
         continue;
       }
       if (indexOfStart == -1)
       {
-        currentStringPart.append(characterString);
+        currentStringPart.append(toParse);
         break; 
       }
-      int indexOfEnd = characterString.indexOf(VARIABLE_END, indexOfStart);
+      int indexOfEnd = toParse.indexOf(VARIABLE_END, indexOfStart);
       if (indexOfEnd == -1)
       {
         throw new SAXException("unbalanced " + VARIABLE_START + " in text");
@@ -90,14 +103,14 @@ public class PartListContentHandler extends ContentHandler
       {
         throw new SAXException("empty variable (" + VARIABLE_START + VARIABLE_END + ") in text");
       }
-      currentStringPart.append(characterString.substring(0, indexOfStart));
+      currentStringPart.append(toParse.substring(0, indexOfStart));
       if (currentStringPart.length() > 0)
       {
         component.parts.add(PartListComponent.ComponentPart.fromHtmlSnippet(currentStringPart.toString()));
         currentStringPart = new StringBuilder();
       }
       String variableContent 
-          = characterString.substring(indexOfStart + VARIABLE_START.length(), indexOfEnd);
+          = toParse.substring(indexOfStart + VARIABLE_START.length(), indexOfEnd);
       int indexOfColon = variableContent.indexOf(VARIABLE_DEFAULT_VALUE_SEPARATOR);
       if (indexOfColon == -1)
       {
@@ -109,7 +122,7 @@ public class PartListContentHandler extends ContentHandler
         component.parts.add(PartListComponent.ComponentPart.fromVariable(
             variableContent.substring(0, indexOfColon), variableContent.substring(indexOfColon + 1)));
       }
-      characterString = characterString.substring(indexOfEnd + 1);
+      toParse = toParse.substring(indexOfEnd + 1);
     }
   }
 
