@@ -97,13 +97,13 @@ public class BookForm extends BaseBookForm
     if (getAuthorInput() == null || getAuthorInput().trim().isEmpty())
     {
       valid = false;
-      author.addClass("has-error");
+      author.setDivClass(author.getDivClass() + " has-error");
       addErrorMessage("Author must be filled");
     }
     if (getTitleInput() == null || getTitleInput().trim().isEmpty())
     {
       valid = false;
-      title.addClass("has-error");
+      title.setDivClass(author.getDivClass() + " has-error");
       addErrorMessage("Title must be filled");
     }
     if (valid)
@@ -122,10 +122,10 @@ public class BookForm extends BaseBookForm
    */
   public void hideErrorBoxes()
   {
-    author.removeClass("has-error");
-    title.removeClass("has-error");
-    publisher.removeClass("has-error");
-    isbn.removeClass("has-error");
+    author.setDivClass("form-group");
+    title.setDivClass("form-group");
+    publisher.setDivClass("form-group");
+    isbn.setDivClass("form-group");
   }
 
   /**
