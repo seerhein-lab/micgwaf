@@ -19,7 +19,7 @@ public class ParseAndRenderTest
   @Test
   public void testRenderComponentRefs() throws Exception
   {
-    File componentDir = new File("src/test/resources/de/seerheinlab/micgwaf/componentRef");
+    File componentDir = new File("src/test/resources/de/seerheinlab/micgwaf/componentref");
     Map<String, Component> components 
         = new HtmlParser().readComponents(componentDir);
     assertEquals(3, components.size());
@@ -95,7 +95,7 @@ public class ParseAndRenderTest
   @Test
   public void testChildAndParentReferences() throws Exception
   {
-    File componentDir = new File("src/test/resources/de/seerheinlab/micgwaf/componentRef");
+    File componentDir = new File("src/test/resources/de/seerheinlab/micgwaf/componentref");
     Map<String, Component> components 
         = new HtmlParser().readComponents(componentDir);
     assertEquals(3, components.size());
