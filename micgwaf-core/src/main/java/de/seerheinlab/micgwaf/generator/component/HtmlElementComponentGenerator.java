@@ -281,17 +281,20 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
               stringBuilder.append("   */\n");
               stringBuilder.append("  public String getTextContent()\n")
                   .append("  {\n")
-                  .append("    return resolveEntities(").append(componentField).append(".text);\n")
+                  .append("    return resolveXmlEntities(").append(componentField).append(".text);\n")
                   .append("  }\n");
               stringBuilder.append("\n  /**\n");
               stringBuilder.append("   * Sets the text content of this HTML element.\n");
               stringBuilder.append("   * HTML special characters are escaped in the rendered text.\n");
               stringBuilder.append("   *\n");
               stringBuilder.append("   * @param text the text content, not null.\n");
+              stringBuilder.append("   *\n");
+              stringBuilder.append("   * @return this component, not null");
               stringBuilder.append("   */\n");
-              stringBuilder.append("  public void setTextContent(String text)\n")
+              stringBuilder.append("  public Component setTextContent(String text)\n")
                   .append("  {\n")
-                  .append("    ").append(componentField).append(".text = escapeHtml(text);\n")
+                  .append("    ").append(componentField).append(".text = escapeXmlText(text);\n")
+                  .append("    return this;")
                   .append("  }\n");
             }
           }

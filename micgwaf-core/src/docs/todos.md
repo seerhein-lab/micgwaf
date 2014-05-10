@@ -12,5 +12,5 @@ TODO
 
 - multiple should also work on componentRef
 - error should be output when variables are accessed in componentRef which do not exist in referenced component
-- create setters for escaped/unescaped content of variables.
-- handle escape character in variables properly
+- handle escape character (backslash) in variables properly or use other escape mechanism
+- check whether use builder pattern is useable throughout

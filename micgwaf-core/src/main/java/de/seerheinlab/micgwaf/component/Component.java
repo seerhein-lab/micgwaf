@@ -236,4 +236,47 @@ public abstract class Component implements Serializable
   {
     this.generationParameters = generationParameters;
   }
+  
+  
+  /**
+   * Helper method to replace XML special characters by their respective entities.
+   * 
+   * @param toEscape the string to escape, may be null.
+   * 
+   * @return the escaped string, or null if null is passed in.
+   */
+  public String escapeXmlText(String toEscape)
+  {
+    if (toEscape == null)
+    {
+      return null;
+    }
+    String result = toEscape.replace("<", "&lt;");
+    result = result.replace(">", "&gt;");
+    result = result.replace("&", "&amp;");
+    result = result.replace("'", "&apo;");
+    result = result.replace("\"", "&quot;");
+    return result;
+  }
+
+  /**
+   * Helper method to resolve entities for XML special characters.
+   * 
+   * @param toResolve the string to resolve entities in, may be null.
+   * 
+   * @return the resolved string, or null if null is passed in.
+   */
+  public String resolveXmlEntities(String toResolve)
+  {
+    if (toResolve == null)
+    {
+      return null;
+    }
+    String result = toResolve.replace("&lt;", "<");
+    result = result.replace("&gt;", ">");
+    result = result.replace("&apo;", "'");
+    result = result.replace("&quot;", "\"");
+    result = result.replace("&amp;", "&");
+    return result;
+  }
 }
