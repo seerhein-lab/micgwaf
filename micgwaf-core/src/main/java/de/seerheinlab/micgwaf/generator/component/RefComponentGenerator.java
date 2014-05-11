@@ -13,9 +13,17 @@ public class RefComponentGenerator extends ComponentGenerator
       Component component,
       String targetPackage)
   {
+    RefComponent refComponent = (RefComponent) component;
+    if (refComponent.referencedComponent != null
+        && refComponent.referencedComponent.getGenerationParameters() != null 
+        && refComponent.referencedComponent.getGenerationParameters().fromComponentLib)
+    {
+      return new JavaClassName(
+          refComponent.referencedComponent.getClass().getSimpleName(),
+          refComponent.referencedComponent.getClass().getPackage().getName());
+    }
     // remove last package part and add own
     String basePackage = targetPackage.substring(0, targetPackage.lastIndexOf('.'));
-    RefComponent refComponent = (RefComponent) component;
     return toExtensionClassName(refComponent.refid, basePackage + "." + refComponent.refid);
   }
   

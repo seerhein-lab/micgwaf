@@ -350,6 +350,15 @@ public abstract class ComponentGenerator
     return id.substring(0, indexOfColon);
   }
   
+  public String replaceDots(String id)
+  {
+    if (id == null)
+    {
+      return null;
+    }
+    return id.replace('.', '_');
+  }
+  
   public String getIndentString(int indent)
   {
     StringBuilder result = new StringBuilder(indent);
@@ -379,7 +388,7 @@ public abstract class ComponentGenerator
     else if (component instanceof RefComponent)
     {
       RefComponent refComponent = (RefComponent) component;
-      return refComponent.refid;
+      return replaceDots(refComponent.refid);
     }
     return  "component" + componentCounter;
   }

@@ -2,8 +2,6 @@ package de.seerheinlab.micgwaf.config;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -108,7 +106,7 @@ public abstract class ApplicationBase
   }
   
   /**
-   * Returns the component which is responsible for rendering a request with a given request path
+   * Returns the component which is responsible for rendering a request with a given request path.
    *  
    * @param path the request path, not null.
    * 
@@ -123,28 +121,9 @@ public abstract class ApplicationBase
     {
       return null;
     }
-    Constructor<?>[] constructors = componentClass.getConstructors();
-    for (Constructor<?> constructor : constructors)
-    {
-      if ((constructor.getParameterTypes().length == 2) 
-          && (constructor.getParameterTypes()[0] == String.class)
-          && (constructor.getParameterTypes()[1] == Component.class))
-      {
-        Component instance;
-        try
-        {
-          instance = (Component) constructor.newInstance(new Object[] {null, null});
-        } catch (InstantiationException | IllegalAccessException
-            | IllegalArgumentException | InvocationTargetException e)
-        {
-          throw new RuntimeException(e);
-        }
-        postConstruct(instance);
-        return instance;
-      }
-    }
-    throw new IllegalStateException("Component of class " + componentClass.getName() 
-        + " has no constructor with two parameters (String, Component)");
+    Component result = Component.getInstance(componentClass);
+    postConstruct(result);
+    return result;
   }
   
   /**

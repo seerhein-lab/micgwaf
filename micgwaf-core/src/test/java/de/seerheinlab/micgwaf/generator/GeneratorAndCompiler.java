@@ -18,7 +18,7 @@ public class GeneratorAndCompiler
   
   public static File generatedExtensionsDir = new File("target/generated-extension-sources");
 
-  public static void generateAndCompile(String componentPath) throws Exception
+  public static void generateAndCompile(String componentPath, ClassLoader classLoader) throws Exception
   {
     Generator.configurationClasspathResource = "/de/seerheinlab/micgwaf/config/test-micgwaf-codegen.properties";
     
@@ -33,7 +33,8 @@ public class GeneratorAndCompiler
         componentDir, 
         generatedSourcesDir, 
         generatedExtensionsDir,
-        "de.seerheinlab.micgwaf.test.generated");
+        "de.seerheinlab.micgwaf.test.generated",
+        classLoader);
 
     Collection<File> files = FileUtils.listFiles(generatedSourcesDir, new String[] {"java"}, true);
     files.addAll(FileUtils.listFiles(generatedExtensionsDir, new String[] {"java"}, true));

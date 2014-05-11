@@ -8,9 +8,9 @@ TODO
 - for attributes in loops must be treated like ids (add :number) 
 - find a way how to find components higher up in the tree (e.g. messageBox outside form)
 - allow a directory tree for XHTML files (not just flat directory layout)
-- how to reference not-generated components in the project or components from a component library?
-
+- add note about when classes are generated in class javadoc
 - multiple should also work on componentRef
 - error should be output when variables are accessed in componentRef which do not exist in referenced component
 - handle escape character (backslash) in variables properly or use other escape mechanism
 - check whether use builder pattern is useable throughout
+- check and document what the generated component registry is for

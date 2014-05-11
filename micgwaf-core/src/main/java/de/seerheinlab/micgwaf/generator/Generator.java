@@ -86,9 +86,37 @@ public class Generator
         String baseComponentPackage)
       throws IOException
   {
+    generate(sourceDirectory, targetDirectory, extensionsTargetDirectory, baseComponentPackage, null);
+  }
+  
+  /**
+   * Generates code for all xhtml files in a directory.
+   * The generated code includes base component classes, extension component classes, 
+   * and a component registry class.
+   * 
+   * @param sourceDirectory The directory containing the XHTML files (extension .xhtml).
+   * @param targetDirectory The directory where component source files are written.
+   *        Existing files in this directory are overwritten each generation run without notice.
+   * @param extensionsTargetDirectory The directory where component extension source files are written.
+   *        These files are intended for modification by the user, thus existing files are not overwritten.
+   * @param baseComponentPackage the base package for component classes.
+   * @param classLoader the class loader to use for component lib discovery, 
+   *       or null to use the default classloader.
+   * 
+   * @throws IOException if generated files cannot be written to the file system.
+   * @throws RuntimeException if an error during generation occurs. 
+   */
+  public void generate(
+        File sourceDirectory,
+        File targetDirectory,
+        File extensionsTargetDirectory,
+        String baseComponentPackage,
+        ClassLoader classLoader)
+      throws IOException
+  {
     HtmlParser parser = new HtmlParser();
     Map<String, Component> componentMap 
-        = parser.readComponents(sourceDirectory);
+        = parser.readComponents(sourceDirectory, classLoader);
     for (Map.Entry<String, Component> entry : componentMap.entrySet())
     {
       Component component = entry.getValue();
@@ -97,6 +125,11 @@ public class Generator
       
       Map<JavaClassName, String> componentFilesToWrite = new HashMap<>();
       Map<JavaClassName, String> extensionFilesToWrite = new HashMap<>();
+      if (component.getGenerationParameters() != null
+          && component.getGenerationParameters().fromComponentLib)
+      {
+        continue;
+      }
       generateComponentBaseClass(component, componentPackage, componentFilesToWrite);
       generateComponentExtensionClass(component, componentPackage, extensionFilesToWrite);
       for (Map.Entry<JavaClassName, String> fileToWriteEntry : componentFilesToWrite.entrySet())
@@ -218,6 +251,11 @@ public class Generator
     for (Map.Entry<String, Component> entry : componentMap.entrySet())
     {
       Component component = entry.getValue();
+      if (component.getGenerationParameters() != null
+          && component.getGenerationParameters().fromComponentLib)
+      {
+        continue;
+      }
       ComponentGenerator componentGenerator = getGenerator(component.getClass());
       String componentPackage = targetPackage + "." + component.getId();
       JavaClassName componentClassName = componentGenerator.getReferencableClassName(component, componentPackage);
@@ -233,6 +271,11 @@ public class Generator
     for (Map.Entry<String, Component> entry : componentMap.entrySet())
     {
       Component component = entry.getValue();
+      if (component.getGenerationParameters() != null
+          && component.getGenerationParameters().fromComponentLib)
+      {
+        continue;
+      }
       ComponentGenerator componentGenerator = getGenerator(component.getClass());
       String componentPackage = targetPackage + "." + component.getId();
       JavaClassName componentClassName 
@@ -273,7 +316,7 @@ public class Generator
     ComponentGenerator result = componentGeneratorMap.get(componentClass);
     if (result == null)
     {
-      throw new IllegalArgumentException("Unknown component class " + componentClass);
+      throw new IllegalArgumentException("Unknown component class " + componentClass.getName());
     }
     return result;
   }

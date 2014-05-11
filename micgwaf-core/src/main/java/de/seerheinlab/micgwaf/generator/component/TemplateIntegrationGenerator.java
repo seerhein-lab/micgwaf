@@ -35,7 +35,7 @@ public class TemplateIntegrationGenerator extends ComponentGenerator
     {
       return null;
     }
-    TemplateIntegration comtemplateIntegration = (TemplateIntegration) component;
+    TemplateIntegration templateIntegration = (TemplateIntegration) component;
     JavaClassName javaClassName = getClassName(component, targetPackage);
     String className = getClassName(component, targetPackage).getSimpleName();
     StringBuilder fileContent = new StringBuilder();
@@ -51,17 +51,16 @@ public class TemplateIntegrationGenerator extends ComponentGenerator
     fileContent.append("import ").append(PartListComponent.ComponentPart.class.getCanonicalName()).append(";\n");
     
     {
-      RefComponent template = new RefComponent(comtemplateIntegration.templateId, null, null);
+      RefComponent template = new RefComponent(templateIntegration.templateId, null, null);
       ComponentGenerator generator = Generator.getGenerator(template);
       JavaClassName componentClass = generator.getReferencableClassName(template, targetPackage);
-      if (template instanceof RefComponent 
-          && !javaClassName.getPackage().equals(componentClass.getPackage()))
+      if (!javaClassName.getPackage().equals(componentClass.getPackage()))
       {
         fileContent.append("import ").append(componentClass.getName()).append(";\n");
       }
     }
     
-    for (Map.Entry<String, Component> entry : comtemplateIntegration.definitions.entrySet())
+    for (Map.Entry<String, Component> entry : templateIntegration.definitions.entrySet())
     {
       Component definedComponent = entry.getValue();
       ComponentGenerator generator = Generator.getGenerator(definedComponent);
@@ -84,11 +83,11 @@ public class TemplateIntegrationGenerator extends ComponentGenerator
     
     String templateFieldName = "template";
     {
-      while (comtemplateIntegration.definitions.keySet().contains(templateFieldName))
+      while (templateIntegration.definitions.keySet().contains(templateFieldName))
       {
         templateFieldName = "_" + templateFieldName;
       }
-      RefComponent template = new RefComponent(comtemplateIntegration.templateId, null, null);
+      RefComponent template = new RefComponent(templateIntegration.templateId, null, null);
       ComponentGenerator generator = Generator.getGenerator(template);
       fileContent.append("\n");
       generator.generateFieldOrVariableFromComponent(
@@ -112,7 +111,7 @@ public class TemplateIntegrationGenerator extends ComponentGenerator
     fileContent.append("  public ").append(className).append("(String id, Component parent)\n");
     fileContent.append("  {\n");
     fileContent.append("    super(id == null ? \"").append(component.getId()).append("\" : id, parent);\n");
-    for (Map.Entry<String, Component> entry : comtemplateIntegration.definitions.entrySet())
+    for (Map.Entry<String, Component> entry : templateIntegration.definitions.entrySet())
     {
       Component componentDefinition = entry.getValue();
       if (componentDefinition instanceof DefineComponent)

@@ -3,6 +3,8 @@ package de.seerheinlab.micgwaf.component;
 import java.io.IOException;
 import java.io.Serializable;
 import java.io.Writer;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Map;
 
@@ -278,5 +280,40 @@ public abstract class Component implements Serializable
     result = result.replace("&quot;", "\"");
     result = result.replace("&amp;", "&");
     return result;
+  }
+  
+  /**
+   * Creates an instance of the given component class by calling the two-arg constructor String, Component.
+   * 
+   * @param componentClass the component class, not null.
+   * 
+   * @return the component instance, not null.
+   * 
+   * @throws RuntimeException if construction fails.
+   */
+  public static Component getInstance(Class<? extends Component> componentClass)
+  {
+    Constructor<?>[] constructors = componentClass.getConstructors();
+    for (Constructor<?> constructor : constructors)
+    {
+      if ((constructor.getParameterTypes().length == 2) 
+          && (constructor.getParameterTypes()[0] == String.class)
+          && (constructor.getParameterTypes()[1] == Component.class))
+      {
+        Component instance;
+        try
+        {
+          instance = (Component) constructor.newInstance(new Object[] {null, null});
+        } 
+        catch (InstantiationException | IllegalAccessException
+            | IllegalArgumentException | InvocationTargetException e)
+        {
+          throw new RuntimeException(e);
+        }
+        return instance;
+      }
+    }
+    throw new RuntimeException("Component of class " + componentClass.getName() 
+        + " has no constructor with two parameters (String, Component)");
   }
 }

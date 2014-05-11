@@ -126,6 +126,16 @@ Variable values can be defined in componentRef tags, where an attribute with the
 can be used to define the variable value.
 These additional attributes are stored in the variableValues field of the RefComponent component.
 
+### Referencing components from Component libs
+
+A Component lib is a jar file which contains component classes intended for being used in projects
+which include the lib.
+To make such components in a component lib known, the component lib must contain a file 
+META-INF/micgwaf-components.properties, which is a properties file which contains the id
+of the component as name and the component class name as value.
+Namespacing using dots can be used in the key to make them unique.
+Deep namespacing is discouraged, one dot should suffice.
+
 Generation of source files
 --------------------------
 

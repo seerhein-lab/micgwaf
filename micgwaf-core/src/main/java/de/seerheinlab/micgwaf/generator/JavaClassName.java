@@ -114,4 +114,10 @@ public class JavaClassName
     }
     return simpleName.equals(other.simpleName);
   }
+
+  @Override
+  public String toString()
+  {
+    return packageName + "." + simpleName;
+  }
 }

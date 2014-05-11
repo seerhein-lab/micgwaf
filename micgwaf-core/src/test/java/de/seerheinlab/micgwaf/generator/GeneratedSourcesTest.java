@@ -17,13 +17,14 @@ import org.junit.Test;
 
 import de.seerheinlab.micgwaf.Application;
 import de.seerheinlab.micgwaf.config.ApplicationBase;
+import de.seerheinlab.micgwaf.parser.LoadComponentLibTest;
 
 public class GeneratedSourcesTest
 {
   @Test
   public void testRenderSinglePage() throws Exception
   {
-    GeneratorAndCompiler.generateAndCompile("src/test/resources/de/seerheinlab/micgwaf/singlepage");
+    GeneratorAndCompiler.generateAndCompile("src/test/resources/de/seerheinlab/micgwaf/singlepage", null);
 
     URLClassLoader classLoader = getClassLoader();
     initMicgwaf(classLoader);
@@ -39,7 +40,7 @@ public class GeneratedSourcesTest
   @Test
   public void testRenderComponentRefs() throws Exception
   {
-    GeneratorAndCompiler.generateAndCompile("src/test/resources/de/seerheinlab/micgwaf/componentref");
+    GeneratorAndCompiler.generateAndCompile("src/test/resources/de/seerheinlab/micgwaf/componentref", null);
 
     URLClassLoader classLoader = getClassLoader();
     initMicgwaf(classLoader);
@@ -55,7 +56,7 @@ public class GeneratedSourcesTest
   @Test
   public void testRenderTemplate() throws Exception
   {
-    GeneratorAndCompiler.generateAndCompile("src/test/resources/de/seerheinlab/micgwaf/template");
+    GeneratorAndCompiler.generateAndCompile("src/test/resources/de/seerheinlab/micgwaf/template", null);
 
     URLClassLoader classLoader = getClassLoader();
     initMicgwaf(classLoader);
@@ -71,7 +72,7 @@ public class GeneratedSourcesTest
   @Test
   public void testRenderVariables() throws Exception
   {
-    GeneratorAndCompiler.generateAndCompile("src/test/resources/de/seerheinlab/micgwaf/variable");
+    GeneratorAndCompiler.generateAndCompile("src/test/resources/de/seerheinlab/micgwaf/variable", null);
 
     URLClassLoader classLoader = getClassLoader();
     initMicgwaf(classLoader);
@@ -80,6 +81,25 @@ public class GeneratedSourcesTest
         classLoader);
     File componentDir = new File("src/test/resources/de/seerheinlab/micgwaf/variable");
     String expected = FileUtils.readFileToString(new File(componentDir, "expected/variableExpected.xhtml"));
+    expected = expected.replace("\r\n", "\n");
+    assertEquals(expected, pageContent);
+  }
+
+  @Test
+  public void testRenderComponentRefsInLib() throws Exception
+  {
+    URLClassLoader classLoader = LoadComponentLibTest.createClassloaderWithLibJars();
+    GeneratorAndCompiler.generateAndCompile(
+        "src/test/resources/de/seerheinlab/micgwaf/componentlib",
+        classLoader);
+
+    classLoader = getClassLoader();
+    initMicgwaf(classLoader);
+    String pageContent = invokeRenderForPage(
+        "de.seerheinlab.micgwaf.test.generated.root.ExtensionClassPrefixRootExtensionClassSuffix", 
+        classLoader);
+    File componentDir = new File("src/test/resources/de/seerheinlab/micgwaf/componentlib");
+    String expected = FileUtils.readFileToString(new File(componentDir, "expected/expected.xhtml"));
     expected = expected.replace("\r\n", "\n");
     assertEquals(expected, pageContent);
   }

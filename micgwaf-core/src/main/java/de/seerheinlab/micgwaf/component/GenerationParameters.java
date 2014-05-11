@@ -16,4 +16,10 @@ public class GenerationParameters implements Serializable
    * Currently only supported by HtmlElement component.
    */
   public Boolean generateExtensionClass;
+  
+  /**
+   * True if this component is an external component from a component lib, 
+   * false if it is an internal component.
+   */
+  public boolean fromComponentLib = false;
 }
