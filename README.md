@@ -8,6 +8,8 @@ micgwaf is not (yet) ready for production use and APIs will change any time with
 
 See the [docs](micgwaf-core/src/docs/index.md) of the micgwaf core project for more information
 on how to use micgwaf.
+See the [docs](micgwaf-demo/src/docs/index.md) of the micgwaf demo project for the documentation of the
+demo project.
 
 ### Build status
 
