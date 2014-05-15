@@ -10,8 +10,18 @@ Building
 The application is built using maven. 
 Call e.g. "mvn package" to create a war bundle, or "mvn eclipse:eclipse" to create an eclipse 
 configuration for the project.
+
+Running
+-------
+
 Within eclipse, run or debug the class de.seerheinlab.test.micgwaf.Start to start the web application
 (or deploy the packaged war to a servlet container of your choice).
+
+Then, use a browser to access http://localhost:8080/ for the generated application, or any of
+http://localhost:8080/bookListPage.xhtml,
+http://localhost:8080/editBookPage.xhtml,
+http://localhost:8080/errorPage.xhtml
+for HTML Previes of the pages in HTML development mode.
 
 Project Layout
 --------------
