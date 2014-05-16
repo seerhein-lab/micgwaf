@@ -4,16 +4,15 @@ import java.util.Map;
 
 import de.seerheinlab.micgwaf.component.Component;
 import de.seerheinlab.micgwaf.component.RefComponent;
+import de.seerheinlab.micgwaf.generator.Generator;
 import de.seerheinlab.micgwaf.generator.JavaClassName;
 
 public class RefComponentGenerator extends ComponentGenerator
 {
   @Override
-  public JavaClassName getClassName(
-      Component component,
-      String targetPackage)
+  public JavaClassName getClassName(GenerationContext generationContext)
   {
-    RefComponent refComponent = (RefComponent) component;
+    RefComponent refComponent = (RefComponent) generationContext.component;
     if (refComponent.referencedComponent != null
         && refComponent.referencedComponent.getGenerationParameters() != null 
         && refComponent.referencedComponent.getGenerationParameters().fromComponentLib)
@@ -22,9 +21,10 @@ public class RefComponentGenerator extends ComponentGenerator
           refComponent.referencedComponent.getClass().getSimpleName(),
           refComponent.referencedComponent.getClass().getPackage().getName());
     }
-    // remove last package part and add own
-    String basePackage = targetPackage.substring(0, targetPackage.lastIndexOf('.'));
-    return toExtensionClassName(refComponent.refid, basePackage + "." + refComponent.refid);
+    String subpackage = Generator.getComponentSubpackage(refComponent.refid);
+    return toExtensionClassName(
+        refComponent.refid,
+        generationContext.rootPackage + '.'+ subpackage);
   }
   
   @Override
@@ -34,42 +34,33 @@ public class RefComponentGenerator extends ComponentGenerator
   }
 
   @Override
-  public String generate(
-        Component rawComponent,
-        String targetPackage)
+  public String generate(GenerationContext generationContext)
   {
     return null;
   }
   
   @Override
-  public String generateExtension(
-        Component rawComponent,
-        String targetPackage)
+  public String generateExtension(GenerationContext generationContext)
   {
     return null;
   }
 
   @Override
-  public String generateInitializer(
-      String componentField,
-      Component rawComponent,
-      String targetPackage,
-      int indent)
+  public void generateInitializer(GenerationContext generationContext, String componentField)
   {
-    RefComponent refComponent = (RefComponent) rawComponent;
-    StringBuilder result = new StringBuilder();
+    RefComponent refComponent = (RefComponent) generationContext.component;
+    if (refComponent.variableValues.isEmpty())
+    {
+      return;
+    }
+    generationContext.stringBuilder.append("  {\n");
     for (Map.Entry<String, String> variableEntry : refComponent.variableValues.entrySet())
     {
-      result.append("    ").append(componentField).append(".set")
+      generationContext.stringBuilder.append("    ").append(componentField).append(".set")
         .append(variableEntry.getKey().substring(0, 1).toUpperCase())
         .append(variableEntry.getKey().substring(1))
         .append("(").append(asConstant(variableEntry.getValue())).append(");\n");
     }
-    if (result.length() > 0)
-    {
-      result.insert(0, "  {\n");
-      result.append("  }\n\n");
-    }
-    return result.toString();
+    generationContext.stringBuilder.append("  }\n\n");
   }
 }

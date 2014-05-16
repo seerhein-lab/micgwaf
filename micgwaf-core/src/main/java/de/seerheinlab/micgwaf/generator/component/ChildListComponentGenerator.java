@@ -8,25 +8,23 @@ import de.seerheinlab.micgwaf.generator.JavaClassName;
 public class ChildListComponentGenerator extends ComponentGenerator
 {
   @Override
-  public JavaClassName getClassName(
-      Component component,
-      String targetPackage)
+  public JavaClassName getClassName(GenerationContext generationContext)
   {
-    Component child = component.getChildren().get(0);
+    Component child = generationContext.component.getChildren().get(0);
     ComponentGenerator delegate = Generator.getGenerator(child);
     return new JavaClassName(
-        "ChildListComponent<" + delegate.getClassName(child, targetPackage).getSimpleName() + ">",
+        "ChildListComponent<" 
+            + delegate.getClassName(new GenerationContext(generationContext, child)).getSimpleName() + ">",
         ChildListComponent.class.getPackage().getName());
   }
   
   @Override
-  public JavaClassName getExtensionClassName(
-      Component component,
-      String targetPackage)
+  public JavaClassName getExtensionClassName(GenerationContext generationContext)
   {
-    Component child = component.getChildren().get(0);
+    Component child = generationContext.component.getChildren().get(0);
     ComponentGenerator delegate = Generator.getGenerator(child);
-    String delegateClassName = delegate.getReferencableClassName(child, targetPackage).getSimpleName();
+    String delegateClassName = delegate.getReferencableClassName(
+        new GenerationContext(generationContext, child)).getSimpleName();
     if (delegateClassName == null)
     {
       return null;
@@ -37,51 +35,46 @@ public class ChildListComponentGenerator extends ComponentGenerator
   }
   
   @Override
-  public JavaClassName getReferencableClassName(
-      Component component,
-      String targetPackage)
+  public JavaClassName getReferencableClassName(GenerationContext generationContext)
   {
-    return getExtensionClassName(component, targetPackage);
+    return getExtensionClassName(generationContext);
   }
   
   @Override
-  public String generate(
-        Component component,
-        String targetPackage)
+  public String generate(GenerationContext generationContext)
   {
     return null;
   }
   
   @Override
-  public String generateExtension(
-        Component component,
-        String targetPackage)
+  public String generateExtension(GenerationContext generationContext)
   {
     return null;
   }
 
   @Override
-  public String generateInitializer(
-      String componentField,
-      Component component,
-      String targetPackage,
-      int indent)
+  public void generateInitializer(GenerationContext generationContext, String componentField)
   {
-    ChildListComponent<?> childListComponent = (ChildListComponent<?>) component;
-    String indentString = getIndentString(indent);
-    StringBuilder result = new StringBuilder();
-    result.append(indentString).append("{\n");
+    ChildListComponent<?> childListComponent = (ChildListComponent<?>) generationContext.component;
+    String indentString = getIndentString(generationContext.indent);
+    generationContext.stringBuilder.append(indentString).append("{\n");
     for (int i = 0; i < childListComponent.children.size(); ++i)
     {
       Component child = childListComponent.children.get(i);
       ComponentGenerator delegate = Generator.getGenerator(child);
-      generateFieldOrVariableFromComponent(child, targetPackage, result, "", componentField + i, componentField, 4);
-      result.append(delegate.generateInitializer(componentField + i, child, targetPackage, indent + 2));
-      result.append(indentString).append("  ").append(componentField).append(".children.add(")
-         .append(componentField).append(i).append(");\n");
+      generateFieldOrVariableFromComponent(
+          new GenerationContext(generationContext, child, 4),
+          "",
+          componentField + i,
+          componentField);
+      delegate.generateInitializer(
+          new GenerationContext(generationContext, child, generationContext.indent + 2),
+          componentField + i);
+      generationContext.stringBuilder.append(indentString).append("  ")
+          .append(componentField).append(".children.add(")
+          .append(componentField).append(i).append(");\n");
     }
-    result.append(indentString).append("}\n");
-    return result.toString();
+    generationContext.stringBuilder.append(indentString).append("}\n");
   }
 
   @Override

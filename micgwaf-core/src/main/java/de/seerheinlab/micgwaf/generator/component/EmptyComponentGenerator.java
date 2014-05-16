@@ -7,17 +7,13 @@ import de.seerheinlab.micgwaf.generator.JavaClassName;
 public class EmptyComponentGenerator extends ComponentGenerator
 {
   @Override
-  public JavaClassName getClassName(
-      Component component,
-      String targetPackage)
+  public JavaClassName getClassName(GenerationContext generationContext)
   {
     return new JavaClassName(EmptyComponent.class);
   }
   
   @Override
-  public JavaClassName getExtensionClassName(
-      Component component,
-      String targetPackage)
+  public JavaClassName getExtensionClassName(GenerationContext generationContext)
   {
     return null;
   }
@@ -29,29 +25,19 @@ public class EmptyComponentGenerator extends ComponentGenerator
   }
   
   @Override
-  public String generate(
-        Component component,
-        String targetPackage)
+  public String generate(GenerationContext generationContext)
   {
     return null;
   }
   
   @Override
-  public String generateExtension(
-        Component component,
-        String targetPackage)
+  public String generateExtension(GenerationContext generationContext)
   {
     return null;
   }
 
   @Override
-  public String generateInitializer(
-      String componentField,
-      Component rawComponent,
-      String targetPackage,
-      int indent)
+  public void generateInitializer(GenerationContext generationContext, String componentField)
   {
-    return "";
   }
-
 }

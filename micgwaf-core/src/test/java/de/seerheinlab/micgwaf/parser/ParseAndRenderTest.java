@@ -31,7 +31,7 @@ public class ParseAndRenderTest
     components.get("root").render(stringWriter);
     String actual = stringWriter.toString();
     actual = actual.replace("\r\n", "\n");
-    String expected = FileUtils.readFileToString(new File(componentDir, "expected/expected.xhtml"));
+    String expected = FileUtils.readFileToString(new File(componentDir, "expected.txt"));
     expected = expected.replace("\r\n", "\n");
     assertEquals(expected, stringWriter.toString());
   }
@@ -47,7 +47,7 @@ public class ParseAndRenderTest
     components.get("form").render(stringWriter);
     String actual = stringWriter.toString();
     actual = actual.replace("\r\n", "\n");
-    String expected = FileUtils.readFileToString(new File(componentDir, "expected/formExpected.xhtml"));
+    String expected = FileUtils.readFileToString(new File(componentDir, "expected.txt"));
     expected = expected.replace("\r\n", "\n");
     assertEquals(expected, stringWriter.toString());
   }
@@ -67,7 +67,7 @@ public class ParseAndRenderTest
     components.get("templatedPage").render(stringWriter);
     String actual = stringWriter.toString();
     actual = actual.replace("\r\n", "\n");
-    String expected = FileUtils.readFileToString(new File(componentDir, "expected/templatedPageExpected.xhtml"));
+    String expected = FileUtils.readFileToString(new File(componentDir, "expected.txt"));
     expected = expected.replace("\r\n", "\n");
     assertEquals(expected, stringWriter.toString());
   }
@@ -87,7 +87,7 @@ public class ParseAndRenderTest
     components.get("body").render(stringWriter);
     String actual = stringWriter.toString();
     actual = actual.replace("\r\n", "\n");
-    String expected = FileUtils.readFileToString(new File(componentDir, "expected/variableExpected.xhtml"));
+    String expected = FileUtils.readFileToString(new File(componentDir, "expected.txt"));
     expected = expected.replace("\r\n", "\n");
     assertEquals(expected, stringWriter.toString());
   }

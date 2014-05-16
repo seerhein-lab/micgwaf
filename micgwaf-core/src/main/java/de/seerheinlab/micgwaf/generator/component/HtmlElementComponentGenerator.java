@@ -21,11 +21,9 @@ import de.seerheinlab.micgwaf.generator.JavaClassName;
 public class HtmlElementComponentGenerator extends ComponentGenerator
 {
   @Override
-  public JavaClassName getClassName(
-      Component component,
-      String targetPackage)
+  public JavaClassName getClassName(GenerationContext generationContext)
   {
-    return toBaseClassName(component, targetPackage);
+    return toBaseClassName(generationContext);
   }
   
   @Override
@@ -43,15 +41,14 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
   }
   
   @Override
-  public String generate(
-        Component component,
-        String targetPackage)
+  public String generate(GenerationContext generationContext)
   {
-    HtmlElementComponent htmlElementCompont = (HtmlElementComponent) component;
-    JavaClassName javaClassName = getClassName(component, targetPackage);
+    HtmlElementComponent htmlElementCompont = (HtmlElementComponent) generationContext.component;
+    JavaClassName javaClassName = getClassName(generationContext);
     String className = javaClassName.getSimpleName();
     StringBuilder fileContent = new StringBuilder();
-    fileContent.append("package ").append(targetPackage).append(";\n\n");
+    generationContext.stringBuilder = fileContent;
+    fileContent.append("package ").append(generationContext.getPackage()).append(";\n\n");
     fileContent.append("import ").append(ChangesChildHtmlId.class.getName()).append(";\n");
     fileContent.append("import ").append(Component.class.getName()).append(";\n");
     fileContent.append("import ").append(HtmlElementComponent.class.getName()).append(";\n");
@@ -68,7 +65,8 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
       if (child instanceof RefComponent)
       {
         ComponentGenerator generator = Generator.getGenerator(child);
-        JavaClassName componentClass = generator.getReferencableClassName(child, targetPackage);
+        JavaClassName componentClass = generator.getReferencableClassName(
+            new GenerationContext(generationContext, child));
         if (!javaClassName.getPackage().equals(componentClass.getPackage()))
         {
           fileContent.append("import ").append(componentClass.getName()).append(";\n");
@@ -82,7 +80,8 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
           if (part.component != null)
           {
             ComponentGenerator generator = Generator.getGenerator(part.component);
-            JavaClassName componentClass = generator.getReferencableClassName(part.component, targetPackage);
+            JavaClassName componentClass = generator.getReferencableClassName(
+                new GenerationContext(generationContext, part.component));
             if (part.component instanceof RefComponent 
                 && !javaClassName.getPackage().equals(componentClass.getPackage()))
             {
@@ -93,7 +92,7 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
       }
     }
     fileContent.append("\n");
-    generateClassJavadoc(component, fileContent, false);
+    generateClassJavadoc(generationContext.component, fileContent, false);
     fileContent.append("public class ").append(className)
         .append(" extends ").append(HtmlElementComponent.class.getSimpleName());
     if (htmlElementCompont.getParent() == null)
@@ -117,7 +116,11 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
           String componentField = getComponentFieldName(part, componentCounter);
           if (part.component != null)
           {
-            generateFieldOrVariableFromComponent(part.component, targetPackage, fileContent, "public ", componentField, "this", 2);
+            generateFieldOrVariableFromComponent(
+                new GenerationContext(generationContext, part.component, 2), 
+                "public ",
+                componentField, 
+                "this");
           }
           else if (part.htmlSnippet != null)
           {
@@ -138,7 +141,11 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
         continue;
       }
       String componentField = getComponentFieldName(child, componentCounter);
-      generateFieldOrVariableFromComponent(child, targetPackage, fileContent, "public ", componentField, "this", 2);
+      generateFieldOrVariableFromComponent(
+          new GenerationContext(generationContext, child, 2),
+          "public ",
+          componentField,
+          "this");
       componentCounter++;
     }
 
@@ -230,6 +237,7 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
     }
     generateConvenienceMethods(htmlElementCompont, fileContent);
     fileContent.append("}\n");
+    generationContext.stringBuilder = null;
     return fileContent.toString();
   }
 
@@ -304,18 +312,16 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
   }
   
   @Override
-  public String generateExtension(
-      Component component,
-      String targetPackage)
+  public String generateExtension(GenerationContext generationContext)
   {
-    String className = getClassName(component, targetPackage).getSimpleName();
-    String extensionClassName = getExtensionClassName(component, targetPackage).getSimpleName();
+    String className = getClassName(generationContext).getSimpleName();
+    String extensionClassName = getExtensionClassName(generationContext).getSimpleName();
     StringBuilder fileContent = new StringBuilder();
-    fileContent.append("package ").append(targetPackage).append(";\n");
+    fileContent.append("package ").append(generationContext.getPackage()).append(";\n");
     fileContent.append("\n");
     fileContent.append("import ").append(Component.class.getName()).append(";\n");
     fileContent.append("\n");
-    generateClassJavadoc(component, fileContent, true);
+    generateClassJavadoc(generationContext.component, fileContent, true);
     fileContent.append("public class ").append(extensionClassName)
         .append(" extends ").append(className)
         .append("\n");
@@ -327,12 +333,7 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
   }
 
   @Override
-  public String generateInitializer(
-      String componentField,
-      Component component,
-      String targetPackage,
-      int indent)
+  public void generateInitializer(GenerationContext generationContext, String componentField)
   {
-    return "";
   }
 }

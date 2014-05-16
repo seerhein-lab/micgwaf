@@ -32,7 +32,7 @@ public class GeneratedSourcesTest
         "de.seerheinlab.micgwaf.test.generated.singlePage.ExtensionClassPrefixSinglePageExtensionClassSuffix", 
         classLoader);
     File componentDir = new File("src/test/resources/de/seerheinlab/micgwaf/singlepage");
-    String expected = FileUtils.readFileToString(new File(componentDir, "expected/singlePageExpected.xhtml"));
+    String expected = FileUtils.readFileToString(new File(componentDir, "expected.txt"));
     expected = expected.replace("\r\n", "\n");
     assertEquals(expected, pageContent);
   }
@@ -48,7 +48,7 @@ public class GeneratedSourcesTest
         "de.seerheinlab.micgwaf.test.generated.root.ExtensionClassPrefixRootExtensionClassSuffix", 
         classLoader);
     File componentDir = new File("src/test/resources/de/seerheinlab/micgwaf/componentref");
-    String expected = FileUtils.readFileToString(new File(componentDir, "expected/expected.xhtml"));
+    String expected = FileUtils.readFileToString(new File(componentDir, "expected.txt"));
     expected = expected.replace("\r\n", "\n");
     assertEquals(expected, pageContent);
   }
@@ -64,7 +64,7 @@ public class GeneratedSourcesTest
         "de.seerheinlab.micgwaf.test.generated.templatedPage.ExtensionClassPrefixTemplatedPageExtensionClassSuffix", 
         classLoader);
     File componentDir = new File("src/test/resources/de/seerheinlab/micgwaf/template");
-    String expected = FileUtils.readFileToString(new File(componentDir, "expected/templatedPageExpected.xhtml"));
+    String expected = FileUtils.readFileToString(new File(componentDir, "expected.txt"));
     expected = expected.replace("\r\n", "\n");
     assertEquals(expected, pageContent);
   }
@@ -80,7 +80,7 @@ public class GeneratedSourcesTest
         "de.seerheinlab.micgwaf.test.generated.body.ExtensionClassPrefixBodyExtensionClassSuffix", 
         classLoader);
     File componentDir = new File("src/test/resources/de/seerheinlab/micgwaf/variable");
-    String expected = FileUtils.readFileToString(new File(componentDir, "expected/variableExpected.xhtml"));
+    String expected = FileUtils.readFileToString(new File(componentDir, "expected.txt"));
     expected = expected.replace("\r\n", "\n");
     assertEquals(expected, pageContent);
   }
@@ -99,7 +99,7 @@ public class GeneratedSourcesTest
         "de.seerheinlab.micgwaf.test.generated.root.ExtensionClassPrefixRootExtensionClassSuffix", 
         classLoader);
     File componentDir = new File("src/test/resources/de/seerheinlab/micgwaf/componentlib");
-    String expected = FileUtils.readFileToString(new File(componentDir, "expected/expected.xhtml"));
+    String expected = FileUtils.readFileToString(new File(componentDir, "expected.txt"));
     expected = expected.replace("\r\n", "\n");
     assertEquals(expected, pageContent);
   }

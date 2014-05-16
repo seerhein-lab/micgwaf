@@ -12,35 +12,100 @@ import de.seerheinlab.micgwaf.generator.JavaClassName;
 public abstract class ComponentGenerator
 {
   /**
-   * Returns the class name of the component which will represent the parsed component
-   * in the generated code. This can either be a generated component, or a component
-   * supplied in some Library.
-   * Also there may be an extension class containing user modifications to the generating class,
-   * in which case the extension class should be used in references instead of this class.
+   * Returns the class name of the component which will represent a parsed component
+   * in the generated code. The component can either be a generated component, or a component
+   * supplied in a component library.
    * 
-   * @param component the component to be represented, not null.
-   * @param targetPackage the base target package for the generated classes, not null.
+   * @param generationContext the generation context for the class, not null.
    * 
    * @return the class name, not null.
    */
-  public abstract JavaClassName getClassName(
-      Component component,
-      String targetPackage);
+  public abstract JavaClassName getClassName(GenerationContext generationContext);
 
   /**
-   * Returns the class name of the  extension class containing user modifications to the generating class.
+   * Returns the class name of the extension class containing user modifications to the generated class.
+   * The component can either be a generated component, or a component supplied in a component library.
    * 
-   * @param component the component to be represented, not null.
-   * @param targetPackage the base target package for the generated classes, not null.
+   * @param generationContext the generation context for the class, not null.
    * 
    * @return the class name of the extension class. 
    *         May return null if generateExtensionClass() returns null for the component.
    */
-  public JavaClassName getExtensionClassName(
-      Component component,
-      String targetPackage)
+  public JavaClassName getExtensionClassName(GenerationContext generationContext)
   {
-    return toExtensionClassName(component.getId(), targetPackage);
+    return toExtensionClassName(generationContext.component.getId(), generationContext.getPackage());
+  }
+  
+  /**
+   * Returns the class name of the class by which this component can be referenced in generated code.
+   * The component can either be a generated component, or a component supplied in a component library.
+   * If an extension class containing user modifications to the generating class exists,
+   * the extension class is returned, otherwise the base class is returned.
+   * 
+   * @param generationContext the generation context for the class, not null.
+   * 
+   * @return the class name of the extension class. 
+   *         May return null if generateExtensionClass() returns null for the component.
+   */
+  public JavaClassName getReferencableClassName(GenerationContext generationContext)
+  {
+    if (generateExtensionClass(generationContext.component))
+    {
+      return getExtensionClassName(generationContext);
+    }
+    return getClassName(generationContext);
+  }
+
+  /**
+   * Converts a component and package info into a java class name following the base class naming pattern.
+   * The method first checks if an extension class is generated, and if yes and the configuration
+   * says that base classes without extension should follow the extension naming pattern, it forwards
+   * to the toExtensionClassName method.
+   * If this is not the case, any loop part suffixes (starting with a colon :) are removed from the 
+   * component id, and the first character of the component id is converted to upper case.
+   * This modified id is then prefixed by the baseClassPrefix and baseClassSuffix 
+   * from the generator configuration.
+   * 
+   * @param generationContext the component and package info, not null.
+   * 
+   * @return the java class name for the component and package info, not null.
+   */
+  public JavaClassName toBaseClassName(GenerationContext generationContext)
+  {
+    if (!generateExtensionClass(generationContext.component) 
+        && !Generator.getGeneratorConfiguration().isBaseClassWithoutExtensionNamedLikeBaseClasses())
+    {
+      return toExtensionClassName(generationContext.component.getId(), generationContext.getPackage());
+    }
+    String normalizedId = removeLoopPart(generationContext.component.getId());
+    String simpleName = Generator.getGeneratorConfiguration().getBaseClassPrefix() 
+        + normalizedId.substring(0, 1).toUpperCase()
+        + normalizedId.substring(1)
+        + Generator.getGeneratorConfiguration().getBaseClassSuffix();
+    return new JavaClassName(simpleName, generationContext.getPackage());
+  }
+  
+  /**
+   * Converts a component id and package info into a java class name following the extension class 
+   * naming pattern.
+   * Any loop part suffixes (starting with a colon :) are removed from the 
+   * component id, and the first character of the component id is converted to upper case.
+   * This modified id is then prefixed by the extensionClassPrefix and extensionClassSuffix 
+   * from the generator configuration.
+   * 
+   * @param componentKey the key of the component to generate the class name for, not null.
+   * @param componentPackage the package for the component, not null
+   * 
+   * @return the java class name for the componentid and package info.
+   */
+  public JavaClassName toExtensionClassName(String componentId, String componentPackage)
+  {
+    String normalizedId = removeLoopPart(componentId);
+    String simpleName = Generator.getGeneratorConfiguration().getExtensionClassPrefix() 
+        + normalizedId.substring(0, 1).toUpperCase()
+        + normalizedId.substring(1)
+        + Generator.getGeneratorConfiguration().getExtensionClassSuffix();
+    return new JavaClassName(simpleName, componentPackage);
   }
   
   /**
@@ -53,139 +118,38 @@ public abstract class ComponentGenerator
   public abstract boolean generateExtensionClass(Component component);
   
   /**
-   * Returns the class name of the class by which this component can be referenced in generated code.
-   * 
-   * @param component the component to be represented, not null.
-   * @param targetPackage the base target package for the generated classes, not null.
-   * 
-   * @return the class name of the extension class. 
-   *         May return null if generateExtensionClass() returns null for the component.
-   */
-  public JavaClassName getReferencableClassName(
-      Component component,
-      String targetPackage)
-  {
-    if (generateExtensionClass(component))
-    {
-      return getExtensionClassName(component, targetPackage);
-    }
-    return getClassName(component, targetPackage);
-  }
-
-  /**
    * Generates the component class representing the component.
    * 
-   * @param component the component for which code should be generated, not null.
-   * @param targetPackage the base target package for the generated classes, not null.
+   * @param generationContext the generation context for the class, not null.
+   *        The StringBuilder and indent fields of the generationContext are not used.
    * 
    * @return the code for the generated class, or null if no class should be generated.
    */
-  public abstract String generate(
-      Component component,
-      String targetPackage);
+  public abstract String generate(GenerationContext generationContext);
   
   /**
    * Generates the component extension class representing the component.
    * The extension class contains user-specific extensions to the generated class.
    * 
-   * @param component the component for which code should be generated, not null.
-   * @param targetPackage the base target package for the generated classes, not null.
+   * @param generationContext the generation context for the class, not null.
+   *        The StringBuilder and indent fields of the generationContext are not used.
    * 
    * @return the code for the generated extension class, or null if no extension class should be generated.
    */
-  public abstract String generateExtension(
-      Component component,
-      String targetPackage);
+  public abstract String generateExtension(GenerationContext generationContext);
 
   /**
    * Generates an initializer which initializes this component if this component is constructed
    * and assigned to a field.
    * If this component does not need to be initialized, the empty string can be returned.
    * 
+   * @param generationContext the generation context for the class, not null.
    * @param componentField the name of the field the component is assigned to, not null.
-   * @param component the component to generate the initializer for, not null.
-   * @param targetPackage the target package of the component, not null.
-   * @param indent how many spaces to indent, not null.
    * 
-   * @return the initializer java code, of the empty string if no initilaizer code is needed; not null.
+   * @return the initializer java code, of the empty string if no initializer code is needed; not null.
    */
-  public abstract String generateInitializer(
-      String componentField,
-      Component component,
-      String targetPackage,
-      int indent);
+  public abstract void generateInitializer(GenerationContext generationContext, String componentField);
   
-  /**
-   * Converts a component and a package into a java class name following the base class naming pattern.
-   * The method first checks if an extension class is generated, and if yes and the configuration
-   * say that base classes without extension should follow the extension naming pattern, it forwards
-   * to the toExtensionClassName method.
-   * If this is not the case, any loop part suffixes (starting with a colon :) are removed from the 
-   * component id, and the first character of the component id is converted to upper case.
-   * This modified id is then prefixed by the baseClassPrefix and baseClassSuffix 
-   * from the generator configuration.
-   * 
-   * @param component the component to generate the class name for, not null.
-   * @param packageName TODO
-   * 
-   * @return the java class name for the componentid/package pair.
-   */
-  public JavaClassName toBaseClassName(Component component, String packageName)
-  {
-    if (!generateExtensionClass(component) 
-        && !Generator.getGeneratorConfiguration().isBaseClassWithoutExtensionNamedLikeBaseClasses())
-    {
-      return toExtensionClassName(component.getId(), packageName);
-    }
-    String normalizedId = removeLoopPart(component.getId());
-    String simpleName = Generator.getGeneratorConfiguration().getBaseClassPrefix() 
-        + normalizedId.substring(0, 1).toUpperCase()
-        + normalizedId.substring(1)
-        + Generator.getGeneratorConfiguration().getBaseClassSuffix();
-    return new JavaClassName(simpleName, packageName);
-  }
-  
-  /**
-   * Converts a component id and a package into a java class name following the extension class 
-   * naming pattern.
-   * Any loop part suffixes (starting with a colon :) are removed from the 
-   * component id, and the first character of the component id is converted to upper case.
-   * This modified id is then prefixed by the extensionClassPrefix and extensionClassSuffix 
-   * from the generator configuration.
-   * 
-   * @param componentId the id of the component to generate the class name for, not null.
-   * @param packageName TODO
-   * 
-   * @return the java class name for the componentid/package pair.
-   */
-  public JavaClassName toExtensionClassName(String componentId, String packageName)
-  {
-    String normalizedId = removeLoopPart(componentId);
-    String simpleName = Generator.getGeneratorConfiguration().getExtensionClassPrefix() 
-        + normalizedId.substring(0, 1).toUpperCase()
-        + normalizedId.substring(1)
-        + Generator.getGeneratorConfiguration().getExtensionClassSuffix();
-    return new JavaClassName(simpleName, packageName);
-  }
-  
-  /**
-   * Returns a string in a form which can be used as string constant in a java source file.
-   * The String is surrounded with double quotes, and backslashes, carriage returns and newlines
-   * are replaced with the appropriate escape sequences.
-   *  
-   * @param string the string to be converted to a string constant, not null.
-   * 
-   * @return the string constant, not null.
-   */
-  public String asConstant(String string)
-  {
-    String result = string.replace("\\", "\\\\");
-    result = result.replace("\r", "\\r");
-    result = result.replace("\n", "\\n");
-    result = result.replace("\"", "\\\"");
-    return "\"" + result + "\"";
-  }
-
   /**
    * Generates a field or a local variable from a component. 
    * If the component is not of the general Type Component, 
@@ -193,34 +157,30 @@ public abstract class ComponentGenerator
    * the local variable and field.
    * Afterwards, the component is initialized using the initializer.
    * 
-   * @param component The component to create the package name for, not null.
-   * @param targetPackage TODO
-   * @param toAppendTo the String builder to which the generated code should be appended, not null.
+   * @param generationContext the generation context, not null.
    * @param modifier any modifier to the variable or field, e.g "public " or "final ".
    * @param fieldName the name of the field or variable
    * @param parentName the code how to access the parent of the component.
-   * @param indent how many spaces the generated code should be indented.
    */
   public void generateFieldOrVariableFromComponent(
-      Component component,
-      String targetPackage, 
-      StringBuilder toAppendTo,
+      GenerationContext generationContext,
       String modifier,
       String fieldName,
-      String parentName,
-      int indent)
+      String parentName)
   {
-    String indentString = getIndentString(indent);
-    ComponentGenerator generator = Generator.getGenerator(component);
-    JavaClassName componentClassName = generator.getReferencableClassName(component, targetPackage);
+    String indentString = getIndentString(generationContext.indent);
+    StringBuilder stringBuilder = generationContext.stringBuilder;
+    ComponentGenerator generator = Generator.getGenerator(generationContext.component);
+    JavaClassName componentClassName = generator.getReferencableClassName(generationContext);
     if (componentClassName.isNameFor(Component.class))
     {
-      toAppendTo.append(indentString).append(modifier).append(componentClassName.getSimpleName())
-      .append(" ").append(fieldName).append(";\n");
+      stringBuilder.append(indentString).append(modifier)
+        .append(componentClassName.getSimpleName())
+        .append(" ").append(fieldName).append(";\n");
     }
     else
     {
-      String id = component.getId();
+      String id = generationContext.component.getId();
       if (id == null)
       {
         id = "null";
@@ -229,28 +189,26 @@ public abstract class ComponentGenerator
       {
         id ="\"" + id + "\"";
       }
-      toAppendTo.append(indentString).append(modifier).append(componentClassName.getSimpleName())
+      stringBuilder.append(indentString).append(modifier).append(componentClassName.getSimpleName())
           .append(" ").append(fieldName)
           .append(" = ApplicationBase.getApplication().postConstruct(\n")
-          .append(indentString).append("    ").append("new ").append(componentClassName.getSimpleName()).append("(").append(id).append(", ").append(parentName).append("));\n");
+          .append(indentString).append("    ").append("new ").append(componentClassName.getSimpleName())
+          .append("(").append(id).append(", ").append(parentName).append("));\n");
     }
-    toAppendTo.append(generator.generateInitializer(fieldName, component, targetPackage, indent));
+    generator.generateInitializer(generationContext, fieldName);
   }
 
   public void generateInitChildren(
-      Component component, 
-      String targetPackage,
-      StringBuilder result,
-      String componentField,
-      int indent)
+      GenerationContext generationContext,
+      String componentField)
   {
-    List<? extends Component> children = component.getChildren();
+    List<? extends Component> children = generationContext.component.getChildren();
     if (children.isEmpty())
     {
       return;
     }
-    String indentString = getIndentString(indent);
-    result.append(indentString).append("{\n");
+    String indentString = getIndentString(generationContext.indent);
+    generationContext.stringBuilder.append(indentString).append("{\n");
     int counter = 1;
     for (Component child : children)
     {
@@ -263,13 +221,22 @@ public abstract class ComponentGenerator
       {
         fieldName = getChildName(componentField, counter);
       }
-      generateFieldOrVariableFromComponent(child, targetPackage, result, "", fieldName, "this", indent + 2);
-      result.append(indentString).append("  ").append(componentField).append(".children.add(")
+      GenerationContext childContext = new GenerationContext(
+          generationContext,
+          child,
+          generationContext.indent + 2);
+      generateFieldOrVariableFromComponent(
+          childContext, 
+          "", 
+          fieldName, 
+          "this");
+      generationContext.stringBuilder.append(indentString).append("  ")
+          .append(componentField).append(".children.add(")
           .append(fieldName).append(");\n");
 
       counter++;
     }
-    result.append(indentString).append("}\n");
+    generationContext.stringBuilder.append(indentString).append("}\n");
   }
   
   /**
@@ -329,13 +296,41 @@ public abstract class ComponentGenerator
       {
         toAppendTo.append(" *\n");
         toAppendTo.append(" * NOTE: This class should not be referenced; instead, the class\n");
-        toAppendTo.append(" * ").append(generator.getExtensionClassName(component, "dummy").getSimpleName())
+        toAppendTo.append(" * ")
+            .append(generator.getExtensionClassName(
+                new GenerationContext(component, "dummy", null)).getSimpleName())
             .append(" should be used.").append("\n");
       }
     }
     toAppendTo.append(" **/\n");
   }
 
+  /**
+   * Returns a string in a form which can be used as string constant in a java source file.
+   * The String is surrounded with double quotes, and backslashes, carriage returns and newlines
+   * are replaced with the appropriate escape sequences.
+   *  
+   * @param string the string to be converted to a string constant, not null.
+   * 
+   * @return the string constant, not null.
+   */
+  public String asConstant(String string)
+  {
+    String result = string.replace("\\", "\\\\");
+    result = result.replace("\r", "\\r");
+    result = result.replace("\n", "\\n");
+    result = result.replace("\"", "\\\"");
+    return "\"" + result + "\"";
+  }
+
+  /**
+   * Removes the loop part of an id, extracting the original id of the component.
+   * It is assumed that all loop parts are appended as suffixes starting with a colon.
+   * 
+   * @param id the id to remove the loop part from, or null.
+   * 
+   * @return the id without the loop part, not null if <code>id</code> is not null.
+   */
   public String removeLoopPart(String id)
   {
     if (id == null)
@@ -350,6 +345,13 @@ public abstract class ComponentGenerator
     return id.substring(0, indexOfColon);
   }
   
+  /**
+   * Replaces all dots by underscores in an id.
+   * 
+   * @param id the id to replace dots in, or null.
+   * 
+   * @return the id with dots replaced by underscores, not null if <code>id</code> is not null.
+   */
   public String replaceDots(String id)
   {
     if (id == null)
@@ -359,6 +361,13 @@ public abstract class ComponentGenerator
     return id.replace('.', '_');
   }
   
+  /**
+   * Returns the indent String for an indent number.
+   * 
+   * @param indent the indent index.
+   * 
+   * @return the corresponding indent String, not null.
+   */
   public String getIndentString(int indent)
   {
     StringBuilder result = new StringBuilder(indent);
@@ -390,7 +399,7 @@ public abstract class ComponentGenerator
       RefComponent refComponent = (RefComponent) component;
       return replaceDots(refComponent.refid);
     }
-    return  "component" + componentCounter;
+    return "component" + componentCounter;
   }
 
   public String getComponentFieldName(PartListComponent.ComponentPart part, int componentCounter)

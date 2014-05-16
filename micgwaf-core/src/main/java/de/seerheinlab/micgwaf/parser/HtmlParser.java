@@ -52,7 +52,8 @@ public class HtmlParser
    * Only files directly in the given directory with the suffix .xhtml are parsed,
    * all other files are ignored.
    * The created components are stored in the returned map.
-   * The map key is the component id, and the map value is the root component for a HTML source file.
+   * The map key is the component id, prefixed with the directory tree to the component,
+   * and the map value is the root component for a HTML source file.
    * 
    * @param sourceDirectory the directory where the parsed files reside, not null.
    * @param classLoader the class loader to use for component lib discovery, 
@@ -73,11 +74,17 @@ public class HtmlParser
     }
     
     Map<String, Component> result = discoverComponentsFromClasspath(classLoader);
+    parseComponents(sourceDirectory, result, "");
+    return result;
+  }
+
+  private void parseComponents(File sourceDirectory, Map<String, Component> componentMap, String prefix)
+  {
     File[] files = sourceDirectory.listFiles();
     for (File file : files)
     {
       String fileName = file.getName();
-      if (fileName.endsWith(".xhtml"))
+      if (file.isFile() && fileName.endsWith(".xhtml"))
       {
         try
         {
@@ -87,15 +94,18 @@ public class HtmlParser
           {
             component.setId(fileName.substring(0, fileName.length() - 6));
           }
-          result.put(component.getId(), component);
+          componentMap.put(prefix + component.getId(), component);
         }
         catch (SAXException | IOException | ParserConfigurationException e)
         {
           throw new RuntimeException(e);
         } 
       }
+      else if (file.isDirectory())
+      {
+        parseComponents(file, componentMap, prefix + file.getName() + "/" );
+      }
     }
-    return result;
   }  
   
   /**

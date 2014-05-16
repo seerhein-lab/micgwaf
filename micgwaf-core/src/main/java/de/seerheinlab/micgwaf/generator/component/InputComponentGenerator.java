@@ -10,25 +10,21 @@ import de.seerheinlab.micgwaf.generator.JavaClassName;
 public class InputComponentGenerator extends HtmlElementComponentGenerator
 {
   @Override
-  public JavaClassName getClassName(
-      Component component,
-      String targetPackage)
+  public JavaClassName getClassName(GenerationContext generationContext)
   {
-    return toBaseClassName(component, targetPackage);
+    return toBaseClassName(generationContext);
   }
   
   @Override
-  public String generate(
-      Component component,
-      String targetPackage)
+  public String generate(GenerationContext generationContext)
   {
-    InputComponent inputComponent = (InputComponent) component;
+    InputComponent inputComponent = (InputComponent) generationContext.component;
     // In the generated class, the value of the attribute "name" should not contain any loop parts.
     // They will be added again when generating the name.
     inputComponent.attributes.put(
         InputComponent.NAME_ATTR, 
         removeLoopPart(inputComponent.attributes.get(InputComponent.NAME_ATTR)));
-    String rootContent = super.generate(component, targetPackage);
+    String rootContent = super.generate(generationContext);
 
     StringBuilder fileContent = new StringBuilder();
     
@@ -52,15 +48,14 @@ public class InputComponentGenerator extends HtmlElementComponentGenerator
   }
 
   @Override
-  public String generateExtension(
-      Component component,
-      String targetPackage)
+  public String generateExtension(GenerationContext generationContext)
   {
-    String className = getClassName(component, targetPackage).getSimpleName();
-    String extensionClassName = getExtensionClassName(component, targetPackage).getSimpleName();
+    String className = getClassName(generationContext).getSimpleName();
+    String extensionClassName = getExtensionClassName(generationContext)
+          .getSimpleName();
 
     StringBuilder fileContent = new StringBuilder();
-    fileContent.append("package ").append(targetPackage).append(";\n\n");
+    fileContent.append("package ").append(generationContext.getPackage()).append(";\n\n");
     fileContent.append("\n");
     fileContent.append("import ").append(Component.class.getName()).append(";\n");
     fileContent.append("\n");

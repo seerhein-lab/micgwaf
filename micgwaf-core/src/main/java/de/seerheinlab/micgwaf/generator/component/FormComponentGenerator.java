@@ -19,21 +19,18 @@ import de.seerheinlab.micgwaf.generator.JavaClassName;
 public class FormComponentGenerator extends HtmlElementComponentGenerator
 {
   @Override
-  public JavaClassName getClassName(
-      Component component,
-      String targetPackage)
+  public JavaClassName getClassName(GenerationContext generationContext)
   {
-    return toBaseClassName(component, targetPackage);
+    return toBaseClassName(generationContext);
   }
   
   @Override
-  public String generate(
-      Component component,
-      String targetPackage)
+  public String generate(GenerationContext generationContext)
   {
-    String rootContent = super.generate(component, targetPackage);
+    String rootContent = super.generate(generationContext);
 
     StringBuilder fileContent = new StringBuilder();
+    generationContext.stringBuilder = fileContent;
     
     // replace inheritance
     rootContent = rootContent.replace(
@@ -51,12 +48,12 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
         .append(rootContent.substring(indexOfImport));
 
     List<InputComponent> buttons = new ArrayList<>();
-    getButtons(component, buttons);
+    getButtons(generationContext.component, buttons);
     Map<InputComponent, Component> buttonsInLoops = new HashMap<>();
-    getButtonsInLoops(component, buttonsInLoops);
+    getButtonsInLoops(generationContext.component, buttonsInLoops);
     List<ComponentWithPath> inputs = new ArrayList<>();
     List<Component> componentPath = new ArrayList<>();
-    getInputs(component, inputs, componentPath);
+    getInputs(generationContext.component, inputs, componentPath);
     
     for (InputComponent button : buttons)
     {
@@ -67,12 +64,12 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
     {
       InputComponent button = buttonEntry.getKey();
       Component loopComponent = buttonEntry.getValue();
-      generateButtonInLoopHookMethod(targetPackage, fileContent, button, loopComponent, false);
+      generateButtonInLoopHookMethod(generationContext, button, loopComponent, false);
     }
     
     for (ComponentWithPath input : inputs)
     {
-      generateSubmittedValueGettersAndSetters(component, fileContent, input);
+      generateSubmittedValueGettersAndSetters(generationContext.component, fileContent, input);
     }
     
     fileContent.append("\n  /**\n");
@@ -112,7 +109,8 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
       Component loopComponent = buttonEntry.getValue();
       ComponentGenerator loopComponentGenerator = Generator.getGenerator(loopComponent);
       JavaClassName loopComponentReferencableClassName 
-          = loopComponentGenerator.getReferencableClassName(loopComponent, targetPackage);
+          = loopComponentGenerator.getReferencableClassName(
+              new GenerationContext(generationContext, loopComponent));
       fileContent.append("      for (").append(loopComponentReferencableClassName.getSimpleName())
           .append(" loopComponent : ").append(removeLoopPart(loopComponent.getParent().getId()))
           .append(".children)\n");
@@ -132,6 +130,7 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
     fileContent.append("  }\n");
     fileContent.append("}\n");
     
+    generationContext.stringBuilder = null;
     return fileContent.toString();
   }
 
@@ -201,8 +200,7 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
   }
 
   private void generateButtonInLoopHookMethod(
-      String targetPackage,
-      StringBuilder fileContent,
+      GenerationContext generationContext,
       InputComponent button,
       Component loopComponent,
       boolean overrideMethod)
@@ -211,41 +209,42 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
     String bareLoopComponentId = removeLoopPart(loopComponent.getId());
     ComponentGenerator loopComponentGenerator = Generator.getGenerator(loopComponent);
     JavaClassName loopComponentReferencableClassName 
-        = loopComponentGenerator.getReferencableClassName(loopComponent, targetPackage);
-    fileContent.append("\n  /**\n");
-    fileContent.append("   * Hook method which is called when the button ")
+        = loopComponentGenerator.getReferencableClassName(
+            new GenerationContext(generationContext, loopComponent));
+    generationContext.stringBuilder.append("\n  /**\n");
+    generationContext.stringBuilder.append("   * Hook method which is called when the button ")
         .append(bareButtonId).append(" was pressed.\n");
-    fileContent.append("   *\n");
-    fileContent.append("   * @param ").append(bareLoopComponentId).append(" The component in the list of ")
+    generationContext.stringBuilder.append("   *\n");
+    generationContext.stringBuilder.append("   * @param ").append(bareLoopComponentId).append(" The component in the list of ")
         .append(loopComponentReferencableClassName.getSimpleName())
         .append(" Components\n");
-    fileContent.append("   *        to which this button belongs.\n");
-    fileContent.append("   *\n");
-    fileContent.append("   * @return the page to be rendered.\n");
-    fileContent.append("   *         If no component returns a not-null result, the current page")
+    generationContext.stringBuilder.append("   *        to which this button belongs.\n");
+    generationContext.stringBuilder.append("   *\n");
+    generationContext.stringBuilder.append("   * @return the page to be rendered.\n");
+    generationContext.stringBuilder.append("   *         If no component returns a not-null result, the current page")
         .append(" in the current state\n");
-    fileContent.append("   *         will be rendered.\n");
-    fileContent.append("   *         If more than one component returns a not-null result, the last")
+    generationContext.stringBuilder.append("   *         will be rendered.\n");
+    generationContext.stringBuilder.append("   *         If more than one component returns a not-null result, the last")
         .append(" not-null result will be used.\n");
-    fileContent.append("   */\n");
+    generationContext.stringBuilder.append("   */\n");
     if (overrideMethod)
     {
-      fileContent.append("  @Override\n");
+      generationContext.stringBuilder.append("  @Override\n");
     }
-    fileContent.append("  public Component ").append(bareButtonId).append("Pressed(")
+    generationContext.stringBuilder.append("  public Component ").append(bareButtonId).append("Pressed(")
         .append(loopComponentReferencableClassName.getSimpleName()).append(" ")
         .append(bareLoopComponentId).append(")\n");
-    fileContent.append("  {\n");
+    generationContext.stringBuilder.append("  {\n");
     if (overrideMethod)
     {
-      fileContent.append("    return super.").append(bareButtonId).append("Pressed(")
+      generationContext.stringBuilder.append("    return super.").append(bareButtonId).append("Pressed(")
           .append(bareLoopComponentId).append(");\n");
     }
     else
     {
-      fileContent.append("    return null;\n");
+      generationContext.stringBuilder.append("    return null;\n");
     }
-    fileContent.append("  }\n");
+    generationContext.stringBuilder.append("  }\n");
   }
 
   private void generateButtonHookMethod(
@@ -284,15 +283,14 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
   }
 
   @Override
-  public String generateExtension(
-      Component component,
-      String targetPackage)
+  public String generateExtension(GenerationContext generationContext)
   {
-    String className = getClassName(component, targetPackage).getSimpleName();
-    String extensionClassName = getExtensionClassName(component, targetPackage).getSimpleName();
+    String className = getClassName(generationContext).getSimpleName();
+    String extensionClassName = getExtensionClassName(generationContext).getSimpleName();
 
     StringBuilder fileContent = new StringBuilder();
-    fileContent.append("package ").append(targetPackage).append(";\n\n");
+    generationContext.stringBuilder = fileContent;
+    fileContent.append("package ").append(generationContext.getPackage()).append(";\n\n");
     fileContent.append("\n");
     fileContent.append("import ").append(Component.class.getName()).append(";\n");
     fileContent.append("\n");
@@ -304,9 +302,9 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
     generateConstructorWithIdAndParent(extensionClassName, null, fileContent);
     
     List<InputComponent> buttons = new ArrayList<>();
-    getButtons(component, buttons);
+    getButtons(generationContext.component, buttons);
     Map<InputComponent, Component> buttonsInLoops = new HashMap<>();
-    getButtonsInLoops(component, buttonsInLoops);
+    getButtonsInLoops(generationContext.component, buttonsInLoops);
 
     for (InputComponent button : buttons)
     {
@@ -317,10 +315,12 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
     {
       InputComponent button = buttonEntry.getKey();
       Component loopComponent = buttonEntry.getValue();
-      generateButtonInLoopHookMethod(targetPackage, fileContent, button, loopComponent, true);
+      generateButtonInLoopHookMethod(generationContext, button, loopComponent, true);
     }
     
     fileContent.append("}\n");
+    
+    generationContext.stringBuilder = null;
     return fileContent.toString();
   }
   

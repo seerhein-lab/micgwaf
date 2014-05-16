@@ -18,30 +18,27 @@ import de.seerheinlab.micgwaf.generator.JavaClassName;
 public class PartListComponentGenerator extends ComponentGenerator
 {
   @Override
-  public JavaClassName getClassName(
-      Component component,
-      String targetPackage)
+  public JavaClassName getClassName(GenerationContext generationContext)
   {
-    if (component.getId() != null)
+    if (generationContext.component.getId() != null)
     {
-      return toBaseClassName(component, targetPackage);
+      return toBaseClassName(generationContext);
     }
     return new JavaClassName(PartListComponent.class);
   }
   
   @Override
-  public String generate(
-        Component component,
-        String targetPackage)
+  public String generate(GenerationContext generationContext)
   {
-    if (component.getId() == null)
+    if (generationContext.component.getId() == null)
     {
       return null;
     }
-    PartListComponent partListComponent = (PartListComponent) component;
-    JavaClassName javaClassName = getClassName(component, targetPackage);
-    String className = getClassName(component, targetPackage).getSimpleName();
+    PartListComponent partListComponent = (PartListComponent) generationContext.component;
+    JavaClassName javaClassName = getClassName(generationContext);
+    String className = javaClassName.getSimpleName();
     StringBuilder fileContent = new StringBuilder();
+    generationContext.stringBuilder = fileContent;
     fileContent.append("package ").append(javaClassName.getPackage()).append(";\n\n");
     fileContent.append("import ").append(ChangesChildHtmlId.class.getName()).append(";\n");
     fileContent.append("import ").append(Component.class.getName()).append(";\n");
@@ -57,7 +54,8 @@ public class PartListComponentGenerator extends ComponentGenerator
       if (part.component != null)
       {
         ComponentGenerator generator = Generator.getGenerator(part.component);
-        JavaClassName componentClass = generator.getReferencableClassName(part.component, targetPackage);
+        JavaClassName componentClass = generator.getReferencableClassName(
+            new GenerationContext(generationContext, part.component));
         if (part.component instanceof RefComponent 
             && !javaClassName.getPackage().equals(componentClass.getPackage()))
         {
@@ -68,10 +66,10 @@ public class PartListComponentGenerator extends ComponentGenerator
     
     // class definition header
     fileContent.append("\n");
-    generateClassJavadoc(component, fileContent, false);
+    generateClassJavadoc(generationContext.component, fileContent, false);
     fileContent.append("public class ").append(className)
         .append(" extends ").append(Component.class.getSimpleName());
-    if (component.getParent() == null)
+    if (generationContext.component.getParent() == null)
     {
       fileContent.append(" implements ChangesChildHtmlId");
     }
@@ -100,13 +98,17 @@ public class PartListComponentGenerator extends ComponentGenerator
         fileContent.append("\n");
         String componentField = getComponentFieldName(part, componentCounter);
         ComponentGenerator generator = Generator.getGenerator(part.component);
-        generator.generateFieldOrVariableFromComponent(part.component, targetPackage, fileContent, "public ", componentField, "this", 2);
+        generator.generateFieldOrVariableFromComponent(
+            new GenerationContext(generationContext, part.component, 2), 
+            "public ",
+            componentField, 
+            "this");
         componentCounter++;
       }
     }
     
     // Constructor
-    generateConstructorWithIdAndParent(className, component.getId(), fileContent);
+    generateConstructorWithIdAndParent(className, generationContext.component.getId(), fileContent);
     
     // getChildren
     fileContent.append("  @Override\n");
@@ -168,27 +170,26 @@ public class PartListComponentGenerator extends ComponentGenerator
       }
     }
     
-    if (component.getParent() == null)
+    if (generationContext.component.getParent() == null)
     {
       generateChangeChildHtmlId(fileContent);
     }
     fileContent.append("}\n");
+    generationContext.stringBuilder = null;
     return fileContent.toString();
   }
 
   @Override
-  public String generateExtension(
-      Component component,
-      String targetPackage)
+  public String generateExtension(GenerationContext generationContext)
   {
-    String className = getClassName(component, targetPackage).getSimpleName();
-    String extensionClassName = getExtensionClassName(component, targetPackage).getSimpleName();
+    String className = getClassName(generationContext).getSimpleName();
+    String extensionClassName = getExtensionClassName(generationContext).getSimpleName();
     StringBuilder fileContent = new StringBuilder();
-    fileContent.append("package ").append(targetPackage).append(";\n\n");
+    fileContent.append("package ").append(generationContext.getPackage()).append(";\n\n");
     fileContent.append("\n");
     fileContent.append("import ").append(Component.class.getName()).append(";\n");
     fileContent.append("\n");
-    generateClassJavadoc(component, fileContent, true);
+    generateClassJavadoc(generationContext.component, fileContent, true);
     fileContent.append("public class ").append(extensionClassName)
         .append(" extends ").append(className)
         .append("\n");
@@ -201,24 +202,25 @@ public class PartListComponentGenerator extends ComponentGenerator
   }
 
   @Override
-  public String generateInitializer(
-      String componentField,
-      Component component,
-      String targetPackage,
-      int indent)
+  public void generateInitializer(
+      GenerationContext generationContext, 
+      String componentField)
   {
-    String indentString = getIndentString(indent);
-    PartListComponent snippetListComponent = (PartListComponent) component;
-    StringBuilder result = new StringBuilder();
-    result.append(indentString).append("{\n");
+    String indentString = getIndentString(generationContext.indent);
+    PartListComponent snippetListComponent = (PartListComponent) generationContext.component;
+    generationContext.stringBuilder.append(indentString).append("{\n");
     int counter = 1;
     for (PartListComponent.ComponentPart part : snippetListComponent.parts)
     {
       if (part.component != null)
       {
         String fieldName = getChildName(componentField, counter);
-        generateFieldOrVariableFromComponent(part.component, targetPackage, result, "", fieldName, "this", indent + 2);
-        result.append(indentString).append("  ").append(componentField)
+        generateFieldOrVariableFromComponent(
+            new GenerationContext(generationContext, part.component, generationContext.indent + 2),
+            "", 
+            fieldName, 
+            "this");
+        generationContext.stringBuilder.append(indentString).append("  ").append(componentField)
             .append(".parts.add(ComponentPart.fromComponent(")
             .append(fieldName).append("));\n");
 
@@ -226,19 +228,18 @@ public class PartListComponentGenerator extends ComponentGenerator
       }
       else if (part.htmlSnippet != null)
       {
-        result.append(indentString).append("  ").append(componentField)
+        generationContext.stringBuilder.append(indentString).append("  ").append(componentField)
             .append(".parts.add(ComponentPart.fromHtmlSnippet(")
             .append(asConstant(part.htmlSnippet)).append("));\n");
       }
       else if (part.variableName != null)
       {
-        result.append(indentString).append("  ").append(componentField)
+        generationContext.stringBuilder.append(indentString).append("  ").append(componentField)
             .append(".parts.add(ComponentPart.fromHtmlSnippet(")
             .append(asConstant(part.variableName)).append("));\n");
       }
     }
-    result.append(indentString).append("}\n");
-    return result.toString();
+    generationContext.stringBuilder.append(indentString).append("}\n");
   }
 
   @Override

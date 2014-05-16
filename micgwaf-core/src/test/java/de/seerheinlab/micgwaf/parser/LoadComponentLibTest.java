@@ -39,7 +39,7 @@ public class LoadComponentLibTest
     components.get("root").render(stringWriter);
     String actual = stringWriter.toString();
     actual = actual.replace("\r\n", "\n");
-    String expected = FileUtils.readFileToString(new File(componentDir, "expected/expected.xhtml"));
+    String expected = FileUtils.readFileToString(new File(componentDir, "expected.txt"));
     expected = expected.replace("\r\n", "\n");
     assertEquals(expected, stringWriter.toString());
   }

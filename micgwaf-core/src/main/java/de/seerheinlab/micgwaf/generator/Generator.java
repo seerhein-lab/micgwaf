@@ -11,31 +11,36 @@ import de.seerheinlab.micgwaf.component.AnyComponent;
 import de.seerheinlab.micgwaf.component.ChildListComponent;
 import de.seerheinlab.micgwaf.component.Component;
 import de.seerheinlab.micgwaf.component.ComponentRegistry;
-import de.seerheinlab.micgwaf.component.TemplateIntegration;
 import de.seerheinlab.micgwaf.component.DefineComponent;
 import de.seerheinlab.micgwaf.component.EmptyComponent;
 import de.seerheinlab.micgwaf.component.FormComponent;
 import de.seerheinlab.micgwaf.component.HtmlElementComponent;
 import de.seerheinlab.micgwaf.component.InputComponent;
-import de.seerheinlab.micgwaf.component.RefComponent;
 import de.seerheinlab.micgwaf.component.PartListComponent;
+import de.seerheinlab.micgwaf.component.RefComponent;
+import de.seerheinlab.micgwaf.component.TemplateIntegration;
 import de.seerheinlab.micgwaf.generator.component.AnyComponentGenerator;
 import de.seerheinlab.micgwaf.generator.component.ChildListComponentGenerator;
 import de.seerheinlab.micgwaf.generator.component.ComponentGenerator;
-import de.seerheinlab.micgwaf.generator.component.TemplateIntegrationGenerator;
 import de.seerheinlab.micgwaf.generator.component.DefineComponentGenerator;
 import de.seerheinlab.micgwaf.generator.component.EmptyComponentGenerator;
 import de.seerheinlab.micgwaf.generator.component.FormComponentGenerator;
+import de.seerheinlab.micgwaf.generator.component.GenerationContext;
 import de.seerheinlab.micgwaf.generator.component.HtmlElementComponentGenerator;
 import de.seerheinlab.micgwaf.generator.component.InputComponentGenerator;
-import de.seerheinlab.micgwaf.generator.component.RefComponentGenerator;
 import de.seerheinlab.micgwaf.generator.component.PartListComponentGenerator;
+import de.seerheinlab.micgwaf.generator.component.RefComponentGenerator;
+import de.seerheinlab.micgwaf.generator.component.TemplateIntegrationGenerator;
 import de.seerheinlab.micgwaf.generator.config.GeneratorConfiguration;
 import de.seerheinlab.micgwaf.parser.HtmlParser;
 import de.seerheinlab.micgwaf.util.Assertions;
 
 public class Generator
 {
+  private static final char DOT = '.';
+
+  private static final char SLASH = '/';
+
   /** All parsed root components, keyed by their component id. */
   public static final Map<Class<? extends Component>, ComponentGenerator> componentGeneratorMap 
       = new HashMap<>();
@@ -99,7 +104,7 @@ public class Generator
    *        Existing files in this directory are overwritten each generation run without notice.
    * @param extensionsTargetDirectory The directory where component extension source files are written.
    *        These files are intended for modification by the user, thus existing files are not overwritten.
-   * @param baseComponentPackage the base package for component classes.
+   * @param rootPackage the base package for component classes.
    * @param classLoader the class loader to use for component lib discovery, 
    *       or null to use the default classloader.
    * 
@@ -110,7 +115,7 @@ public class Generator
         File sourceDirectory,
         File targetDirectory,
         File extensionsTargetDirectory,
-        String baseComponentPackage,
+        String rootPackage,
         ClassLoader classLoader)
       throws IOException
   {
@@ -121,7 +126,9 @@ public class Generator
     {
       Component component = entry.getValue();
       component.resolveComponentReferences(componentMap);
-      String componentPackage = baseComponentPackage + "." + component.getId();
+
+      String key = entry.getKey();
+      String subpackage = getComponentSubpackage(key);
       
       Map<JavaClassName, String> componentFilesToWrite = new HashMap<>();
       Map<JavaClassName, String> extensionFilesToWrite = new HashMap<>();
@@ -130,8 +137,9 @@ public class Generator
       {
         continue;
       }
-      generateComponentBaseClass(component, componentPackage, componentFilesToWrite);
-      generateComponentExtensionClass(component, componentPackage, extensionFilesToWrite);
+      GenerationContext generationContext = new GenerationContext(component, rootPackage, subpackage);
+      generateComponentBaseClass(generationContext, componentFilesToWrite);
+      generateComponentExtensionClass(generationContext, extensionFilesToWrite);
       for (Map.Entry<JavaClassName, String> fileToWriteEntry : componentFilesToWrite.entrySet())
       {
         File targetFile = new File(
@@ -147,7 +155,19 @@ public class Generator
         writeFile(targetFile, fileToWriteEntry.getValue(), false);
       }
     }
-    generateComponentRegistry(componentMap, targetDirectory, baseComponentPackage);
+    generateComponentRegistry(componentMap, targetDirectory, rootPackage);
+  }
+
+  /**
+   * Returns a component's subpackage for a component key.
+   * 
+   * @param componentKey the component key, containing slashes ('/') as part separator.
+   * 
+   * @return the package prefix, which is the key with slashes replaced by dots.
+   */
+  public static String getComponentSubpackage(String componentKey)
+  {
+    return componentKey.replace(SLASH, DOT);
   }
 
   /**
@@ -180,26 +200,26 @@ public class Generator
    * Generates the base class for a component and its children,
    * and adds the generated content to the <code>filesToWrite</code> map.
    * 
-   * @param component the component to generate the code for, not null.
-   * @param targetPackage the package for the component class, not null.
+   * @param GenerationContext the generation context for the generated class, not null
    * @param filesToWrite a map where the generated files are stored: the key is the class name,
    *        and the value is the content of the file.
    */
   public void generateComponentBaseClass(
-      Component component,
-      String targetPackage,
+      GenerationContext generationContext,
       Map<JavaClassName, String> filesToWrite)
   {
-    ComponentGenerator componentGenerator = getGenerator(component.getClass());
-    String result = componentGenerator.generate(component, targetPackage);
+    ComponentGenerator componentGenerator = getGenerator(generationContext.component.getClass());
+    String result = componentGenerator.generate(generationContext);
     if (result != null)
     {
       result = removeUnusedImports.removeUnusedImports(result);
-      filesToWrite.put(componentGenerator.getClassName(component, targetPackage), result);
+      filesToWrite.put(
+          componentGenerator.getClassName(generationContext),
+          result);
     }
-    for (Component child : component.getChildren())
+    for (Component child : generationContext.component.getChildren())
     {
-      generateComponentBaseClass(child, targetPackage, filesToWrite);
+      generateComponentBaseClass(new GenerationContext(generationContext, child), filesToWrite);
     }
   }
   
@@ -207,25 +227,25 @@ public class Generator
    * Generates the extension class for a component and its children,
    * and adds the generated content to the <code>filesToWrite</code> map.
    * 
-   * @param component the component to generate the code for, not null.
-   * @param targetPackage the package for the component extension class, not null.
+   * @param GenerationContext the generation context for the generated class, not null
    * @param filesToWrite a map where the generated files are stored: the key is the class name,
    *        and the value is the content of the file.
    */
   public void generateComponentExtensionClass(
-      Component component,
-      String targetPackage,
+      GenerationContext generationContext,
       Map<JavaClassName, String> filesToWrite)
   {
-    ComponentGenerator componentGenerator = getGenerator(component.getClass());
-    if (componentGenerator.generateExtensionClass(component))
+    ComponentGenerator componentGenerator = getGenerator(generationContext.component.getClass());
+    if (componentGenerator.generateExtensionClass(generationContext.component))
     {
-      String result = componentGenerator.generateExtension(component, targetPackage);
-      filesToWrite.put(componentGenerator.getExtensionClassName(component, targetPackage), result);
+      String result = componentGenerator.generateExtension(generationContext);
+      filesToWrite.put(
+          componentGenerator.getExtensionClassName(generationContext),
+          result);
     }
-    for (Component child : component.getChildren())
+    for (Component child : generationContext.component.getChildren())
     {
-      generateComponentExtensionClass(child, targetPackage, filesToWrite);
+      generateComponentExtensionClass(new GenerationContext(generationContext, child), filesToWrite);
     }
   }
   
@@ -236,17 +256,17 @@ public class Generator
    *        the key is the component id, and the value is the Component itself.
    * @param targetDirectory the root directory (excluding package structure) to which the source file
    *        should be written.
-   * @param targetPackage the package for the component registry class, not null.
+   * @param rootPackage the package for the component registry class, not null.
    */
   public void generateComponentRegistry(
       Map<String, Component> componentMap,
       File targetDirectory,
-      String targetPackage) throws IOException
+      String rootPackage) throws IOException
   {
-    JavaClassName javaClassName = new JavaClassName("ComponentRegistryImpl", targetPackage);
+    JavaClassName javaClassName = new JavaClassName("ComponentRegistryImpl", rootPackage);
     String className = javaClassName.getSimpleName();
     StringBuilder content = new StringBuilder();
-    content.append("package ").append(targetPackage).append(";\n\n");
+    content.append("package ").append(rootPackage).append(";\n\n");
     content.append("import ").append(ComponentRegistry.class.getName()).append(";\n");
     for (Map.Entry<String, Component> entry : componentMap.entrySet())
     {
@@ -257,8 +277,8 @@ public class Generator
         continue;
       }
       ComponentGenerator componentGenerator = getGenerator(component.getClass());
-      String componentPackage = targetPackage + "." + component.getId();
-      JavaClassName componentClassName = componentGenerator.getReferencableClassName(component, componentPackage);
+      GenerationContext generationContext = new GenerationContext(component, rootPackage, component.getId());
+      JavaClassName componentClassName = componentGenerator.getReferencableClassName(generationContext);
       content.append("import ").append(componentClassName.getName()).append(";\n");
     }
     content.append("\n");
@@ -277,9 +297,8 @@ public class Generator
         continue;
       }
       ComponentGenerator componentGenerator = getGenerator(component.getClass());
-      String componentPackage = targetPackage + "." + component.getId();
-      JavaClassName componentClassName 
-          = componentGenerator.getReferencableClassName(component, componentPackage);
+      GenerationContext generationContext = new GenerationContext(component, rootPackage, component.getId());
+      JavaClassName componentClassName = componentGenerator.getReferencableClassName(generationContext);
       content.append("    components.put(\"").append(componentClassName.getSimpleName())
           .append("\", new ").append(componentClassName.getSimpleName()).append("(null, null));\n");
     }
