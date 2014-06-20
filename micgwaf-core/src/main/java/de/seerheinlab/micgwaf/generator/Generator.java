@@ -270,6 +270,7 @@ public class Generator
     content.append("import ").append(ComponentRegistry.class.getName()).append(";\n");
     for (Map.Entry<String, Component> entry : componentMap.entrySet())
     {
+      String key = entry.getKey();
       Component component = entry.getValue();
       if (component.getGenerationParameters() != null
           && component.getGenerationParameters().fromComponentLib)
@@ -277,7 +278,8 @@ public class Generator
         continue;
       }
       ComponentGenerator componentGenerator = getGenerator(component.getClass());
-      GenerationContext generationContext = new GenerationContext(component, rootPackage, component.getId());
+      String subpackage = getComponentSubpackage(key);
+      GenerationContext generationContext = new GenerationContext(component, rootPackage, subpackage);
       JavaClassName componentClassName = componentGenerator.getReferencableClassName(generationContext);
       content.append("import ").append(componentClassName.getName()).append(";\n");
     }

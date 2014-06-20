@@ -61,8 +61,9 @@ public abstract class ComponentGenerator
    * The method first checks if an extension class is generated, and if yes and the configuration
    * says that base classes without extension should follow the extension naming pattern, it forwards
    * to the toExtensionClassName method.
-   * If this is not the case, any loop part suffixes (starting with a colon :) are removed from the 
-   * component id, and the first character of the component id is converted to upper case.
+   * If this is not the case, any loop part suffixes (starting with a colon :) and directory prefixes 
+   * (separated by a slash) are removed from the component id, 
+   * and the first character of the component id is converted to upper case.
    * This modified id is then prefixed by the baseClassPrefix and baseClassSuffix 
    * from the generator configuration.
    * 
@@ -77,7 +78,7 @@ public abstract class ComponentGenerator
     {
       return toExtensionClassName(generationContext.component.getId(), generationContext.getPackage());
     }
-    String normalizedId = removeLoopPart(generationContext.component.getId());
+    String normalizedId = removeDirectoryPrefix(removeLoopPart(generationContext.component.getId()));
     String simpleName = Generator.getGeneratorConfiguration().getBaseClassPrefix() 
         + normalizedId.substring(0, 1).toUpperCase()
         + normalizedId.substring(1)
@@ -88,8 +89,9 @@ public abstract class ComponentGenerator
   /**
    * Converts a component id and package info into a java class name following the extension class 
    * naming pattern.
-   * Any loop part suffixes (starting with a colon :) are removed from the 
-   * component id, and the first character of the component id is converted to upper case.
+   * Any loop part suffixes (starting with a colon :) and any direcory prefixes (separated by a slash /)
+   * are removed from the component id, 
+   * and the first character of the component id is converted to upper case.
    * This modified id is then prefixed by the extensionClassPrefix and extensionClassSuffix 
    * from the generator configuration.
    * 
@@ -100,7 +102,7 @@ public abstract class ComponentGenerator
    */
   public JavaClassName toExtensionClassName(String componentId, String componentPackage)
   {
-    String normalizedId = removeLoopPart(componentId);
+    String normalizedId = removeDirectoryPrefix(removeLoopPart(componentId));
     String simpleName = Generator.getGeneratorConfiguration().getExtensionClassPrefix() 
         + normalizedId.substring(0, 1).toUpperCase()
         + normalizedId.substring(1)
@@ -346,6 +348,28 @@ public abstract class ComponentGenerator
   }
   
   /**
+   * Removes the directory prefix of an id, extracting the original id of the component.
+   * It is assumed that all directory prefixes are prepended separated by a slash.
+   * 
+   * @param id the id to remove the directory prefix from, or null.
+   * 
+   * @return the id without the directory prefix, not null if <code>id</code> is not null.
+   */
+  public String removeDirectoryPrefix(String id)
+  {
+    if (id == null)
+    {
+      return null;
+    }
+    int lastIndexOfSlash = id.lastIndexOf('/');
+    if (lastIndexOfSlash == -1)
+    {
+      return id;
+    }
+    return id.substring(lastIndexOfSlash + 1);
+  }
+  
+  /**
    * Replaces all dots by underscores in an id.
    * 
    * @param id the id to replace dots in, or null.
@@ -392,12 +416,12 @@ public abstract class ComponentGenerator
   {
     if (component != null && component.getId() != null)
     {
-      return removeLoopPart(component.getId());
+      return removeDirectoryPrefix(removeLoopPart(component.getId()));
     }
     else if (component instanceof RefComponent)
     {
       RefComponent refComponent = (RefComponent) component;
-      return replaceDots(refComponent.refid);
+      return removeDirectoryPrefix(replaceDots(refComponent.refid));
     }
     return "component" + componentCounter;
   }
