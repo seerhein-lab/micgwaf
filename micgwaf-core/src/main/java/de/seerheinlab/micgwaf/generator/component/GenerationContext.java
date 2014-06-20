@@ -77,7 +77,7 @@ public class GenerationContext
   
   /**
    * Constructor.
-   * Copies the parent context, but exchanges component.
+   * Copies the parent context, but exchanges the contained component.
    * 
    * @param parentContext the parent context, not null.
    * @param component the new component, not null.
