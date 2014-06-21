@@ -12,4 +12,4 @@ TODO
 - error should be output when variables are accessed in componentRef which do not exist in referenced component
 - handle escape character (backslash) in variables properly or use other escape mechanism
 - check whether use builder pattern is useable throughout
-- check and document what the generated component registry is for
+- check and document what the generated component registry is for, and remove if unnecessary
