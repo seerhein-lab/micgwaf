@@ -8,7 +8,7 @@ The entry point for parsing is the de.seerheinlab.micgwaf.parser.HtmlParser clas
 It parses the HTML files in a directory and generates components from them.
 Only files directly in the given directory with the suffix .xhtml are parsed, all other files are ignored.
 The parsed components can re-render the HTML source file again,
-but on rendering execute special actions defined by elements in the m namespace
+but on rendering they can execute special actions defined by elements in the m namespace
 (m is here an abbreviation of the namespace http://seerhein-lab.de/micgwaf)
 
 For each file, a root component is returned, which then contains child components.
@@ -69,7 +69,7 @@ There are other elements in the m namespace which do not get translated into own
 These are: TODO
 
 The following attributes in the m namespace do not create a component on their own, 
-but define behaviour of an existing handler: 
+but define the behavior of a component or the handling of the component in the parent component: 
 
 <table>
   <tr>
@@ -82,7 +82,7 @@ but define behaviour of an existing handler:
     <td>multiple</td>
     <td>false (default), true</td>
     <td>HtmlElementComponent</td>
-    <td>The component defined by this handler can be repeated multiple (0..n) times.</td>
+    <td>The component can be repeated multiple (0..n) times in the parent component.</td>
   </tr>
   <tr>
     <td>defaultRender</td>
@@ -118,7 +118,7 @@ This is useful for creating HTML mockups which can later be filled with behavior
 
 Variables are of the form ${variableName:defaultValue}, where the :defaultValue part can be omitted 
 (the default value is set to ${variableName} if not specified).
-Variables are used to insert variable text or HTML at these places.
+Variables are used to render variable text or HTML.
 Currently, variables are interpreted in XHTML character sections
 or in attribute values of elements which do not have a m:id attribute only.
 Variables are parsed as a ComponentPart with the variable field set in the PartListComponent.
