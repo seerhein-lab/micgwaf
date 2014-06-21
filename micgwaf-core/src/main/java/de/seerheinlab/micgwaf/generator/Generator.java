@@ -76,7 +76,7 @@ public class Generator
   }
   
   /**
-   * Generates code for all xhtml files in a directory.
+   * Generates code for all xhtml files in a directory and the contained subdirectories.
    * The generated code includes base component classes, extension component classes, 
    * and a component registry class.
    * 
@@ -101,7 +101,7 @@ public class Generator
   }
   
   /**
-   * Generates code for all xhtml files in a directory.
+   * Generates code for all xhtml files in a directory and the contained subdirectories.
    * The generated code includes base component classes, extension component classes, 
    * and a component registry class.
    * 
@@ -126,8 +126,7 @@ public class Generator
       throws IOException
   {
     HtmlParser parser = new HtmlParser();
-    Map<String, Component> componentMap 
-        = parser.readComponents(sourceDirectory, classLoader);
+    Map<String, Component> componentMap = parser.readComponents(sourceDirectory, classLoader);
     for (Map.Entry<String, Component> entry : componentMap.entrySet())
     {
       Component component = entry.getValue();
