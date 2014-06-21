@@ -1,4 +1,4 @@
-package de.seerheinlab.test.micgwaf.component.messageBox;
+package de.seerheinlab.test.micgwaf.component.parts.messageBox;
 
 import de.seerheinlab.micgwaf.component.Component;
 
@@ -36,5 +36,4 @@ public class ErrorMessage extends BaseErrorMessage
     super(id, parent);
     setTextContent(message);
   }
-
 }

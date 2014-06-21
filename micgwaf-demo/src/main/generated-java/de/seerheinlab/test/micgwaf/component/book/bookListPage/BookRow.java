@@ -1,4 +1,4 @@
-package de.seerheinlab.test.micgwaf.component.bookListPage;
+package de.seerheinlab.test.micgwaf.component.book.bookListPage;
 
 import de.seerheinlab.micgwaf.component.Component;
 import de.seerheinlab.micgwaf.util.Assertions;
@@ -21,12 +21,13 @@ public class BookRow extends BaseBookRow
   * Constructor. 
   *
   * @param id the id of this component, or null.
-  * @param parent the parent component, or null if this is a standalone component (e.g. a page)
+  * @param parent the parent component. Can be null if this is a standalone component (e.g. a page).
   */
   public BookRow(String id, Component parent)
   {
     super(id, parent);
   }
+
   
   public BookRow(String id, Component parent, Book book)
   {

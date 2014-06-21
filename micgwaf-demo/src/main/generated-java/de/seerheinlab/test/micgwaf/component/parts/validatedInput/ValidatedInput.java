@@ -1,4 +1,5 @@
-package de.seerheinlab.test.micgwaf.component.validatedInput;
+package de.seerheinlab.test.micgwaf.component.parts.validatedInput;
+
 
 import de.seerheinlab.micgwaf.component.Component;
 

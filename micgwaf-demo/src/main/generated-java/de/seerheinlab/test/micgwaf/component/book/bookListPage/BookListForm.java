@@ -1,10 +1,10 @@
-package de.seerheinlab.test.micgwaf.component.bookListPage;
+package de.seerheinlab.test.micgwaf.component.book.bookListPage;
 
 
 import java.util.List;
 
 import de.seerheinlab.micgwaf.component.Component;
-import de.seerheinlab.test.micgwaf.component.editBookPage.EditBookPage;
+import de.seerheinlab.test.micgwaf.component.book.editBookPage.EditBookPage;
 import de.seerheinlab.test.micgwaf.service.Book;
 import de.seerheinlab.test.micgwaf.service.BookService;
 
@@ -18,12 +18,13 @@ public class BookListForm extends BaseBookListForm
   * Constructor. 
   *
   * @param id the id of this component, or null.
-  * @param parent the parent component, or null if this is a standalone component (e.g. a page)
+  * @param parent the parent component. Can be null if this is a standalone component (e.g. a page).
   */
   public BookListForm(String id, Component parent)
   {
     super(id, parent);
   }
+
 
   /**
    * Hook method which is called when the button hinzufuegenButton was pressed.
@@ -42,9 +43,12 @@ public class BookListForm extends BaseBookListForm
 
   /**
    * Hook method which is called when the button errorButton was pressed.
-   * This method always throws a RuntimeException.
    *
-   * @return the page to be rendered. In this implementation, no page is returned, as an exception is thrown.
+   * @return the page to be rendered.
+   *         If no component or called hook method returns a not-null result, the current page
+   *         in the current state will be rendered.
+   *         If more than one component or called hook method returns a not-null result,
+   *         the last not-null result will be used.
    */
   @Override
   public Component errorButtonPressed()
@@ -69,41 +73,9 @@ public class BookListForm extends BaseBookListForm
   }
 
   /**
-   * Hook method which is called when the button editExtraPageButton was pressed.
-   *
-   * @param bookRow The component in the list of BookRow Components
-   *        to which this button belongs.
-   *
-   * @return the page to be rendered, in this case, the EditBookPage.
-   */
-  @Override
-  public Component editExtraPageButtonPressed(BookRow bookRow)
-  {
-    EditBookPage targetPage = new EditBookPage(null, null, bookRow.getBook());
-    return targetPage;
- }
-
-  /**
-   * Hook method which is called when the button saveButton was pressed.
-   *
-   * @param bookRow The component in the list of BookRow components
-   *        to which this button belongs.
-   *
-   * @return the page to be rendered.
-   *         If no component returns a not-null result, the current page in the current state
-   *         will be rendered.
-   *         If more than one component returns a not-null result, the last not-null result will be used.
-   */
-  @Override
-  public Component saveButtonPressed(BookRow bookRow)
-  {
-    return super.saveButtonPressed(bookRow);
-  }
-
-  /**
    * Hook method which is called when the button cancelEditButton was pressed.
    *
-   * @param bookRow The component in the list of BookRow components
+   * @param bookRow The component in the list of BookRow Components
    *        to which this button belongs.
    *
    * @return the page to be rendered.
@@ -149,6 +121,41 @@ public class BookListForm extends BaseBookListForm
   public Component editInlineButtonPressed(BookRow bookRow)
   {
     return super.editInlineButtonPressed(bookRow);
+  }
+
+  /**
+   * Hook method which is called when the button editExtraPageButton was pressed.
+   *
+   * @param bookRow The component in the list of BookRow Components
+   *        to which this button belongs.
+   *
+   * @return the page to be rendered.
+   *         If no component returns a not-null result, the current page in the current state
+   *         will be rendered.
+   *         If more than one component returns a not-null result, the last not-null result will be used.
+   */
+  @Override
+  public Component editExtraPageButtonPressed(BookRow bookRow)
+  {
+    EditBookPage targetPage = new EditBookPage(null, null, bookRow.getBook());
+    return targetPage;
+  }
+
+  /**
+   * Hook method which is called when the button saveButton was pressed.
+   *
+   * @param bookRow The component in the list of BookRow Components
+   *        to which this button belongs.
+   *
+   * @return the page to be rendered.
+   *         If no component returns a not-null result, the current page in the current state
+   *         will be rendered.
+   *         If more than one component returns a not-null result, the last not-null result will be used.
+   */
+  @Override
+  public Component saveButtonPressed(BookRow bookRow)
+  {
+    return super.saveButtonPressed(bookRow);
   }
   
   /**

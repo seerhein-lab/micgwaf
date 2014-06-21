@@ -1,9 +1,10 @@
-package de.seerheinlab.test.micgwaf.component.editBookPage;
+package de.seerheinlab.test.micgwaf.component.book.editBookPage;
+
 
 import de.seerheinlab.micgwaf.component.Component;
 import de.seerheinlab.micgwaf.util.Assertions;
-import de.seerheinlab.test.micgwaf.component.bookListPage.BookListPage;
-import de.seerheinlab.test.micgwaf.component.messageBox.ErrorMessage;
+import de.seerheinlab.test.micgwaf.component.book.bookListPage.BookListPage;
+import de.seerheinlab.test.micgwaf.component.parts.messageBox.ErrorMessage;
 import de.seerheinlab.test.micgwaf.service.Book;
 import de.seerheinlab.test.micgwaf.service.BookService;
 
@@ -11,6 +12,7 @@ public class BookForm extends BaseBookForm
 {
   /** Serial Version UID. */
   private static final long serialVersionUID = 1L;
+
 
   public Book book;
   

@@ -3,10 +3,9 @@ package de.seerheinlab.test.micgwaf;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
-
 import de.seerheinlab.micgwaf.component.Component;
 import de.seerheinlab.micgwaf.config.ApplicationBase;
-import de.seerheinlab.test.micgwaf.component.bookListPage.BookListPage;
+import de.seerheinlab.test.micgwaf.component.book.bookListPage.BookListPage;
 import de.seerheinlab.test.micgwaf.component.errorPage.ErrorPage;
 
 public class Application extends ApplicationBase

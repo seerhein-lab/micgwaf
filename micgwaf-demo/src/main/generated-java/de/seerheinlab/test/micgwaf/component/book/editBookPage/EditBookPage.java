@@ -1,4 +1,4 @@
-package de.seerheinlab.test.micgwaf.component.editBookPage;
+package de.seerheinlab.test.micgwaf.component.book.editBookPage;
 
 
 import de.seerheinlab.micgwaf.component.Component;
@@ -13,7 +13,6 @@ public class EditBookPage extends BaseEditBookPage
 {
   /** Serial Version UID. */
   private static final long serialVersionUID = 1L;
-
 
   /**
   * Constructor. 
