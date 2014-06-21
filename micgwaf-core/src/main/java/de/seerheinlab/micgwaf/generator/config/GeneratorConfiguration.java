@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+/**
+ * Configuration of the generator. Contains settings for the naming of the generated classes.
+ */
 public class GeneratorConfiguration
 {
   protected static final String BASE_CLASS_PREFIX = "baseClassPrefix";
@@ -23,7 +26,7 @@ public class GeneratorConfiguration
   public Properties generationProperties = new Properties();
   
   /**
-   * Constructor
+   * Constructor.
    * 
    * @param classPathResource the class path resource to load the configuration from, not null.
    * 
