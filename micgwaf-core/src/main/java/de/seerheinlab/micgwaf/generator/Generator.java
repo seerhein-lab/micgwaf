@@ -35,6 +35,12 @@ import de.seerheinlab.micgwaf.generator.config.GeneratorConfiguration;
 import de.seerheinlab.micgwaf.parser.HtmlParser;
 import de.seerheinlab.micgwaf.util.Assertions;
 
+/**
+ * Entry point for generating the component classes from HTML.
+ * The generate() methods parses the HTML files and writes the resulting component sources into the target
+ * directories. The directory structure in the source folder is retained.
+ * The main method 
+ */
 public class Generator
 {
   private static final char DOT = '.';
@@ -369,6 +375,17 @@ public class Generator
     return generatorConfiguration;
   }
   
+  /**
+   * Runs the generation.
+   * If <code>argv</code> does not contain 5 elements, an usage message is written and nothing is done.
+   * 
+   * @param argv The arguments. Must contains 5 elements, these are 
+   *        configurationClasspathResource, componentDir, targetDirectory, extensionsTargetDirectory,
+   *        baseComponentPackage
+   *        
+   * @throws IOException if generated files cannot be written to the file system.
+   * @throws RuntimeException if an error during generation occurs.    
+   */
   public static void main(String[] argv) throws IOException
   {
     if (argv.length != 5)
@@ -383,15 +400,12 @@ public class Generator
     String targetDirectory = argv[2];
     String extensionsTargetDirectory = argv[3];
     String baseComponentPackage = argv[4];
-    if (argv.length != 5)
-    {
-      System.out.println("Running with:\n"
-          + "configurationClasspathResource: " + configurationClasspathResource
-          + "componentDir                  : " + componentDir
-          + "targetDirectory               : " + targetDirectory
-          + "extensionsTargetDirectory     : " + extensionsTargetDirectory
-          + "baseComponentPackage          : " + baseComponentPackage);
-    }
+    System.out.println("micgwaf generator running with:\n"
+        + "configurationClasspathResource: " + configurationClasspathResource
+        + "componentDir                  : " + componentDir
+        + "targetDirectory               : " + targetDirectory
+        + "extensionsTargetDirectory     : " + extensionsTargetDirectory
+        + "baseComponentPackage          : " + baseComponentPackage);
     Generator.configurationClasspathResource = configurationClasspathResource;
     new Generator().generate(
         new File(componentDir),
