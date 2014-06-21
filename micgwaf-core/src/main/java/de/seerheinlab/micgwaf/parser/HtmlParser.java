@@ -27,6 +27,8 @@ import de.seerheinlab.micgwaf.component.GenerationParameters;
  */
 public class HtmlParser
 {
+  private static final String XHTML_SUFFIX = ".xhtml";
+
   private static final String COMPONENTS_PROPERTIES_RESOURCE = "META-INF/micgwaf-components.properties";
 
   private static final String SAX_NAMESPACE_FEATURE_NAME = "http://xml.org/sax/features/namespaces";
@@ -48,16 +50,19 @@ public class HtmlParser
   }
 
   /**
-   * Parses the HTML files in a directory and generates components from them.
-   * Only files directly in the given directory with the suffix .xhtml are parsed,
-   * all other files are ignored.
-   * The created components are stored in the returned map.
+   * Reads all available components.
+   * This is, two things are done:
+   * <ul>
+   *   <li>All component definitions are read from the classpath.</li>
+   *   <li>All XHTML files in the source directory are read and components are created from them.</li>
+   * </ul>
+   * The read components are stored in the returned map.
    * The map key is the component id, prefixed with the directory tree to the component,
-   * and the map value is the root component for a HTML source file.
+   * and the map value is the root component for a XHTML source file.
    * 
    * @param sourceDirectory the directory where the parsed files reside, not null.
    * @param classLoader the class loader to use for component lib discovery, 
-   *       or null to use this classes classloader.
+   *       or null to use this classes' class loader.
    * 
    * @return the map with the parsed components, one entry for each parsed file.
    */
@@ -78,13 +83,26 @@ public class HtmlParser
     return result;
   }
 
+  /**
+   * Recursion method for parsing the XHTML files in a directory and generating components from them.
+   * All files in the given directory and its subdirectories with the suffix .xhtml are parsed,
+   * all other files are ignored. 
+   * One component (the root component for the file) is stored in the map per file, 
+   * the root component typically contains other components.
+   * 
+   * @param sourceDirectory the directory where the parsed files reside, not null.
+   * @param componentMap the map to store the parsed components in.
+   *        The map key is the component id, prefixed with the directory tree to the component,
+   *        and the map value is the root component for a XHTML source file
+   * @param prefix the prefix for the component key, to be able to prefix the directory path.
+   */
   private void parseComponents(File sourceDirectory, Map<String, Component> componentMap, String prefix)
   {
     File[] files = sourceDirectory.listFiles();
     for (File file : files)
     {
       String fileName = file.getName();
-      if (file.isFile() && fileName.endsWith(".xhtml"))
+      if (file.isFile() && fileName.endsWith(XHTML_SUFFIX))
       {
         try
         {
@@ -92,7 +110,7 @@ public class HtmlParser
           Component component = parse(inputStream);
           if (component.getId() == null)
           {
-            component.setId(fileName.substring(0, fileName.length() - 6));
+            component.setId(fileName.substring(0, fileName.length() - XHTML_SUFFIX.length()));
           }
           componentMap.put(prefix + component.getId(), component);
         }
@@ -137,10 +155,13 @@ public class HtmlParser
   
   /**
    * Reads all component definitions from the classpath and returns component instances.
+   * It first reads all files with the class path defined in <code>COMPONENTS_PROPERTIES_RESOURCE</code>,
+   * and then parses them as property file, the key is the component key, and the value is the class name
+   * of the components. The read components are stored in the returned hash map.
    * 
-   * @param classLoader the class loader to use, or null to use this classes classloader.
+   * @param classLoader the class loader to use, or null to use this classes class loader.
    * 
-   * @return the map with the component instances, keyed by their name.
+   * @return the map with the component instances, keyed by their component key.
    */
   public Map<String, Component> discoverComponentsFromClasspath(ClassLoader classLoader)
   {
@@ -181,7 +202,6 @@ public class HtmlParser
           instance.getGenerationParameters().fromComponentLib = true;
           result.put(key, instance);
         }
-        
       }
     } 
     catch (IOException | ClassNotFoundException e)
