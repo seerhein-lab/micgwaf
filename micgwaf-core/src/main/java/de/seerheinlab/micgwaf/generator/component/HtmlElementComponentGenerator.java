@@ -11,10 +11,11 @@ import de.seerheinlab.micgwaf.component.ChildListComponent;
 import de.seerheinlab.micgwaf.component.Component;
 import de.seerheinlab.micgwaf.component.GenerationParameters;
 import de.seerheinlab.micgwaf.component.HtmlElementComponent;
+import de.seerheinlab.micgwaf.component.PartListComponent;
 import de.seerheinlab.micgwaf.component.RefComponent;
 import de.seerheinlab.micgwaf.component.SnippetComponent;
-import de.seerheinlab.micgwaf.component.PartListComponent;
 import de.seerheinlab.micgwaf.config.ApplicationBase;
+import de.seerheinlab.micgwaf.generator.GeneratedClass;
 import de.seerheinlab.micgwaf.generator.Generator;
 import de.seerheinlab.micgwaf.generator.JavaClassName;
 
@@ -41,25 +42,25 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
   }
   
   @Override
-  public String generate(GenerationContext generationContext)
+  public GeneratedClass generate(GenerationContext generationContext)
   {
+    GeneratedClass result = new GeneratedClass();
     HtmlElementComponent htmlElementCompont = (HtmlElementComponent) generationContext.component;
     JavaClassName javaClassName = getClassName(generationContext);
     String className = javaClassName.getSimpleName();
-    StringBuilder fileContent = new StringBuilder();
-    generationContext.stringBuilder = fileContent;
-    fileContent.append("package ").append(generationContext.getPackage()).append(";\n\n");
-    fileContent.append("import ").append(ChangesChildHtmlId.class.getName()).append(";\n");
-    fileContent.append("import ").append(Component.class.getName()).append(";\n");
-    fileContent.append("import ").append(HtmlElementComponent.class.getName()).append(";\n");
-    fileContent.append("import ").append(SnippetComponent.class.getName()).append(";\n");
-    fileContent.append("import ").append(ChildListComponent.class.getName()).append(";\n");
-    fileContent.append("import ").append(ApplicationBase.class.getName()).append(";\n");
+    generationContext.generatedClass = result;
+    result.classPackage = generationContext.getPackage();
+    result.imports.add(ChangesChildHtmlId.class.getName());
+    result.imports.add(Component.class.getName());
+    result.imports.add(HtmlElementComponent.class.getName());
+    result.imports.add(SnippetComponent.class.getName());
+    result.imports.add(ChildListComponent.class.getName());
+    result.imports.add(ApplicationBase.class.getName());
 
-    fileContent.append("import ").append(IOException.class.getName()).append(";\n");
-    fileContent.append("import ").append(Writer.class.getName()).append(";\n");
-    fileContent.append("import ").append(List.class.getName()).append(";\n");
-    fileContent.append("import ").append(ArrayList.class.getName()).append(";\n");
+    result.imports.add(IOException.class.getName());
+    result.imports.add(Writer.class.getName());
+    result.imports.add(List.class.getName());
+    result.imports.add(ArrayList.class.getName());
     for (Component child : htmlElementCompont.getChildren())
     {
       if (child instanceof RefComponent)
@@ -69,7 +70,7 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
             new GenerationContext(generationContext, child));
         if (!javaClassName.getPackage().equals(componentClass.getPackage()))
         {
-          fileContent.append("import ").append(componentClass.getName()).append(";\n");
+          result.imports.add(componentClass.getName());
         }
       }
       else if (child instanceof PartListComponent)
@@ -85,24 +86,16 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
             if (part.component instanceof RefComponent 
                 && !javaClassName.getPackage().equals(componentClass.getPackage()))
             {
-              fileContent.append("import ").append(componentClass.getName()).append(";\n");
+              result.imports.add(componentClass.getName());
             }
           }
         }
       }
     }
-    fileContent.append("\n");
-    generateClassJavadoc(generationContext.component, fileContent, false);
-    fileContent.append("public class ").append(className)
-        .append(" extends ").append(HtmlElementComponent.class.getSimpleName());
-    if (htmlElementCompont.getParent() == null)
-    {
-      fileContent.append(" implements ChangesChildHtmlId");
-    }
-    fileContent.append("\n");
-    fileContent.append("{\n");
+    generateClassJavadoc(generationContext.component, result, false);
+    generateClassDefinition(generationContext, HtmlElementComponent.class);
     
-    generateSerialVersionUid(fileContent);
+    generateSerialVersionUid(result);
     
     // fields
     int componentCounter = 1;
@@ -124,7 +117,7 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
           }
           else if (part.htmlSnippet != null)
           {
-            fileContent.append("  public ").append(SnippetComponent.class.getSimpleName())
+            result.classBody.append("  public ").append(SnippetComponent.class.getSimpleName())
                     .append(" ").append(componentField)
                     .append(" = (").append(SnippetComponent.class.getSimpleName())
                     .append(") ApplicationBase.getApplication().postConstruct(\n")
@@ -134,7 +127,7 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
           }
           else // variable
           {
-            generateVariableComponentField(part, componentField, fileContent);
+            generateVariableComponentField(part, componentField, result);
           }
           componentCounter++;
         }
@@ -150,47 +143,47 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
     }
 
     // Constructor
-    fileContent.append("  /**\n");
-    fileContent.append("  * Constructor. \n");
-    fileContent.append("  *\n");
-    fileContent.append("  * @param id the id of this component, or null to use the default id \"")
+    result.classBody.append("  /**\n");
+    result.classBody.append("  * Constructor. \n");
+    result.classBody.append("  *\n");
+    result.classBody.append("  * @param id the id of this component, or null to use the default id \"")
         .append(htmlElementCompont.getId()).append("\".\n");
-    fileContent.append("  * @param parent the parent component.")
+    result.classBody.append("  * @param parent the parent component.")
         .append(" Can be null if this is a standalone component (e.g. a page).\n");
-    fileContent.append("  */\n");
-    fileContent.append("  public " + className + "(String id, Component parent)\n");
-    fileContent.append("  {\n");
-    fileContent.append("    super(id == null ? \"").append(htmlElementCompont.getId()).append("\" : id, parent);\n");
+    result.classBody.append("  */\n");
+    result.classBody.append("  public " + className + "(String id, Component parent)\n");
+    result.classBody.append("  {\n");
+    result.classBody.append("    super(id == null ? \"").append(htmlElementCompont.getId()).append("\" : id, parent);\n");
     if (htmlElementCompont.renderChildren == false)
     {
-      fileContent.append("    renderChildren = false;\n");
+      result.classBody.append("    renderChildren = false;\n");
     }
     if (htmlElementCompont.renderSelf == false)
     {
-      fileContent.append("    renderSelf = false;\n");
+      result.classBody.append("    renderSelf = false;\n");
     }
-    fileContent.append("    ").append("elementName = \"").append(htmlElementCompont.elementName)
+    result.classBody.append("    ").append("elementName = \"").append(htmlElementCompont.elementName)
         .append("\";\n");
     for (Map.Entry<String, String> attributeEntry : htmlElementCompont.attributes.entrySet())
     {
-      fileContent.append("    ").append("attributes.put(\"").append(attributeEntry.getKey())
+      result.classBody.append("    ").append("attributes.put(\"").append(attributeEntry.getKey())
           .append("\", \"").append(attributeEntry.getValue()).append("\");\n");
     }
-    fileContent.append("  }\n\n");
+    result.classBody.append("  }\n\n");
 
     // getChildren()
-    fileContent.append("  /**\n");
-    fileContent.append("   * Returns the list of children of this component.\n");
-    fileContent.append("   * The returned list is modifiable, but changes in the list\n");
-    fileContent.append("   * (i.e. adding and removing components) are not written back\n");
-    fileContent.append("   * to this component. Changes in the components DO affect this component.\n");
-    fileContent.append("   *\n");
-    fileContent.append("   * @return the list of children, not null.\n");
-    fileContent.append("   */\n");
-    fileContent.append("  @Override\n");
-    fileContent.append("  public List<Component> getChildren()\n");
-    fileContent.append("  {\n");
-    fileContent.append("    List<Component> result = new ArrayList<>();\n");
+    result.classBody.append("  /**\n");
+    result.classBody.append("   * Returns the list of children of this component.\n");
+    result.classBody.append("   * The returned list is modifiable, but changes in the list\n");
+    result.classBody.append("   * (i.e. adding and removing components) are not written back\n");
+    result.classBody.append("   * to this component. Changes in the components DO affect this component.\n");
+    result.classBody.append("   *\n");
+    result.classBody.append("   * @return the list of children, not null.\n");
+    result.classBody.append("   */\n");
+    result.classBody.append("  @Override\n");
+    result.classBody.append("  public List<Component> getChildren()\n");
+    result.classBody.append("  {\n");
+    result.classBody.append("    List<Component> result = new ArrayList<>();\n");
     componentCounter = 1;
     for (Component child : htmlElementCompont.children)
     {
@@ -200,17 +193,17 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
         for (PartListComponent.ComponentPart part : snippetListChild.parts)
         {
           String componentField = getComponentFieldName(part, componentCounter);
-          fileContent.append("    result.add(").append(componentField).append(");\n");
+          result.classBody.append("    result.add(").append(componentField).append(");\n");
           componentCounter++;
         }
         continue;
       }
       String componentField = getComponentFieldName(child, componentCounter);
-      fileContent.append("    result.add(").append(componentField).append(");\n");
+      result.classBody.append("    result.add(").append(componentField).append(");\n");
       componentCounter++;
     }
-    fileContent.append("    return result;\n");
-    fileContent.append("  }\n");
+    result.classBody.append("    return result;\n");
+    result.classBody.append("  }\n");
     
     componentCounter = 1;
     for (Component child : htmlElementCompont.children)
@@ -222,7 +215,7 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
         {
           if (part.variableName != null)
           {
-            generateVariableGetterSetter(part, getComponentFieldName(part, componentCounter), fileContent);
+            generateVariableGetterSetter(part, getComponentFieldName(part, componentCounter), result);
           }
           componentCounter++;
         }
@@ -233,17 +226,16 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
 
     if (htmlElementCompont.getParent() == null)
     {
-      generateChangeChildHtmlId(fileContent);
+      generateChangeChildHtmlId(result);
     }
-    generateConvenienceMethods(htmlElementCompont, fileContent);
-    fileContent.append("}\n");
-    generationContext.stringBuilder = null;
-    return fileContent.toString();
+    generateConvenienceMethods(htmlElementCompont, result);
+    generationContext.generatedClass = null;
+    return result;
   }
 
   protected void generateConvenienceMethods(
       HtmlElementComponent htmlElementComponent, 
-      StringBuilder stringBuilder)
+      GeneratedClass generatedClass)
   {
     if (htmlElementComponent.children.size() == 1)
     {
@@ -260,46 +252,46 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
           {
             if (part.htmlSnippet.contains("<"))
             {
-              stringBuilder.append("  /**\n");
-              stringBuilder.append("   * Returns the HTML snippet which is the inner content of this HTML element.\n");
-              stringBuilder.append("   *\n");
-              stringBuilder.append("   * @return the inner HTML, not null.\n");
-              stringBuilder.append("   */\n");
-              stringBuilder.append("\n").append("  public String getInnerContent()\n")
+              generatedClass.classBody.append("  /**\n")
+                  .append("   * Returns the HTML snippet which is the inner content of this HTML element.\n")
+                  .append("   *\n")
+                  .append("   * @return the inner HTML, not null.\n")
+                  .append("   */\n")
+                  .append("\n").append("  public String getInnerContent()\n")
                   .append("  {\n")
                   .append("    return ").append(componentField).append(".text;\n")
-                  .append("  }\n");
-              stringBuilder.append("  /**\n");
-              stringBuilder.append("   * Sets the HTML snippet which is the inner content of this HTML element.\n");
-              stringBuilder.append("   *\n");
-              stringBuilder.append("   * @param innerContent the new inner HTML, not null.\n");
-              stringBuilder.append("   */\n");
-              stringBuilder.append("\n").append("  public void setInnerContent(String innerContent)\n")
+                  .append("  }\n")
+                  .append("  /**\n")
+                  .append("   * Sets the HTML snippet which is the inner content of this HTML element.\n")
+                  .append("   *\n")
+                  .append("   * @param innerContent the new inner HTML, not null.\n")
+                  .append("   */\n")
+                  .append("\n").append("  public void setInnerContent(String innerContent)\n")
                   .append("  {\n")
                   .append("    ").append(componentField).append(".text = innerContent;\n")
                   .append("  }\n");
             }
             else
             {
-              stringBuilder.append("\n  /**\n");
-              stringBuilder.append("   * Returns the text content of this HTML element.\n");
-              stringBuilder.append("   * HTML entities are resolved in the returned text.\n");
-              stringBuilder.append("   *\n");
-              stringBuilder.append("   * @return the text content, not null.\n");
-              stringBuilder.append("   */\n");
-              stringBuilder.append("  public String getTextContent()\n")
+              generatedClass.classBody.append("\n  /**\n")
+                  .append("   * Returns the text content of this HTML element.\n")
+                  .append("   * HTML entities are resolved in the returned text.\n")
+                  .append("   *\n")
+                  .append("   * @return the text content, not null.\n")
+                  .append("   */\n")
+                  .append("  public String getTextContent()\n")
                   .append("  {\n")
                   .append("    return resolveXmlEntities(").append(componentField).append(".text);\n")
-                  .append("  }\n");
-              stringBuilder.append("\n  /**\n");
-              stringBuilder.append("   * Sets the text content of this HTML element.\n");
-              stringBuilder.append("   * HTML special characters are escaped in the rendered text.\n");
-              stringBuilder.append("   *\n");
-              stringBuilder.append("   * @param text the text content, not null.\n");
-              stringBuilder.append("   *\n");
-              stringBuilder.append("   * @return this component, not null");
-              stringBuilder.append("   */\n");
-              stringBuilder.append("  public Component setTextContent(String text)\n")
+                  .append("  }\n")
+                  .append("\n  /**\n")
+                  .append("   * Sets the text content of this HTML element.\n")
+                  .append("   * HTML special characters are escaped in the rendered text.\n")
+                  .append("   *\n")
+                  .append("   * @param text the text content, not null.\n")
+                  .append("   *\n")
+                  .append("   * @return this component, not null")
+                  .append("   */\n")
+                  .append("  public Component setTextContent(String text)\n")
                   .append("  {\n")
                   .append("    ").append(componentField).append(".text = escapeXmlText(text);\n")
                   .append("    return this;")
@@ -312,24 +304,19 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
   }
   
   @Override
-  public String generateExtension(GenerationContext generationContext)
+  public GeneratedClass generateExtension(GenerationContext generationContext)
   {
     String className = getClassName(generationContext).getSimpleName();
     String extensionClassName = getExtensionClassName(generationContext).getSimpleName();
-    StringBuilder fileContent = new StringBuilder();
-    fileContent.append("package ").append(generationContext.getPackage()).append(";\n");
-    fileContent.append("\n");
-    fileContent.append("import ").append(Component.class.getName()).append(";\n");
-    fileContent.append("\n");
-    generateClassJavadoc(generationContext.component, fileContent, true);
-    fileContent.append("public class ").append(extensionClassName)
-        .append(" extends ").append(className)
-        .append("\n");
-    fileContent.append("{\n");
-    generateSerialVersionUid(fileContent);
-    generateConstructorWithIdAndParent(extensionClassName, null, fileContent);
-    fileContent.append("}\n");
-    return fileContent.toString();
+    GeneratedClass result = new GeneratedClass();
+    result.classPackage = generationContext.getPackage();
+    result.imports.add(Component.class.getName());
+    generateClassJavadoc(generationContext.component, result, true);
+    result.classDefinition.append("public class ").append(extensionClassName)
+        .append(" extends ").append(className);
+    generateSerialVersionUid(result);
+    generateConstructorWithIdAndParent(extensionClassName, null, result);
+    return result;
   }
 
   @Override

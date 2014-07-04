@@ -3,10 +3,12 @@ package de.seerheinlab.micgwaf.generator.component;
 import java.util.List;
 
 import de.seerheinlab.micgwaf.component.Component;
-import de.seerheinlab.micgwaf.component.RefComponent;
 import de.seerheinlab.micgwaf.component.PartListComponent;
+import de.seerheinlab.micgwaf.component.RefComponent;
 import de.seerheinlab.micgwaf.component.SnippetComponent;
+import de.seerheinlab.micgwaf.generator.GeneratedClass;
 import de.seerheinlab.micgwaf.generator.Generator;
+import de.seerheinlab.micgwaf.generator.GeneratorHelper;
 import de.seerheinlab.micgwaf.generator.JavaClassName;
 
 public abstract class ComponentGenerator
@@ -117,6 +119,7 @@ public abstract class ComponentGenerator
    * 
    * @return true if an extension class should be generated, false otherwise.
    */
+  //TODO why flag method for extension class and return null for normal class?
   public abstract boolean generateExtensionClass(Component component);
   
   /**
@@ -127,7 +130,7 @@ public abstract class ComponentGenerator
    * 
    * @return the code for the generated class, or null if no class should be generated.
    */
-  public abstract String generate(GenerationContext generationContext);
+  public abstract GeneratedClass generate(GenerationContext generationContext);
   
   /**
    * Generates the component extension class representing the component.
@@ -138,7 +141,7 @@ public abstract class ComponentGenerator
    * 
    * @return the code for the generated extension class, or null if no extension class should be generated.
    */
-  public abstract String generateExtension(GenerationContext generationContext);
+  public abstract GeneratedClass generateExtension(GenerationContext generationContext);
 
   /**
    * Generates an initializer which initializes this component if this component is constructed
@@ -170,8 +173,8 @@ public abstract class ComponentGenerator
       String fieldName,
       String parentName)
   {
-    String indentString = getIndentString(generationContext.indent);
-    StringBuilder stringBuilder = generationContext.stringBuilder;
+    String indentString = GeneratorHelper.getIndentString(generationContext.indent);
+    StringBuilder stringBuilder = generationContext.generatedClass.classBody;
     ComponentGenerator generator = Generator.getGenerator(generationContext.component);
     JavaClassName componentClassName = generator.getReferencableClassName(generationContext);
     if (componentClassName.isNameFor(Component.class))
@@ -200,17 +203,15 @@ public abstract class ComponentGenerator
     generator.generateInitializer(generationContext, fieldName);
   }
 
-  public void generateInitChildren(
-      GenerationContext generationContext,
-      String componentField)
+  public void generateInitChildren(GenerationContext generationContext, String componentField)
   {
     List<? extends Component> children = generationContext.component.getChildren();
     if (children.isEmpty())
     {
       return;
     }
-    String indentString = getIndentString(generationContext.indent);
-    generationContext.stringBuilder.append(indentString).append("{\n");
+    String indentString = GeneratorHelper.getIndentString(generationContext.indent);
+    generationContext.generatedClass.classBody.append(indentString).append("{\n");
     int counter = 1;
     for (Component child : children)
     {
@@ -232,13 +233,13 @@ public abstract class ComponentGenerator
           "", 
           fieldName, 
           "this");
-      generationContext.stringBuilder.append(indentString).append("  ")
+      generationContext.generatedClass.classBody.append(indentString).append("  ")
           .append(componentField).append(".children.add(")
           .append(fieldName).append(");\n");
 
       counter++;
     }
-    generationContext.stringBuilder.append(indentString).append("}\n");
+    generationContext.generatedClass.classBody.append(indentString).append("}\n");
   }
   
   /**
@@ -246,10 +247,14 @@ public abstract class ComponentGenerator
    * 
    * @param className the unqualified class name of the class for which the constructor is generated.
    * @param defaultId the id to use in the generated component if the id parameter is null in the constructor.
-   * @param toAppendTo the content to which the constructor code should be appended.
+   * @param generatedClass the class to which body the constructor code should be appended.
    */
-  public void generateConstructorWithIdAndParent(String className, String defaultId, StringBuilder toAppendTo)
+  public void generateConstructorWithIdAndParent(
+      String className, 
+      String defaultId,
+      GeneratedClass generatedClass)
   {
+    StringBuilder toAppendTo = generatedClass.classBody;
     toAppendTo.append("\n  /**\n");
     toAppendTo.append("  * Constructor. \n");
     toAppendTo.append("  *\n");
@@ -281,30 +286,55 @@ public abstract class ComponentGenerator
    * Generates the class javadoc for component classes.
    * 
    * @param component the component for which the javadoc should be generated
-   * @param toAppendTo the content to which the constructor code should be appended.
+   * @param generatedClass the class in which the javadoc should be stored.
    * @param forExtension if the javadoc is generated for an extension class.
    */
-  protected void generateClassJavadoc(Component component, StringBuilder toAppendTo, boolean forExtension)
+  protected void generateClassJavadoc(Component component, GeneratedClass generatedClass, boolean forExtension)
   {
-    toAppendTo.append("/**\n");
-    toAppendTo.append(" * This class represents the HTML element with m:id ")
+    StringBuilder result = generatedClass.classJavadoc;
+    result.append("/**\n");
+    result.append(" * This class represents the HTML element with m:id ")
             .append(removeLoopPart(component.getId())).append(".\n");
-    toAppendTo.append(" * Instances of this class are used whenever these elements are rendered\n");
-    toAppendTo.append(" * or when form date from a page containing these elements is processed.\n");
+    result.append(" * Instances of this class are used whenever these elements are rendered\n");
+    result.append(" * or when form date from a page containing these elements is processed.\n");
     if (!forExtension)
     {
       ComponentGenerator generator = Generator.getGenerator(component);
       if (generator.generateExtensionClass(component))
       {
-        toAppendTo.append(" *\n");
-        toAppendTo.append(" * NOTE: This class should not be referenced; instead, the class\n");
-        toAppendTo.append(" * ")
+        result.append(" *\n");
+        result.append(" * NOTE: This class should not be referenced; instead, the class\n");
+        result.append(" * ")
             .append(generator.getExtensionClassName(
                 new GenerationContext(component, "dummy", null)).getSimpleName())
             .append(" should be used.").append("\n");
       }
     }
-    toAppendTo.append(" **/\n");
+    result.append(" **/");
+  }
+
+  protected void generateClassDefinition(
+      GenerationContext generationContext, 
+      Class<? extends Component> extensionClass)
+  {
+    generationContext.generatedClass.classDefinition
+        .append("public class ").append(getClassName(generationContext).getSimpleName())
+        .append(" extends ").append(extensionClass.getSimpleName());
+    // TODO why is this necessary ?
+    if (generationContext.component.getParent() == null)
+    {
+      generationContext.generatedClass.classDefinition.append(" implements ChangesChildHtmlId");
+    }
+  }
+
+  protected void generateExtensionDefinition(GenerationContext generationContext)
+  {
+    String className = getClassName(generationContext).getSimpleName();
+    String extensionClassName = getExtensionClassName(generationContext)
+          .getSimpleName();
+    generationContext.generatedClass.classDefinition
+        .append("public class ").append(extensionClassName)
+        .append(" extends ").append(className);
   }
 
   /**
@@ -385,22 +415,6 @@ public abstract class ComponentGenerator
     return id.replace('.', '_');
   }
   
-  /**
-   * Returns the indent String for an indent number.
-   * 
-   * @param indent the indent index.
-   * 
-   * @return the corresponding indent String, not null.
-   */
-  public String getIndentString(int indent)
-  {
-    StringBuilder result = new StringBuilder(indent);
-    for (int i = 0; i < indent; ++i)
-    {
-      result.append(" ");
-    }
-    return result.toString();
-  }
   
   public String getChildName(String baseName, int counter)
   {
@@ -438,13 +452,13 @@ public abstract class ComponentGenerator
   /**
    * Generates code for the serialVersionUID constant for serializable classes.
    * 
-   * @param fileContent the StringBuilder to which the code should be appended.
+   * @param generatedClass the class to which the code should be appended.
    */
-  public void generateSerialVersionUid(StringBuilder toAppendTo)
+  public void generateSerialVersionUid(GeneratedClass generatedClass)
   {
     // SerialversionUID
-    toAppendTo.append("  /** Serial Version UID. */\n");
-    toAppendTo.append("  private static final long serialVersionUID = 1L;\n\n");
+    generatedClass.classBody.append("  /** Serial Version UID. */\n");
+    generatedClass.classBody.append("  private static final long serialVersionUID = 1L;\n\n");
   }
   
   /**
@@ -453,35 +467,35 @@ public abstract class ComponentGenerator
    * 
    * @param fileContent the StringBuilder to which the code should be appended.
    */
-  public void generateChangeChildHtmlId(StringBuilder fileContent)
+  public void generateChangeChildHtmlId(GeneratedClass generatedClass)
   {
-    fileContent.append("\n  /**\n");
-    fileContent.append("   * If the id of this component and its parent is non null,\n");
-    fileContent.append("   * the id of this component is added as a prefix to the passed id and returned;\n");
-    fileContent.append("   * otherwise, the passed id is returned unchanged.\n");
-    fileContent.append("   *\n");
-    fileContent.append("   * @param child the child component from which this method is called, not used here.\n");
-    fileContent.append("   * @param htmlId the id to prepend the id to, not null.\n");
-    fileContent.append("   *\n");
-    fileContent.append("   * @returned the prefixed id, not null.\n");
-    fileContent.append("   */\n");
-    fileContent.append("  @Override\n");
-    fileContent.append("  public String changeChildHtmlId(Component child, String htmlId)\n");
-    fileContent.append("  {\n");
-    fileContent.append("    if (id != null && parent != null) // do not prefix page id (page component has no parent) \n");
-    fileContent.append("    {\n");
-    fileContent.append("      return id + \":\" + htmlId;\n");
-    fileContent.append("    }\n");
-    fileContent.append("    return htmlId;\n");
-    fileContent.append("  }\n");
+    generatedClass.classBody.append("\n  /**\n")
+        .append("   * If the id of this component and its parent is non null,\n")
+        .append("   * the id of this component is added as a prefix to the passed id and returned;\n")
+        .append("   * otherwise, the passed id is returned unchanged.\n")
+        .append("   *\n")
+        .append("   * @param child the child component from which this method is called, not used here.\n")
+        .append("   * @param htmlId the id to prepend the id to, not null.\n")
+        .append("   *\n")
+        .append("   * @returned the prefixed id, not null.\n")
+        .append("   */\n")
+        .append("  @Override\n")
+        .append("  public String changeChildHtmlId(Component child, String htmlId)\n")
+        .append("  {\n")
+        .append("    if (id != null && parent != null) // do not prefix page id (page component has no parent) \n")
+        .append("    {\n")
+        .append("      return id + \":\" + htmlId;\n")
+        .append("    }\n")
+        .append("    return htmlId;\n")
+        .append("  }\n");
   }
   
   protected void generateVariableComponentField(
       PartListComponent.ComponentPart part,
       String componentField, 
-      StringBuilder fileContent)
+      GeneratedClass generatedClass)
   {
-    fileContent.append("  public ").append(SnippetComponent.class.getSimpleName())
+    generatedClass.classBody.append("  public ").append(SnippetComponent.class.getSimpleName())
         .append(" ").append(componentField)
         .append(" = (").append(SnippetComponent.class.getSimpleName())
         .append(") ApplicationBase.getApplication().postConstruct(\n")
@@ -495,16 +509,16 @@ public abstract class ComponentGenerator
    * 
    * @param part the ComponentPart containing variable name, not null.
    * @param snippetVariableName the name of the snippet constant or field, not null.
-   * @param fileContent the StringBuilder to which the code should be appended.
+   * @param generatedClass the class to which body the code should be appended.
    */
   public void generateVariableGetterSetter(
       PartListComponent.ComponentPart part,
       String snippetVariableName, 
-      StringBuilder fileContent)
+      GeneratedClass generatedClass)
   {
     String getterSetterSuffix 
         = part.variableName.substring(0,1).toUpperCase() + part.variableName.substring(1);
-    fileContent.append("\n  /**\n")
+    generatedClass.classBody.append("\n  /**\n")
         .append("   * Returns the text content of the html text content variable ${")
         .append(part.variableName).append("}.\n")
         .append("   * XML entities in the stored text content are resolved.\n")

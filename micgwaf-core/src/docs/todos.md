@@ -14,3 +14,6 @@ TODO
 - check whether use builder pattern is useable throughout
 - check and document what the generated component registry is for, and remove if unnecessary
 - ignore white space in parsing
+- generate only class files for classes with an m:id and use inner classes for the rest
+  - check where to set GeneratedClass in generationContext (with package and possibly class definition)
+- unify generation method parameters and their order

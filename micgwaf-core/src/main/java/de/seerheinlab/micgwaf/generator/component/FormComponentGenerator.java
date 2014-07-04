@@ -10,9 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import de.seerheinlab.micgwaf.component.ChildListComponent;
 import de.seerheinlab.micgwaf.component.Component;
 import de.seerheinlab.micgwaf.component.FormComponent;
-import de.seerheinlab.micgwaf.component.HtmlElementComponent;
 import de.seerheinlab.micgwaf.component.InputComponent;
 import de.seerheinlab.micgwaf.component.RefComponent;
+import de.seerheinlab.micgwaf.generator.GeneratedClass;
 import de.seerheinlab.micgwaf.generator.Generator;
 import de.seerheinlab.micgwaf.generator.JavaClassName;
 
@@ -25,28 +25,20 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
   }
   
   @Override
-  public String generate(GenerationContext generationContext)
+  public GeneratedClass generate(GenerationContext generationContext)
   {
-    String rootContent = super.generate(generationContext);
+    GeneratedClass result = super.generate(generationContext);
+    generationContext.generatedClass = result;
 
-    StringBuilder fileContent = new StringBuilder();
-    generationContext.stringBuilder = fileContent;
-    
     // replace inheritance
-    rootContent = rootContent.replace(
-        " extends " + HtmlElementComponent.class.getSimpleName(), 
-        " extends " + FormComponent.class.getSimpleName());
+    result.classDefinition = new StringBuilder();
+    generateClassDefinition(generationContext, FormComponent.class);
 
-    // remove last "}"
-    rootContent = rootContent.substring(0,  rootContent.lastIndexOf("}") -1);
-    
     // add import
-    int indexOfImport = rootContent.indexOf("\nimport");
-    fileContent.append(rootContent.substring(0, indexOfImport))
-        .append("\nimport ").append(HttpServletRequest.class.getName()).append(";\n")
-        .append("import ").append(FormComponent.class.getName()).append(";")
-        .append(rootContent.substring(indexOfImport));
+    result.imports.add(HttpServletRequest.class.getName());
+    result.imports.add(FormComponent.class.getName());
 
+    // add methods
     List<InputComponent> buttons = new ArrayList<>();
     getButtons(generationContext.component, buttons);
     Map<InputComponent, Component> buttonsInLoops = new HashMap<>();
@@ -57,7 +49,7 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
     
     for (InputComponent button : buttons)
     {
-      generateButtonHookMethod(fileContent, button, false);
+      generateButtonHookMethod(result, button, false);
     }
     
     for (Map.Entry<InputComponent, Component> buttonEntry : buttonsInLoops.entrySet())
@@ -69,39 +61,40 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
     
     for (ComponentWithPath input : inputs)
     {
-      generateSubmittedValueGettersAndSetters(generationContext.component, fileContent, input);
+      generateSubmittedValueGettersAndSetters(generationContext.component, result, input);
     }
     
-    fileContent.append("\n  /**\n");
-    fileContent.append("   * Hook method which is called when the form was submitted.\n");
-    fileContent.append("   *\n");
-    fileContent.append("   * @return the page to be rendered.\n");
-    fileContent.append("   *         If no component or called hook method returns a not-null result,")
-        .append(" the current page\n");
-    fileContent.append("   *         in the current state will be rendered.\n");
-    fileContent.append("   *         If more than one component returns a not-null result,")
-        .append(" the last not-null result will be used.\n");
-    fileContent.append("   *         If another hook method of this component returns a not-null result,\n");
-    fileContent.append("   *         the result of this method will be discarded in favor")
-        .append(" of the other result.\n");
-    fileContent.append("   */\n");
-    fileContent.append("  public Component onSubmit()\n");
-    fileContent.append("  {\n");
-    fileContent.append("    return null;\n");
-    fileContent.append("  }\n\n");
-    fileContent.append("  @Override\n");
-    fileContent.append("  public Component processRequest(HttpServletRequest request)\n");
-    fileContent.append("  {\n");
-    fileContent.append("    Component result = super.processRequest(request);\n");
-    fileContent.append("    if (submitted)\n");
-    fileContent.append("    {\n");
-    fileContent.append("      Component potentialResult = onSubmit();\n");
+    result.classBody.append("\n  /**\n")
+        .append("   * Hook method which is called when the form was submitted.\n")
+        .append("   *\n")
+        .append("   * @return the page to be rendered.\n")
+        .append("   *         If no component or called hook method returns a not-null result,")
+            .append(" the current page\n")
+        .append("   *         in the current state will be rendered.\n")
+        .append("   *         If more than one component returns a not-null result,")
+            .append(" the last not-null result will be used.\n")
+        .append("   *         If another hook method of this component returns a not-null result,\n")
+        .append("   *         the result of this method will be discarded in favor")
+            .append(" of the other result.\n")
+        .append("   */\n")
+        .append("  public Component onSubmit()\n")
+        .append("  {\n")
+        .append("    return null;\n")
+        .append("  }\n\n")
+        .append("  @Override\n")
+        .append("  public Component processRequest(HttpServletRequest request)\n")
+        .append("  {\n")
+        .append("    Component result = super.processRequest(request);\n")
+        .append("    if (submitted)\n")
+        .append("    {\n")
+        .append("      Component potentialResult = onSubmit();\n");
     for (InputComponent button : buttons)
     {
-      fileContent.append("      if (").append(removeLoopPart(button.getId())).append(".submitted)\n");
-      fileContent.append("      {\n");
-      fileContent.append("        potentialResult = ").append(removeLoopPart(button.getId())).append("Pressed();\n");
-      fileContent.append("      }\n");
+      result.classBody.append("      if (").append(removeLoopPart(button.getId())).append(".submitted)\n")
+          .append("      {\n")
+          .append("        potentialResult = ").append(removeLoopPart(button.getId()))
+              .append("Pressed();\n")
+          .append("      }\n");
     }
     for (Map.Entry<InputComponent, Component> buttonEntry : buttonsInLoops.entrySet())
     {
@@ -111,32 +104,33 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
       JavaClassName loopComponentReferencableClassName 
           = loopComponentGenerator.getReferencableClassName(
               new GenerationContext(generationContext, loopComponent));
-      fileContent.append("      for (").append(loopComponentReferencableClassName.getSimpleName())
-          .append(" loopComponent : ").append(removeLoopPart(loopComponent.getParent().getId()))
-          .append(".children)\n");
-      fileContent.append("      {\n");
-      fileContent.append("        if (loopComponent.").append(removeLoopPart(button.getId())).append(".submitted)\n");
-      fileContent.append("        {\n");
-      fileContent.append("          potentialResult = ").append(removeLoopPart(button.getId())).append("Pressed(loopComponent);\n");
-      fileContent.append("        }\n");
-      fileContent.append("      }\n");
+      result.classBody.append("      for (").append(loopComponentReferencableClassName.getSimpleName())
+              .append(" loopComponent : ").append(removeLoopPart(loopComponent.getParent().getId()))
+              .append(".children)\n")
+          .append("      {\n")
+          .append("        if (loopComponent.").append(removeLoopPart(button.getId()))
+              .append(".submitted)\n")
+          .append("        {\n")
+          .append("          potentialResult = ").append(removeLoopPart(button.getId()))
+              .append("Pressed(loopComponent);\n")
+          .append("        }\n")
+          .append("      }\n");
     }
-    fileContent.append("      if (potentialResult != null)\n");
-    fileContent.append("      {\n");
-    fileContent.append("        result = potentialResult;\n");
-    fileContent.append("      }\n");
-    fileContent.append("    }\n");
-    fileContent.append("    return result;\n");
-    fileContent.append("  }\n");
-    fileContent.append("}\n");
+    result.classBody.append("      if (potentialResult != null)\n")
+        .append("      {\n")
+        .append("        result = potentialResult;\n")
+        .append("      }\n")
+        .append("    }\n")
+        .append("    return result;\n")
+        .append("  }\n");
     
-    generationContext.stringBuilder = null;
-    return fileContent.toString();
+    generationContext.generatedClass = null;
+    return result;
   }
 
   private void generateSubmittedValueGettersAndSetters(
       Component component,
-      StringBuilder fileContent,
+      GeneratedClass result,
       ComponentWithPath input)
   {
     String normalizedInputId = removeLoopPart(input.component.getId());
@@ -164,39 +158,39 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
     pathToComponent.append(normalizedInputId);
     getterSetterSuffix.append(normalizedInputId.substring(0, 1).toUpperCase())
         .append(normalizedInputId.substring(1));
-    fileContent.append("\n  /**\n");
-    fileContent.append("   * Convenience method to retrieve the submitted value of the ")
+    result.classBody.append("\n  /**\n")
+        .append("   * Convenience method to retrieve the submitted value of the ")
         .append(normalizedInputId).append(" component");
     if (refComponentPath.length() > 0)
     {
-      fileContent.append(" in the ").append(refComponentPath).append(" component");
+      result.classBody.append(" in the ").append(refComponentPath).append(" component");
     }
-    fileContent.append(".\n");
-    fileContent.append("   *\n");
-    fileContent.append("   * @return the submitted value of the ").append(normalizedInputId)
-        .append(" component.\n");;
-    fileContent.append("   */\n");
-    fileContent.append("  public String get").append(getterSetterSuffix).append("()\n");
-    fileContent.append("  {\n");
-    fileContent.append("    return ").append(pathToComponent).append(".submittedValue;\n");
-    fileContent.append("  }\n");
+    result.classBody.append(".\n")
+        .append("   *\n")
+        .append("   * @return the submitted value of the ").append(normalizedInputId)
+            .append(" component.\n")
+        .append("   */\n")
+        .append("  public String get").append(getterSetterSuffix).append("()\n")
+        .append("  {\n")
+        .append("    return ").append(pathToComponent).append(".submittedValue;\n")
+        .append("  }\n")
 
-    fileContent.append("\n  /**\n");
-    fileContent.append("   * Convenience method to set the value of the ")
-        .append(normalizedInputId).append(" component");
+        .append("\n  /**\n")
+        .append("   * Convenience method to set the value of the ")
+            .append(normalizedInputId).append(" component");
     if (refComponentPath.length() > 0)
     {
-      fileContent.append(" in the ").append(refComponentPath).append(" component");
+      result.classBody.append(" in the ").append(refComponentPath).append(" component");
     }
-    fileContent.append(".\n");
-    fileContent.append("   *\n");
-    fileContent.append("   * @param value the value of the ").append(normalizedInputId)
-        .append(" component.\n");;
-    fileContent.append("   */\n");
-    fileContent.append("  public void set").append(getterSetterSuffix).append("(String value)\n");
-    fileContent.append("  {\n");
-    fileContent.append("    ").append(pathToComponent).append(".setValue(value);\n");
-    fileContent.append("  }\n");
+    result.classBody.append(".\n")
+        .append("   *\n")
+        .append("   * @param value the value of the ").append(normalizedInputId)
+            .append(" component.\n")
+        .append("   */\n")
+        .append("  public void set").append(getterSetterSuffix).append("(String value)\n")
+        .append("  {\n")
+        .append("    ").append(pathToComponent).append(".setValue(value);\n")
+        .append("  }\n");
   }
 
   private void generateButtonInLoopHookMethod(
@@ -211,95 +205,91 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
     JavaClassName loopComponentReferencableClassName 
         = loopComponentGenerator.getReferencableClassName(
             new GenerationContext(generationContext, loopComponent));
-    generationContext.stringBuilder.append("\n  /**\n");
-    generationContext.stringBuilder.append("   * Hook method which is called when the button ")
-        .append(bareButtonId).append(" was pressed.\n");
-    generationContext.stringBuilder.append("   *\n");
-    generationContext.stringBuilder.append("   * @param ").append(bareLoopComponentId).append(" The component in the list of ")
-        .append(loopComponentReferencableClassName.getSimpleName())
-        .append(" Components\n");
-    generationContext.stringBuilder.append("   *        to which this button belongs.\n");
-    generationContext.stringBuilder.append("   *\n");
-    generationContext.stringBuilder.append("   * @return the page to be rendered.\n");
-    generationContext.stringBuilder.append("   *         If no component returns a not-null result, the current page")
-        .append(" in the current state\n");
-    generationContext.stringBuilder.append("   *         will be rendered.\n");
-    generationContext.stringBuilder.append("   *         If more than one component returns a not-null result, the last")
-        .append(" not-null result will be used.\n");
-    generationContext.stringBuilder.append("   */\n");
+    generationContext.generatedClass.classBody.append("\n  /**\n")
+        .append("   * Hook method which is called when the button ")
+            .append(bareButtonId).append(" was pressed.\n")
+        .append("   *\n")
+        .append("   * @param ").append(bareLoopComponentId).append(" The component in the list of ")
+            .append(loopComponentReferencableClassName.getSimpleName())
+            .append(" Components\n")
+        .append("   *        to which this button belongs.\n")
+        .append("   *\n")
+        .append("   * @return the page to be rendered.\n")
+        .append("   *         If no component returns a not-null result, the current page")
+            .append(" in the current state\n")
+        .append("   *         will be rendered.\n")
+        .append("   *         If more than one component returns a not-null result, the last")
+            .append(" not-null result will be used.\n")
+        .append("   */\n");
     if (overrideMethod)
     {
-      generationContext.stringBuilder.append("  @Override\n");
+      generationContext.generatedClass.classBody.append("  @Override\n");
     }
-    generationContext.stringBuilder.append("  public Component ").append(bareButtonId).append("Pressed(")
-        .append(loopComponentReferencableClassName.getSimpleName()).append(" ")
-        .append(bareLoopComponentId).append(")\n");
-    generationContext.stringBuilder.append("  {\n");
+    generationContext.generatedClass.classBody.append("  public Component ")
+            .append(bareButtonId).append("Pressed(")
+            .append(loopComponentReferencableClassName.getSimpleName()).append(" ")
+            .append(bareLoopComponentId).append(")\n")
+        .append("  {\n");
     if (overrideMethod)
     {
-      generationContext.stringBuilder.append("    return super.").append(bareButtonId).append("Pressed(")
-          .append(bareLoopComponentId).append(");\n");
+      generationContext.generatedClass.classBody.append("    return super.").append(bareButtonId)
+          .append("Pressed(").append(bareLoopComponentId).append(");\n");
     }
     else
     {
-      generationContext.stringBuilder.append("    return null;\n");
+      generationContext.generatedClass.classBody.append("    return null;\n");
     }
-    generationContext.stringBuilder.append("  }\n");
+    generationContext.generatedClass.classBody.append("  }\n");
   }
 
   private void generateButtonHookMethod(
-      StringBuilder fileContent,
+      GeneratedClass result,
       InputComponent button,
       boolean overrideMethod)
   {
     String bareComponentId = removeLoopPart(button.getId());
-    fileContent.append("\n  /**\n");
-    fileContent.append("   * Hook method which is called when the button ")
-        .append(bareComponentId).append(" was pressed.\n");
-    fileContent.append("   *\n");
-    fileContent.append("   * @return the page to be rendered.\n");
-    fileContent.append("   *         If no component or called hook method returns a not-null result,")
-        .append(" the current page\n");
-    fileContent.append("   *         in the current state will be rendered.\n");
-    fileContent.append("   *         If more than one component or called hook method")
-        .append(" returns a not-null result,\n");
-    fileContent.append("   *         the last not-null result will be used.\n");
-    fileContent.append("   */\n");
+    result.classBody.append("\n  /**\n")
+         .append("   * Hook method which is called when the button ").append(bareComponentId)
+            .append(" was pressed.\n")
+        .append("   *\n")
+        .append("   * @return the page to be rendered.\n")
+        .append("   *         If no component or called hook method returns a not-null result,")
+            .append(" the current page\n")
+        .append("   *         in the current state will be rendered.\n")
+        .append("   *         If more than one component or called hook method")
+            .append(" returns a not-null result,\n")
+        .append("   *         the last not-null result will be used.\n")
+        .append("   */\n");
     if (overrideMethod)
     {
-      fileContent.append("  @Override\n");
+      result.classBody.append("  @Override\n");
     }
-    fileContent.append("  public Component ").append(bareComponentId).append("Pressed()\n");
-    fileContent.append("  {\n");
+    result.classBody.append("  public Component ").append(bareComponentId).append("Pressed()\n")
+        .append("  {\n");
     if (overrideMethod)
     {
-      fileContent.append("    return super.").append(bareComponentId).append("Pressed();\n");
+      result.classBody.append("    return super.").append(bareComponentId).append("Pressed();\n");
     }
     else
     {
-      fileContent.append("    return null;\n");
+      result.classBody.append("    return null;\n");
     }
-    fileContent.append("  }\n");
+    result.classBody.append("  }\n");
   }
 
   @Override
-  public String generateExtension(GenerationContext generationContext)
+  public GeneratedClass generateExtension(GenerationContext generationContext)
   {
-    String className = getClassName(generationContext).getSimpleName();
+    GeneratedClass result = new GeneratedClass();
+    generationContext.generatedClass = result;
+    
     String extensionClassName = getExtensionClassName(generationContext).getSimpleName();
 
-    StringBuilder fileContent = new StringBuilder();
-    generationContext.stringBuilder = fileContent;
-    fileContent.append("package ").append(generationContext.getPackage()).append(";\n\n");
-    fileContent.append("\n");
-    fileContent.append("import ").append(Component.class.getName()).append(";\n");
-    fileContent.append("\n");
-    fileContent.append("public class ").append(extensionClassName)
-        .append(" extends ").append(className)
-        .append("\n");
-    fileContent.append("{\n");
-    generateSerialVersionUid(fileContent);
-    generateConstructorWithIdAndParent(extensionClassName, null, fileContent);
+    result.classPackage = generationContext.getPackage();
+    result.imports.add(Component.class.getName());
+    generateExtensionDefinition(generationContext);
+    generateSerialVersionUid(result);
+    generateConstructorWithIdAndParent(extensionClassName, null, result);
     
     List<InputComponent> buttons = new ArrayList<>();
     getButtons(generationContext.component, buttons);
@@ -308,7 +298,7 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
 
     for (InputComponent button : buttons)
     {
-      generateButtonHookMethod(fileContent, button, true);
+      generateButtonHookMethod(result, button, true);
     }
     
     for (Map.Entry<InputComponent, Component> buttonEntry : buttonsInLoops.entrySet())
@@ -318,10 +308,9 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
       generateButtonInLoopHookMethod(generationContext, button, loopComponent, true);
     }
     
-    fileContent.append("}\n");
-    
-    generationContext.stringBuilder = null;
-    return fileContent.toString();
+   
+    generationContext.generatedClass = null;
+    return result;
   }
   
   public void getButtons(Component component, List<InputComponent> buttons)

@@ -8,12 +8,14 @@ import java.util.Map;
 
 import de.seerheinlab.micgwaf.component.ChildListComponent;
 import de.seerheinlab.micgwaf.component.Component;
-import de.seerheinlab.micgwaf.component.TemplateIntegration;
 import de.seerheinlab.micgwaf.component.DefineComponent;
-import de.seerheinlab.micgwaf.component.RefComponent;
 import de.seerheinlab.micgwaf.component.PartListComponent;
+import de.seerheinlab.micgwaf.component.RefComponent;
+import de.seerheinlab.micgwaf.component.TemplateIntegration;
 import de.seerheinlab.micgwaf.config.ApplicationBase;
+import de.seerheinlab.micgwaf.generator.GeneratedClass;
 import de.seerheinlab.micgwaf.generator.Generator;
+import de.seerheinlab.micgwaf.generator.GeneratorHelper;
 import de.seerheinlab.micgwaf.generator.JavaClassName;
 
 public class TemplateIntegrationGenerator extends ComponentGenerator
@@ -25,27 +27,29 @@ public class TemplateIntegrationGenerator extends ComponentGenerator
   }
   
   @Override
-  public String generate(GenerationContext generationContext)
+  public GeneratedClass generate(GenerationContext generationContext)
   {
     if (generationContext.component.getId() == null)
     {
       return null;
     }
+    GeneratedClass result = new GeneratedClass();
+    generationContext.generatedClass = result;
+    
     TemplateIntegration templateIntegration = (TemplateIntegration) generationContext.component;
     JavaClassName javaClassName = getClassName(generationContext);
     String className = javaClassName.getSimpleName();
-    StringBuilder fileContent = new StringBuilder();
-    generationContext.stringBuilder = fileContent;
-    fileContent.append("package ").append(javaClassName.getPackage()).append(";\n\n");
-    fileContent.append("import ").append(Component.class.getName()).append(";\n");
-    fileContent.append("import ").append(ApplicationBase.class.getName()).append(";\n");
-    fileContent.append("import ").append(IOException.class.getName()).append(";\n");
-    fileContent.append("import ").append(Writer.class.getName()).append(";\n");
-    fileContent.append("import ").append(List.class.getName()).append(";\n");
-    fileContent.append("import ").append(ArrayList.class.getName()).append(";\n");
-    fileContent.append("import ").append(ChildListComponent.class.getName()).append(";\n");
-    fileContent.append("import ").append(PartListComponent.class.getName()).append(";\n");
-    fileContent.append("import ").append(PartListComponent.ComponentPart.class.getCanonicalName()).append(";\n");
+
+    result.classPackage = javaClassName.getPackage();
+    result.imports.add(Component.class.getName());
+    result.imports.add(ApplicationBase.class.getName());
+    result.imports.add(IOException.class.getName());
+    result.imports.add(Writer.class.getName());
+    result.imports.add(List.class.getName());
+    result.imports.add(ArrayList.class.getName());
+    result.imports.add(ChildListComponent.class.getName());
+    result.imports.add(PartListComponent.class.getName());
+    result.imports.add(PartListComponent.ComponentPart.class.getCanonicalName());
     
     {
       RefComponent template = new RefComponent(templateIntegration.templateId, null, null);
@@ -54,7 +58,7 @@ public class TemplateIntegrationGenerator extends ComponentGenerator
           new GenerationContext(generationContext, template));
       if (!javaClassName.getPackage().equals(componentClass.getPackage()))
       {
-        fileContent.append("import ").append(componentClass.getName()).append(";\n");
+        result.imports.add(componentClass.getName());
       }
     }
     
@@ -67,18 +71,16 @@ public class TemplateIntegrationGenerator extends ComponentGenerator
       if (definedComponent instanceof RefComponent 
           && !javaClassName.getPackage().equals(componentClass.getPackage()))
       {
-        fileContent.append("import ").append(componentClass.getName()).append(";\n");
+        result.imports.add(componentClass.getName());
       }
     }
     
     // class definition header
-    fileContent.append("\n");
-    generateClassJavadoc(generationContext.component, fileContent, false);
-    fileContent.append("public class ").append(className)
+    generateClassJavadoc(generationContext.component, result, false);
+    result.classDefinition.append("public class ").append(className)
         .append(" extends ").append(Component.class.getSimpleName())
         .append("\n");
-    fileContent.append("{\n");
-    generateSerialVersionUid(fileContent);
+    generateSerialVersionUid(result);
     
     String templateFieldName = "template";
     {
@@ -88,7 +90,7 @@ public class TemplateIntegrationGenerator extends ComponentGenerator
       }
       RefComponent template = new RefComponent(templateIntegration.templateId, null, null);
       ComponentGenerator generator = Generator.getGenerator(template);
-      fileContent.append("\n");
+      result.classBody.append("\n");
       generator.generateFieldOrVariableFromComponent(
           new GenerationContext(generationContext, template, 2),
           "public ",
@@ -97,17 +99,17 @@ public class TemplateIntegrationGenerator extends ComponentGenerator
     }
 
     // Constructor
-    fileContent.append("\n  /**\n");
-    fileContent.append("  * Constructor. \n");
-    fileContent.append("  *\n");
-    fileContent.append("  * @param id the id of this component, or null.\n");
-    fileContent.append("  * @param parent the parent component,")
-        .append(" or null if this is a standalone component (e.g. a page)\n");
-    fileContent.append("  */\n");
-    fileContent.append("  public ").append(className).append("(String id, Component parent)\n");
-    fileContent.append("  {\n");
-    fileContent.append("    super(id == null ? \"").append(generationContext.component.getId())
-        .append("\" : id, parent);\n");
+    result.classBody.append("\n  /**\n")
+      .append("  * Constructor. \n")
+      .append("  *\n")
+      .append("  * @param id the id of this component, or null.\n")
+      .append("  * @param parent the parent component,")
+          .append(" or null if this is a standalone component (e.g. a page)\n")
+      .append("  */\n")
+      .append("  public ").append(className).append("(String id, Component parent)\n")
+      .append("  {\n")
+      .append("    super(id == null ? \"").append(generationContext.component.getId())
+          .append("\" : id, parent);\n");
     for (Map.Entry<String, Component> entry : templateIntegration.definitions.entrySet())
     {
       Component componentDefinition = entry.getValue();
@@ -121,57 +123,56 @@ public class TemplateIntegrationGenerator extends ComponentGenerator
           "",
           entry.getKey(),
           "this");
-      fileContent.append("    ").append(templateFieldName).append(".").append(entry.getKey())
+      result.classBody.append("    ").append(templateFieldName).append(".").append(entry.getKey())
           .append(" = ").append(entry.getKey()).append(";\n");
     }
-    fileContent.append("  }\n\n");
+    result.classBody.append("  }\n\n");
     
     // getChildren
-    fileContent.append("  @Override\n");
-    fileContent.append("  public List<Component> getChildren()\n");
-    fileContent.append("  {\n");
-    fileContent.append("    return ").append(templateFieldName).append(".getChildren();\n");
-    fileContent.append("  }\n");
+    result.classBody.append("  @Override\n")
+        .append("  public List<Component> getChildren()\n")
+        .append("  {\n")
+        .append("    return ").append(templateFieldName).append(".getChildren();\n")
+        .append("  }\n")
 
-    fileContent.append("\n  @Override\n");
-    fileContent.append("  public void render(Writer writer) throws IOException\n");
-    fileContent.append("  {\n");
+        .append("\n  @Override\n")
+        .append("  public void render(Writer writer) throws IOException\n")
+        .append("  {\n")
     
-    fileContent.append("    ").append(templateFieldName).append(".render(writer);\n");
-    fileContent.append("  }\n");
-    fileContent.append("\n  @Override\n");
-    fileContent.append("  public void afterRender()\n");
-    fileContent.append("  {\n");
+        .append("    ").append(templateFieldName).append(".render(writer);\n")
+        .append("  }\n")
+        .append("\n  @Override\n")
+        .append("  public void afterRender()\n")
+        .append("  {\n")
     
-    fileContent.append("    ").append(templateFieldName).append(".afterRender();\n");
-    fileContent.append("  }\n");
-    fileContent.append("}\n");
-    generationContext.stringBuilder = null;
-    return fileContent.toString();
+        .append("    ").append(templateFieldName).append(".afterRender();\n")
+        .append("  }\n");
+    
+    generationContext.generatedClass = null;
+    return result;
   }
 
   @Override
-  public String generateExtension(GenerationContext generationContext)
+  public GeneratedClass generateExtension(GenerationContext generationContext)
   {
+    GeneratedClass result = new GeneratedClass();
+    generationContext.generatedClass = result;
+    
     String className = getClassName(generationContext).getSimpleName();
     String extensionClassName = getExtensionClassName(generationContext).getSimpleName();
-    StringBuilder fileContent = new StringBuilder();
-    generationContext.stringBuilder = fileContent;
-    fileContent.append("package ").append(generationContext.getPackage()).append(";\n\n");
-    fileContent.append("\n");
-    fileContent.append("import ").append(Component.class.getName()).append(";\n");
-    fileContent.append("\n");
-    generateClassJavadoc(generationContext.component, fileContent, true);
-    fileContent.append("public class ").append(extensionClassName)
-        .append(" extends ").append(className)
-        .append("\n");
-    fileContent.append("{\n");
-    generateSerialVersionUid(fileContent);
-    generateConstructorWithIdAndParent(extensionClassName, null, fileContent);
-    fileContent.append("}\n");
+    result.classPackage = generationContext.getPackage();
 
-    generationContext.stringBuilder = null;
-    return fileContent.toString();
+    result.imports.add(Component.class.getName());
+
+    generateClassJavadoc(generationContext.component, result, true);
+    result.classDefinition.append("public class ").append(extensionClassName)
+        .append(" extends ").append(className);
+
+    generateSerialVersionUid(result);
+    generateConstructorWithIdAndParent(extensionClassName, null, result);
+
+    generationContext.generatedClass = null;
+    return result;
   }
 
   @Override
@@ -179,9 +180,9 @@ public class TemplateIntegrationGenerator extends ComponentGenerator
       GenerationContext generationContext,
       String componentField)
   {
-    String indentString = getIndentString(generationContext.indent);
+    String indentString = GeneratorHelper.getIndentString(generationContext.indent);
     PartListComponent snippetListComponent = (PartListComponent) generationContext.component;
-    generationContext.stringBuilder.append(indentString).append("{\n");
+    generationContext.generatedClass.classBody.append(indentString).append("{\n");
     int counter = 1;
     for (PartListComponent.ComponentPart part : snippetListComponent.parts)
     {
@@ -193,7 +194,7 @@ public class TemplateIntegrationGenerator extends ComponentGenerator
             "",
             fieldName,
             "this");
-        generationContext.stringBuilder.append(indentString).append("  ").append(componentField)
+        generationContext.generatedClass.classBody.append(indentString).append("  ").append(componentField)
             .append(".parts.add(ComponentPart.fromComponent(")
             .append(fieldName).append("));\n");
 
@@ -201,18 +202,18 @@ public class TemplateIntegrationGenerator extends ComponentGenerator
       }
       else if (part.htmlSnippet != null)
       {
-        generationContext.stringBuilder.append(indentString).append("  ").append(componentField)
+        generationContext.generatedClass.classBody.append(indentString).append("  ").append(componentField)
             .append(".parts.add(ComponentPart.fromHtmlSnippet(")
             .append(asConstant(part.htmlSnippet)).append("));\n");
       }
       else if (part.variableName != null)
       {
-        generationContext.stringBuilder.append(indentString).append("  ").append(componentField)
+        generationContext.generatedClass.classBody.append(indentString).append("  ").append(componentField)
             .append(".parts.add(ComponentPart.fromHtmlSnippet(")
             .append(asConstant(part.variableName)).append("));\n");
       }
     }
-    generationContext.stringBuilder.append(indentString).append("}\n");
+    generationContext.generatedClass.classBody.append(indentString).append("}\n");
   }
 
   @Override

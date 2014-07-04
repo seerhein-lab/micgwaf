@@ -1,6 +1,7 @@
 package de.seerheinlab.micgwaf.generator.component;
 
 import de.seerheinlab.micgwaf.component.Component;
+import de.seerheinlab.micgwaf.generator.GeneratedClass;
 
 /**
  * A Container holding the necessary information for generation code from a component.
@@ -19,8 +20,8 @@ public class GenerationContext
   /** The current indent for generation, if applicable. */
   public int indent;
   
-  /** The String builder to append the current input to, or null if a complete file is generated. */
-  public StringBuilder stringBuilder;
+  /** The class which is currently generated, or null if a complete class is generated. */
+  public GeneratedClass generatedClass;
 
   /**
    * Constructor without indent and stringBuilder.
@@ -41,21 +42,20 @@ public class GenerationContext
    * @param rootPackage The root package for all generated components.
    * @param componentSubpackage The subpackage for the specific component.
    * @param indent The current indent for generation, if applicable, or 0 otherwise.
-   * @param stringBuilder The String builder to append the current input to, 
-   *        or null if a complete file is generated. 
+   * @param stringBuilder The class which is currently generated, or null if a complete class is generated. 
    */
   public GenerationContext(
       Component component,
       String rootPackage,
       String componentSubpackage,
       int indent,
-      StringBuilder stringBuilder)
+      GeneratedClass generatedClass)
   {
     this.component = component;
     this.rootPackage = rootPackage;
     this.componentSubpackage = componentSubpackage;
     this.indent = 0;
-    this.stringBuilder = stringBuilder;
+    this.generatedClass = generatedClass;
   }
   
   /**
@@ -72,7 +72,7 @@ public class GenerationContext
     this.indent = indent;
     this.rootPackage = parentContext.rootPackage;
     this.componentSubpackage = parentContext.componentSubpackage;
-    this.stringBuilder = parentContext.stringBuilder;
+    this.generatedClass = parentContext.generatedClass;
   }
   
   /**
@@ -88,7 +88,7 @@ public class GenerationContext
     this.indent = parentContext.indent;
     this.rootPackage = parentContext.rootPackage;
     this.componentSubpackage = parentContext.componentSubpackage;
-    this.stringBuilder = parentContext.stringBuilder;
+    this.generatedClass = parentContext.generatedClass;
   }
   /**
    * Returns the complete package for the component.

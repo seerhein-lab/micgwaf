@@ -2,7 +2,9 @@ package de.seerheinlab.micgwaf.generator.component;
 
 import de.seerheinlab.micgwaf.component.ChildListComponent;
 import de.seerheinlab.micgwaf.component.Component;
+import de.seerheinlab.micgwaf.generator.GeneratedClass;
 import de.seerheinlab.micgwaf.generator.Generator;
+import de.seerheinlab.micgwaf.generator.GeneratorHelper;
 import de.seerheinlab.micgwaf.generator.JavaClassName;
 
 public class ChildListComponentGenerator extends ComponentGenerator
@@ -41,13 +43,13 @@ public class ChildListComponentGenerator extends ComponentGenerator
   }
   
   @Override
-  public String generate(GenerationContext generationContext)
+  public GeneratedClass generate(GenerationContext generationContext)
   {
     return null;
   }
   
   @Override
-  public String generateExtension(GenerationContext generationContext)
+  public GeneratedClass generateExtension(GenerationContext generationContext)
   {
     return null;
   }
@@ -56,8 +58,8 @@ public class ChildListComponentGenerator extends ComponentGenerator
   public void generateInitializer(GenerationContext generationContext, String componentField)
   {
     ChildListComponent<?> childListComponent = (ChildListComponent<?>) generationContext.component;
-    String indentString = getIndentString(generationContext.indent);
-    generationContext.stringBuilder.append(indentString).append("{\n");
+    String indentString = GeneratorHelper.getIndentString(generationContext.indent);
+    generationContext.generatedClass.classBody.append(indentString).append("{\n");
     for (int i = 0; i < childListComponent.children.size(); ++i)
     {
       Component child = childListComponent.children.get(i);
@@ -70,11 +72,11 @@ public class ChildListComponentGenerator extends ComponentGenerator
       delegate.generateInitializer(
           new GenerationContext(generationContext, child, generationContext.indent + 2),
           componentField + i);
-      generationContext.stringBuilder.append(indentString).append("  ")
+      generationContext.generatedClass.classBody.append(indentString).append("  ")
           .append(componentField).append(".children.add(")
           .append(componentField).append(i).append(");\n");
     }
-    generationContext.stringBuilder.append(indentString).append("}\n");
+    generationContext.generatedClass.classBody.append(indentString).append("}\n");
   }
 
   @Override

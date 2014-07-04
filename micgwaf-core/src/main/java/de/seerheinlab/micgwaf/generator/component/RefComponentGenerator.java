@@ -4,6 +4,7 @@ import java.util.Map;
 
 import de.seerheinlab.micgwaf.component.Component;
 import de.seerheinlab.micgwaf.component.RefComponent;
+import de.seerheinlab.micgwaf.generator.GeneratedClass;
 import de.seerheinlab.micgwaf.generator.Generator;
 import de.seerheinlab.micgwaf.generator.JavaClassName;
 
@@ -34,13 +35,13 @@ public class RefComponentGenerator extends ComponentGenerator
   }
 
   @Override
-  public String generate(GenerationContext generationContext)
+  public GeneratedClass generate(GenerationContext generationContext)
   {
     return null;
   }
   
   @Override
-  public String generateExtension(GenerationContext generationContext)
+  public GeneratedClass generateExtension(GenerationContext generationContext)
   {
     return null;
   }
@@ -53,14 +54,14 @@ public class RefComponentGenerator extends ComponentGenerator
     {
       return;
     }
-    generationContext.stringBuilder.append("  {\n");
+    generationContext.generatedClass.classBody.append("  {\n");
     for (Map.Entry<String, String> variableEntry : refComponent.variableValues.entrySet())
     {
-      generationContext.stringBuilder.append("    ").append(componentField).append(".set")
+      generationContext.generatedClass.classBody.append("    ").append(componentField).append(".set")
         .append(variableEntry.getKey().substring(0, 1).toUpperCase())
         .append(variableEntry.getKey().substring(1))
         .append("(").append(asConstant(variableEntry.getValue())).append(");\n");
     }
-    generationContext.stringBuilder.append("  }\n\n");
+    generationContext.generatedClass.classBody.append("  }\n\n");
   }
 }
