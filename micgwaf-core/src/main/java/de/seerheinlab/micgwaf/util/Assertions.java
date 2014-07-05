@@ -4,7 +4,7 @@ public class Assertions
 {
   /**
    * Checks that an object is not null.
-   * 
+   *
    * @param toCheck the object to check.
    * @param name the name of the object, which is referenced in a NullPointerException
    *        if the check fails.

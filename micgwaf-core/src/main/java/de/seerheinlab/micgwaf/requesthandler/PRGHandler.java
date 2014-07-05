@@ -16,9 +16,10 @@ import de.seerheinlab.micgwaf.config.ApplicationBase;
 public class PRGHandler implements RequestHandler
 {
   public String defaultEncoding = "UTF-8";
-  
+
   public StateHandler stateHandler = new UrlParamSessionStateHandler();
 
+  @Override
   public boolean handle(HttpServletRequest request, HttpServletResponse response)
       throws IOException
   {
@@ -43,7 +44,7 @@ public class PRGHandler implements RequestHandler
     {
       return false;
     }
-    
+
     Component toRender;
     try
     {
@@ -52,7 +53,7 @@ public class PRGHandler implements RequestHandler
       {
         toRender = toProcess;
       }
-    } 
+    }
     catch (Exception e)
     {
       toRender = ApplicationBase.getApplication().handleException(toProcess, e, false);
@@ -75,7 +76,7 @@ public class PRGHandler implements RequestHandler
       // should happen only once
       // during instance lifetime.
       ApplicationBase.getApplication().postConstruct(toRender);
-    } 
+    }
     else
     {
       String path = ApplicationBase.getApplication().getMountPath(request);
@@ -92,7 +93,7 @@ public class PRGHandler implements RequestHandler
     {
       toRender.render(writer);
       toRender.afterRender();
-    } 
+    }
     catch (Exception e)
     {
       response.reset();

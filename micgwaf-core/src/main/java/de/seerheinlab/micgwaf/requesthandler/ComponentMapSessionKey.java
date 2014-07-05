@@ -11,11 +11,11 @@ final class ComponentMapSessionKey implements Serializable
   private static final long serialVersionUID = 1L;
 
   /** request path, not null. */
-  private String path;
-  
+  private final String path;
+
   /** state key, not null. */
-  private String stateKey;
-  
+  private final String stateKey;
+
   public ComponentMapSessionKey(String path, String stateKey)
   {
     if (path == null)

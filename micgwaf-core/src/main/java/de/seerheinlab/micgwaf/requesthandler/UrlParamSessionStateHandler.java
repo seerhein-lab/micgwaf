@@ -23,24 +23,24 @@ import de.seerheinlab.micgwaf.config.ApplicationBase;
 public class UrlParamSessionStateHandler implements StateHandler
 {
   // private static Logger logger = Logger.getLogger(UrlParamStateHandler.class);
-  
-  public static final String COMPONENT_MAP_SESSION_ATTRIBUTE_NAME 
+
+  public static final String COMPONENT_MAP_SESSION_ATTRIBUTE_NAME
       = UrlParamSessionStateHandler.class.getName() + "." + "COMPONENT_MAP";
 
-  public static final String COMPONENT_KEY_LIST_SESSION_ATTRIBUTE_NAME 
+  public static final String COMPONENT_KEY_LIST_SESSION_ATTRIBUTE_NAME
       = UrlParamSessionStateHandler.class.getName() + "." + "COMPONENT_KEY_LIST";
 
-  public static final String NEXT_CONVERSATION_SESSION_ATTRIBUTE_NAME 
+  public static final String NEXT_CONVERSATION_SESSION_ATTRIBUTE_NAME
       = UrlParamSessionStateHandler.class.getName() + "." + "NEXT_CONVERSATION";
 
   public String stateKeyParam = "state";
-  
+
   /** Starts the part of the state key which marks the current conversion. */
   public String conversationPrefix = "c";
-  
+
   /** Starts the part of the state key which marks the current step. */
   public String stepPrefix = "s";
-  
+
   /** How many states are stored maximally in the session. */
   public int maxStates = 100;
 
@@ -85,9 +85,9 @@ public class UrlParamSessionStateHandler implements StateHandler
   /**
    * Gets the component map from the session.
    * If the session does not exist, an ew session is created.
-   * 
+   *
    * @param request the servlet request, not null.
-   * 
+   *
    * @return the component map, not null.
    */
   protected Map<ComponentMapSessionKey, byte[]> getComponentMapFromSession(HttpServletRequest request)
@@ -102,14 +102,14 @@ public class UrlParamSessionStateHandler implements StateHandler
     }
     return componentMap;
   }
-  
+
   /**
    * Returns the current state key from the servlet request.
    * It is assumed that the state key is sent as HTTP parameter with the name given in the variable
    * <code>stateKeyParam</code>
-   * 
+   *
    * @param request the request to extract the state key from, not null.
-   * 
+   *
    * @return the state key, or null if not supplied.
    */
   protected String getCurrentStateKey(HttpServletRequest request)
@@ -117,14 +117,14 @@ public class UrlParamSessionStateHandler implements StateHandler
     String stateKey = request.getParameter(stateKeyParam);
     return stateKey;
   }
-  
+
   /**
    * Calculates the next state key from the servlet request.
    * If the servlet request contains a parseable state key, the step number is increased.
    * If not, a new conversation index is created and the step number is set to 1.
-   * 
+   *
    * @param request the current request, not null.
-   * 
+   *
    * @return the next state key, not null.
    */
   protected String getNextStateKey(HttpServletRequest request)
@@ -188,9 +188,9 @@ public class UrlParamSessionStateHandler implements StateHandler
   /**
    * Creates the next conversation key.
    * The key is unique for the session.
-   * 
+   *
    * @param request the current request, not null.
-   * 
+   *
    * @return the next conversation index.
    */
   protected int createNextConversationIndex(HttpServletRequest request)
@@ -209,49 +209,49 @@ public class UrlParamSessionStateHandler implements StateHandler
       return nextConversation;
     }
   }
-  
+
   /**
    * Serializes a component to a byte array.
-   * 
+   *
    * @param component the component to serialize, not null.
-   * 
+   *
    * @return the serialized component.
-   * 
+   *
    * @throws IOException if serialization fails.
    */
   protected byte[] serialize(Component component) throws IOException
   {
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
     ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
-    try 
+    try
     {
       objectOutputStream.writeObject(component);
       objectOutputStream.flush();
-    } 
-    finally 
+    }
+    finally
     {
       objectOutputStream.close();
     }
     return outputStream.toByteArray();
   }
-  
+
   /**
    * Deserializes a byte array to a component.
-   * 
+   *
    * @param data the byte array to deserialize, or null.
-   * 
+   *
    * @return the deserialized component, may be null.
-   * 
+   *
    * @throws IOException if deserialization fails.
    */
-  protected Component deserialize(byte[] data) throws IOException 
+  protected Component deserialize(byte[] data) throws IOException
   {
     if (data == null)
     {
       return null;
     }
     ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(data));
-    try 
+    try
     {
       return (Component) ois.readObject();
     }

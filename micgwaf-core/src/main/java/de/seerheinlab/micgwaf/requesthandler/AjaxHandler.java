@@ -14,6 +14,7 @@ import de.seerheinlab.micgwaf.config.ApplicationBase;
  */
 public class AjaxHandler implements RequestHandler
 {
+  @Override
   public boolean handle(HttpServletRequest request, HttpServletResponse response)
       throws IOException
   {
@@ -26,7 +27,7 @@ public class AjaxHandler implements RequestHandler
     }
     return processed;
   }
-  
+
   public boolean process(HttpServletRequest request, HttpServletResponse response)
       throws IOException
   {
@@ -50,7 +51,7 @@ public class AjaxHandler implements RequestHandler
       // TODO extra method handleAjaxException ?
       toRender = ApplicationBase.getApplication().handleException(toProcess, e, false);
     }
-    
+
     PrintWriter writer = response.getWriter();
     if (toRender != null)
     {
@@ -68,7 +69,7 @@ public class AjaxHandler implements RequestHandler
       }
     }
     writer.close();
-    
+
     return true;
   }
 }
