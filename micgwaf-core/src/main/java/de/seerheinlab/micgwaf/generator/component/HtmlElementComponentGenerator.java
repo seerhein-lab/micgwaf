@@ -313,7 +313,7 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
     result.classDefinition.append("public class ").append(extensionClassName)
         .append(" extends ").append(className);
     generateSerialVersionUid(result);
-    generateExtensionConstructor(generationContext);
+    generateConstructorWithIdAndParent(extensionClassName, null, result);
   }
 
   @Override

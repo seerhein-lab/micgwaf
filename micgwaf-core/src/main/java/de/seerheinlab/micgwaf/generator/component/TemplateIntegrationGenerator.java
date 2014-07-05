@@ -166,7 +166,7 @@ public class TemplateIntegrationGenerator extends ComponentGenerator
         .append(" extends ").append(className);
 
     generateSerialVersionUid(result);
-    generateExtensionConstructor(generationContext);
+    generateConstructorWithIdAndParent(extensionClassName, null, result);
   }
 
   @Override

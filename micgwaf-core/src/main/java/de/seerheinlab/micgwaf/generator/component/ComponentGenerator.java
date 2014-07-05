@@ -245,7 +245,7 @@ public abstract class ComponentGenerator
   {
     StringBuilder toAppendTo = generatedClass.classBody;
     toAppendTo.append("\n  /**\n");
-    toAppendTo.append("  * Constructor.\n");
+    toAppendTo.append("  * Constructor. \n");
     toAppendTo.append("  *\n");
     if (defaultId == null)
     {
@@ -253,14 +253,13 @@ public abstract class ComponentGenerator
     }
     else
     {
-      toAppendTo.append("  * @param id the id of this component, or null to use the default id \"")
-          .append(defaultId).append("\".\n");
+      toAppendTo.append("  * @param id the id of this component, or null to use the default id \"").append(defaultId).append("\".\n");
     }
     toAppendTo.append("  * @param parent the parent component.")
-        .append(" Can be null if this is a standalone component (e.g. a page).\n")
-        .append("  */\n")
-        .append("  public ").append(className).append("(String id, Component parent)\n")
-        .append("  {\n");
+        .append(" Can be null if this is a standalone component (e.g. a page).\n");
+    toAppendTo.append("  */\n");
+    toAppendTo.append("  public ").append(className).append("(String id, Component parent)\n");
+    toAppendTo.append("  {\n");
     if (defaultId == null)
     {
       toAppendTo.append("    super(id, parent);\n");
@@ -270,30 +269,6 @@ public abstract class ComponentGenerator
       toAppendTo.append("    super(id == null ? \"").append(defaultId).append("\" : id, parent);\n");
     }
     toAppendTo.append("  }\n\n");
-  }
-
-  /**
-   * Generates an empty (except calling super) constructor for a component with an id and a parent argument.
-   *
-   * @param className the unqualified class name of the class for which the constructor is generated.
-   * @param defaultId the id to use in the generated component if the id parameter is null in the constructor.
-   * @param generatedClass the class to which body the constructor code should be appended.
-   */
-  public void generateExtensionConstructor(GenerationContext generationContext)
-  {
-    StringBuilder toAppendTo = generationContext.generatedClass.classBody;
-    toAppendTo.append("\n  /**\n")
-        .append("  * Constructor.\n")
-        .append("  *\n")
-        .append("  * @param id the id of this component, or null.\n")
-        .append("  * @param parent the parent component.")
-            .append(" Can be null if this is a standalone component (e.g. a page).\n")
-        .append("  */\n")
-        .append("  public ").append(getExtensionClassName(generationContext).getSimpleName())
-            .append("(String id, Component parent)\n")
-        .append("  {\n")
-        .append("    super(id, parent);\n")
-        .append("  }\n\n");
   }
 
   /**
