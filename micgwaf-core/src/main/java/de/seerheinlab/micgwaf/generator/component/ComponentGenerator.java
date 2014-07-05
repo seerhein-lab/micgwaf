@@ -23,21 +23,6 @@ public abstract class ComponentGenerator
    * @return the class name, not null.
    */
   public abstract JavaClassName getClassName(GenerationContext generationContext);
-
-  /**
-   * Returns the class name of the extension class containing user modifications to the generated class.
-   * The component can either be a generated component, or a component supplied in a component library.
-   *
-   * @param generationContext the generation context for the class, not null.
-   *
-   * @return the class name of the extension class.
-   *         May return null if generateExtensionClass() returns null for the component.
-   */
-  public JavaClassName getExtensionClassName(GenerationContext generationContext)
-  {
-    return toExtensionClassName(generationContext.component.getId(), generationContext.getPackage());
-  }
-
   /**
    * Returns the class name of the class by which this component can be referenced in generated code.
    * The component can either be a generated component, or a component supplied in a component library.
@@ -69,16 +54,16 @@ public abstract class ComponentGenerator
    * This modified id is then prefixed by the baseClassPrefix and baseClassSuffix
    * from the generator configuration.
    *
-   * @param generationContext the component and package info, not null.
+   * @param generationContext the generation context for the class, not null.
    *
-   * @return the java class name for the component and package info, not null.
+   * @return the java class name for the generated base class, not null.
    */
-  public JavaClassName toBaseClassName(GenerationContext generationContext)
+  public JavaClassName getBaseClassName(GenerationContext generationContext)
   {
     if (!generateExtensionClass(generationContext.component)
         && !Generator.getGeneratorConfiguration().isBaseClassWithoutExtensionNamedLikeBaseClasses())
     {
-      return toExtensionClassName(generationContext.component.getId(), generationContext.getPackage());
+      return getExtensionClassName(generationContext);
     }
     String normalizedId = removeDirectoryPrefix(removeLoopPart(generationContext.component.getId()));
     String simpleName = Generator.getGeneratorConfiguration().getBaseClassPrefix()
@@ -89,27 +74,26 @@ public abstract class ComponentGenerator
   }
 
   /**
-   * Converts a component id and package info into a java class name following the extension class
-   * naming pattern.
-   * Any loop part suffixes (starting with a colon :) and any direcory prefixes (separated by a slash /)
+   * Returns the class name of the extension class containing user modifications to the generated class.
+   * The component can either be a generated component, or a component supplied in a component library.
+   * Any loop part suffixes (starting with a colon :) and any directory prefixes (separated by a slash /)
    * are removed from the component id,
    * and the first character of the component id is converted to upper case.
    * This modified id is then prefixed by the extensionClassPrefix and extensionClassSuffix
    * from the generator configuration.
    *
-   * @param componentKey the key of the component to generate the class name for, not null.
-   * @param componentPackage the package for the component, not null
+   * @param generationContext the generation context for the class, not null.
    *
-   * @return the java class name for the componentid and package info.
+   * @return the java class name for the generated extension class, not null.
    */
-  public JavaClassName toExtensionClassName(String componentId, String componentPackage)
+  public JavaClassName getExtensionClassName(GenerationContext generationContext)
   {
-    String normalizedId = removeDirectoryPrefix(removeLoopPart(componentId));
+    String normalizedId = removeDirectoryPrefix(removeLoopPart(generationContext.component.getId()));
     String simpleName = Generator.getGeneratorConfiguration().getExtensionClassPrefix()
         + normalizedId.substring(0, 1).toUpperCase()
         + normalizedId.substring(1)
         + Generator.getGeneratorConfiguration().getExtensionClassSuffix();
-    return new JavaClassName(simpleName, componentPackage);
+    return new JavaClassName(simpleName, generationContext.getPackage());
   }
 
   /**

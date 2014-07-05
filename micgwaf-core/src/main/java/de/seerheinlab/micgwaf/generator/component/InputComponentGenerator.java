@@ -12,7 +12,7 @@ public class InputComponentGenerator extends HtmlElementComponentGenerator
   @Override
   public JavaClassName getClassName(GenerationContext generationContext)
   {
-    return toBaseClassName(generationContext);
+    return getBaseClassName(generationContext);
   }
 
   @Override

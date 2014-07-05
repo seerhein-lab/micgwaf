@@ -3,6 +3,7 @@ package de.seerheinlab.micgwaf.generator.component;
 import java.util.Map;
 
 import de.seerheinlab.micgwaf.component.Component;
+import de.seerheinlab.micgwaf.component.EmptyComponent;
 import de.seerheinlab.micgwaf.component.RefComponent;
 import de.seerheinlab.micgwaf.generator.Generator;
 import de.seerheinlab.micgwaf.generator.JavaClassName;
@@ -22,9 +23,11 @@ public class RefComponentGenerator extends ComponentGenerator
           refComponent.referencedComponent.getClass().getPackage().getName());
     }
     String subpackage = Generator.getComponentSubpackage(refComponent.refid);
-    return toExtensionClassName(
-        refComponent.refid,
-        generationContext.rootPackage + '.'+ subpackage);
+    GenerationContext subpackageGenerationContext = new GenerationContext(
+        new EmptyComponent(refComponent.refid, null),
+        generationContext.rootPackage,
+        subpackage);
+    return getExtensionClassName(subpackageGenerationContext);
   }
 
   @Override

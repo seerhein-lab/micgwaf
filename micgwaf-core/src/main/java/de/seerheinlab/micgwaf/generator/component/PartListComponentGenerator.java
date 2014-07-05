@@ -24,7 +24,7 @@ public class PartListComponentGenerator extends ComponentGenerator
   {
     if (generationContext.component.getId() != null)
     {
-      return toBaseClassName(generationContext);
+      return getBaseClassName(generationContext);
     }
     return new JavaClassName(PartListComponent.class);
   }
