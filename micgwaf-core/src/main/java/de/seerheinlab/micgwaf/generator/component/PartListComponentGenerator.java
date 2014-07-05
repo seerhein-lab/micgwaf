@@ -103,7 +103,11 @@ public class PartListComponentGenerator extends ComponentGenerator
     }
 
     // Constructor
-    generateConstructorWithIdAndParent(className, generationContext.component.getId(), result);
+    generateConstructorWithIdAndParent(
+        generationContext,
+        className,
+        generationContext.component.getId(),
+        null);
 
     // getChildren
     result.classBody.append("  @Override\n")
@@ -185,7 +189,7 @@ public class PartListComponentGenerator extends ComponentGenerator
     generateExtensionDefinition(generationContext);
 
     generateSerialVersionUid(result);
-    generateConstructorWithIdAndParent(extensionClassName, null, result);
+    generateConstructorWithIdAndParent(generationContext, extensionClassName, null, null);
   }
 
   @Override

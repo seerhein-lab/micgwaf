@@ -234,32 +234,35 @@ public abstract class ComponentGenerator
   /**
    * Generates an empty (except calling super) constructor for a component with an id and a parent argument.
    *
+   * @param generationContext the generation context, not null.
    * @param className the unqualified class name of the class for which the constructor is generated.
    * @param defaultId the id to use in the generated component if the id parameter is null in the constructor.
-   * @param generatedClass the class to which body the constructor code should be appended.
+   * @param additionalCode additional code to be executed in the constructor.
    */
   public void generateConstructorWithIdAndParent(
+      GenerationContext generationContext,
       String className,
       String defaultId,
-      GeneratedClass generatedClass)
+      String additionalCode)
   {
-    StringBuilder toAppendTo = generatedClass.classBody;
-    toAppendTo.append("\n  /**\n");
-    toAppendTo.append("  * Constructor. \n");
-    toAppendTo.append("  *\n");
+    StringBuilder toAppendTo = generationContext.generatedClass.classBody;
+    toAppendTo.append("\n  /**\n")
+        .append("  * Constructor. \n")
+        .append("  *\n");
     if (defaultId == null)
     {
       toAppendTo.append("  * @param id the id of this component, or null.\n");
     }
     else
     {
-      toAppendTo.append("  * @param id the id of this component, or null to use the default id \"").append(defaultId).append("\".\n");
+      toAppendTo.append("  * @param id the id of this component, or null to use the default id \"")
+          .append(defaultId).append("\".\n");
     }
     toAppendTo.append("  * @param parent the parent component.")
-        .append(" Can be null if this is a standalone component (e.g. a page).\n");
-    toAppendTo.append("  */\n");
-    toAppendTo.append("  public ").append(className).append("(String id, Component parent)\n");
-    toAppendTo.append("  {\n");
+        .append(" Can be null if this is a standalone component (e.g. a page).\n")
+        .append("  */\n")
+        .append("  public ").append(className).append("(String id, Component parent)\n")
+        .append("  {\n");
     if (defaultId == null)
     {
       toAppendTo.append("    super(id, parent);\n");
@@ -267,6 +270,10 @@ public abstract class ComponentGenerator
     else
     {
       toAppendTo.append("    super(id == null ? \"").append(defaultId).append("\" : id, parent);\n");
+    }
+    if (additionalCode != null)
+    {
+      toAppendTo.append(additionalCode);
     }
     toAppendTo.append("  }\n\n");
   }

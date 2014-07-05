@@ -48,6 +48,6 @@ public class InputComponentGenerator extends HtmlElementComponentGenerator
 
     generateExtensionDefinition(generationContext);
     generateSerialVersionUid(result);
-    generateConstructorWithIdAndParent(extensionClassName, null, result);
+    generateConstructorWithIdAndParent(generationContext, extensionClassName, null, null);
   }
 }

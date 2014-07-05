@@ -47,7 +47,6 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
     GeneratedClass result = generationContext.generatedClass;
     HtmlElementComponent htmlElementCompont = (HtmlElementComponent) generationContext.component;
     JavaClassName javaClassName = getClassName(generationContext);
-    String className = javaClassName.getSimpleName();
 
     result.classPackage = generationContext.getPackage();
     result.imports.add(ChangesChildHtmlId.class.getName());
@@ -143,33 +142,7 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
     }
 
     // Constructor
-    result.classBody.append("  /**\n");
-    result.classBody.append("  * Constructor. \n");
-    result.classBody.append("  *\n");
-    result.classBody.append("  * @param id the id of this component, or null to use the default id \"")
-        .append(htmlElementCompont.getId()).append("\".\n");
-    result.classBody.append("  * @param parent the parent component.")
-        .append(" Can be null if this is a standalone component (e.g. a page).\n");
-    result.classBody.append("  */\n");
-    result.classBody.append("  public " + className + "(String id, Component parent)\n");
-    result.classBody.append("  {\n");
-    result.classBody.append("    super(id == null ? \"").append(htmlElementCompont.getId()).append("\" : id, parent);\n");
-    if (htmlElementCompont.renderChildren == false)
-    {
-      result.classBody.append("    renderChildren = false;\n");
-    }
-    if (htmlElementCompont.renderSelf == false)
-    {
-      result.classBody.append("    renderSelf = false;\n");
-    }
-    result.classBody.append("    ").append("elementName = \"").append(htmlElementCompont.elementName)
-        .append("\";\n");
-    for (Map.Entry<String, String> attributeEntry : htmlElementCompont.attributes.entrySet())
-    {
-      result.classBody.append("    ").append("attributes.put(\"").append(attributeEntry.getKey())
-          .append("\", \"").append(attributeEntry.getValue()).append("\");\n");
-    }
-    result.classBody.append("  }\n\n");
+    generateConstructor(generationContext);
 
     // getChildren()
     result.classBody.append("  /**\n");
@@ -229,6 +202,32 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
       generateChangeChildHtmlId(result);
     }
     generateConvenienceMethods(htmlElementCompont, result);
+  }
+
+  private void generateConstructor(GenerationContext generationContext)
+  {
+    StringBuilder additionalConstructorCode = new StringBuilder();
+    HtmlElementComponent component = (HtmlElementComponent) generationContext.component;
+    if (component.renderChildren == false)
+    {
+      additionalConstructorCode.append("    renderChildren = false;\n");
+    }
+    if (component.renderSelf == false)
+    {
+      additionalConstructorCode.append("    renderSelf = false;\n");
+    }
+    additionalConstructorCode.append("    ").append("elementName = \"").append(component.elementName)
+        .append("\";\n");
+    for (Map.Entry<String, String> attributeEntry : component.attributes.entrySet())
+    {
+      additionalConstructorCode.append("    ").append("attributes.put(\"").append(attributeEntry.getKey())
+          .append("\", \"").append(attributeEntry.getValue()).append("\");\n");
+    }
+    generateConstructorWithIdAndParent(
+        generationContext,
+        getClassName(generationContext).getSimpleName(),
+        component.getId(),
+        additionalConstructorCode.toString());
   }
 
   protected void generateConvenienceMethods(
@@ -313,7 +312,7 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
     result.classDefinition.append("public class ").append(extensionClassName)
         .append(" extends ").append(className);
     generateSerialVersionUid(result);
-    generateConstructorWithIdAndParent(extensionClassName, null, result);
+    generateConstructorWithIdAndParent(generationContext, extensionClassName, null, null);
   }
 
   @Override

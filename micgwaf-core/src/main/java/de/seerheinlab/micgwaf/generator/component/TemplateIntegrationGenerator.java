@@ -98,7 +98,7 @@ public class TemplateIntegrationGenerator extends ComponentGenerator
           "this");
     }
 
-    // Constructor
+    // Constructor // TODO use constructor generation from ComponentGenerator
     result.classBody.append("\n  /**\n")
       .append("  * Constructor. \n")
       .append("  *\n")
@@ -166,7 +166,7 @@ public class TemplateIntegrationGenerator extends ComponentGenerator
         .append(" extends ").append(className);
 
     generateSerialVersionUid(result);
-    generateConstructorWithIdAndParent(extensionClassName, null, result);
+    generateConstructorWithIdAndParent(generationContext, extensionClassName, null, null);
   }
 
   @Override
