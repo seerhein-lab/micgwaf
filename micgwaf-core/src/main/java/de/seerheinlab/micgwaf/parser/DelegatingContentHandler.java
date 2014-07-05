@@ -26,22 +26,22 @@ public class DelegatingContentHandler extends DefaultHandler
   public static final String REMOVE_ELEMENT_NAME = "remove";
 
   public List<DelegateReference> delegateList = new ArrayList<>();
-  
+
   public DelegateReference currentDelegate;
-  
+
   public int contentDepth = -1;
-  
+
   public Component currentResult;
-  
+
   @Override
   public void startElement(
         String uri,
         String localName,
-        String qName, 
-        Attributes attributes) 
-      throws SAXException 
+        String qName,
+        Attributes attributes)
+      throws SAXException
   {
-    
+
     boolean newHandlerFound = false;
     // check whether this is an element with our namespace
     if (Constants.XML_NAMESPACE.equals(uri))
@@ -60,7 +60,7 @@ public class DelegatingContentHandler extends DefaultHandler
       newHandlerFound = true;
     }
     // check for attributes with our namespace
-    if (attributes != null && !newHandlerFound) 
+    if (attributes != null && !newHandlerFound)
     {
       for (int i = 0; i < attributes.getLength(); i++)
       {
@@ -68,7 +68,7 @@ public class DelegatingContentHandler extends DefaultHandler
         if (Constants.XML_NAMESPACE.equals(attributeNamespace))
         {
           String attributeName = attributes.getLocalName(i);
-          if (ContentHandlerRegistry.MULTIPLE_ATTR.equals(attributeName) 
+          if (ContentHandlerRegistry.MULTIPLE_ATTR.equals(attributeName)
               || ContentHandlerRegistry.DEFAULT_RENDER_ATTR.equals(attributeName)
               || ContentHandlerRegistry.DEFAULT_RENDER_SELF_ATTR.equals(attributeName)
               || ContentHandlerRegistry.DEFAULT_RENDER_CHILDREN_ATTR.equals(attributeName)
@@ -92,7 +92,7 @@ public class DelegatingContentHandler extends DefaultHandler
         }
       }
     }
-    if (!newHandlerFound 
+    if (!newHandlerFound
         && ((currentDelegate == null) || !(currentDelegate.contentHandler instanceof PartListContentHandler)))
     {
       ContentHandler contentHandler = new PartListContentHandler();
@@ -107,7 +107,8 @@ public class DelegatingContentHandler extends DefaultHandler
     currentDelegate.contentHandler.startElement(uri, localName, qName, attributes);
     contentDepth++;
   }
-  
+
+  @Override
   public void endElement(String uri, String localName, String qName)
       throws SAXException
   {
@@ -133,16 +134,18 @@ public class DelegatingContentHandler extends DefaultHandler
       if (!endElementCalled)
       {
         currentDelegate.contentHandler.endElement(uri, localName, qName);
-        endElementCalled = true;        
+        endElementCalled = true;
       }
     }
   }
-  
+
+  @Override
   public void startDocument() throws SAXException
   {
     // do nothing
   }
 
+  @Override
   public void endDocument() throws SAXException
   {
     currentResult = currentDelegate.contentHandler.finished();
@@ -152,6 +155,7 @@ public class DelegatingContentHandler extends DefaultHandler
     }
   }
 
+  @Override
   public void characters (char[] ch, int start, int length)
       throws SAXException
   {
@@ -165,25 +169,26 @@ public class DelegatingContentHandler extends DefaultHandler
     currentDelegate.contentHandler.characters(ch, start, length);
   }
 
+  @Override
   public void ignorableWhitespace (char ch[], int start, int length)
       throws SAXException
   {
     currentDelegate.contentHandler.ignorableWhitespace(ch, start, length);
   }
-  
+
   private static class DelegateReference
   {
     public int startDepth;
     public boolean startedOnText;
     public ContentHandler contentHandler;
-    
+
     public DelegateReference(int startDepth, ContentHandler contentHandler, boolean startedOnText)
     {
       this.startDepth = startDepth;
       this.contentHandler = contentHandler;
       this.startedOnText = startedOnText;
     }
-    
+
     @Override
     public String toString()
     {
@@ -191,7 +196,7 @@ public class DelegatingContentHandler extends DefaultHandler
           + startedOnText + ", contentHandler=" + contentHandler + "]";
     }
   }
-  
+
   @Override
   public InputSource resolveEntity(String publicId, String systemId)
       throws SAXException, IOException
@@ -202,7 +207,7 @@ public class DelegatingContentHandler extends DefaultHandler
     }
     return null;
   }
-  
+
   @Override
   public void notationDecl(String name, String publicId, String systemId)
       throws SAXException
