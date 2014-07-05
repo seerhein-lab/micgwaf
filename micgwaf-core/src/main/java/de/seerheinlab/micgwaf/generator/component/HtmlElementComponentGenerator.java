@@ -91,7 +91,7 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
         }
       }
     }
-    generateClassJavadoc(generationContext.component, result, false);
+    generateClassJavadoc(generationContext, false);
     generateClassDefinition(generationContext, HtmlElementComponent.class);
 
     generateSerialVersionUid(result);
@@ -308,7 +308,7 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
     GeneratedClass result =generationContext.generatedClass;
     result.classPackage = generationContext.getPackage();
     result.imports.add(Component.class.getName());
-    generateClassJavadoc(generationContext.component, result, true);
+    generateClassJavadoc(generationContext, true);
     result.classDefinition.append("public class ").append(extensionClassName)
         .append(" extends ").append(className);
     generateSerialVersionUid(result);

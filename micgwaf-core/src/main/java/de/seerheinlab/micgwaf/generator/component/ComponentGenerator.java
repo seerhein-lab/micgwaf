@@ -237,7 +237,7 @@ public abstract class ComponentGenerator
    * @param generationContext the generation context, not null.
    * @param className the unqualified class name of the class for which the constructor is generated.
    * @param defaultId the id to use in the generated component if the id parameter is null in the constructor.
-   * @param additionalCode additional code to be executed in the constructor.
+   * @param additionalCode additional code to be added to the constructor method body.
    */
   public void generateConstructorWithIdAndParent(
       GenerationContext generationContext,
@@ -281,28 +281,27 @@ public abstract class ComponentGenerator
   /**
    * Generates the class javadoc for component classes.
    *
-   * @param component the component for which the javadoc should be generated
-   * @param generatedClass the class in which the javadoc should be stored.
+   * @param generationContext the generation context, not null.
    * @param forExtension if the javadoc is generated for an extension class.
    */
-  protected void generateClassJavadoc(Component component, GeneratedClass generatedClass, boolean forExtension)
+  protected void generateClassJavadoc(GenerationContext generationContext, boolean forExtension)
   {
-    StringBuilder result = generatedClass.classJavadoc;
+    StringBuilder result = generationContext.generatedClass.classJavadoc;
     result.append("/**\n");
     result.append(" * This class represents the HTML element with m:id ")
-            .append(removeLoopPart(component.getId())).append(".\n");
+            .append(removeLoopPart(generationContext.component.getId())).append(".\n");
     result.append(" * Instances of this class are used whenever these elements are rendered\n");
     result.append(" * or when form date from a page containing these elements is processed.\n");
     if (!forExtension)
     {
-      ComponentGenerator generator = Generator.getGenerator(component);
-      if (generator.generateExtensionClass(component))
+      ComponentGenerator generator = Generator.getGenerator(generationContext.component);
+      if (generator.generateExtensionClass(generationContext.component))
       {
         result.append(" *\n");
         result.append(" * NOTE: This class should not be referenced; instead, the class\n");
         result.append(" * ")
             .append(generator.getExtensionClassName(
-                new GenerationContext(component, "dummy", null)).getSimpleName())
+                new GenerationContext(generationContext.component, "dummy", null)).getSimpleName())
             .append(" should be used.").append("\n");
       }
     }

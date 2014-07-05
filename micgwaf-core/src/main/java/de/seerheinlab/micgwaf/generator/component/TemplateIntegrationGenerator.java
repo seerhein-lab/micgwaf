@@ -76,7 +76,7 @@ public class TemplateIntegrationGenerator extends ComponentGenerator
     }
 
     // class definition header
-    generateClassJavadoc(generationContext.component, result, false);
+    generateClassJavadoc(generationContext, false);
     result.classDefinition.append("public class ").append(className)
         .append(" extends ").append(Component.class.getSimpleName())
         .append("\n");
@@ -161,7 +161,7 @@ public class TemplateIntegrationGenerator extends ComponentGenerator
 
     result.imports.add(Component.class.getName());
 
-    generateClassJavadoc(generationContext.component, result, true);
+    generateClassJavadoc(generationContext, true);
     result.classDefinition.append("public class ").append(extensionClassName)
         .append(" extends ").append(className);
 

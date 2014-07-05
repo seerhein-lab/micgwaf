@@ -68,7 +68,7 @@ public class PartListComponentGenerator extends ComponentGenerator
       }
     }
 
-    generateClassJavadoc(generationContext.component, result, false);
+    generateClassJavadoc(generationContext, false);
     generateClassDefinition(generationContext, Component.class);
     generateSerialVersionUid(result);
 
@@ -185,7 +185,7 @@ public class PartListComponentGenerator extends ComponentGenerator
 
     result.imports.add(Component.class.getName());
 
-    generateClassJavadoc(generationContext.component, result, true);
+    generateClassJavadoc(generationContext, true);
     generateExtensionDefinition(generationContext);
 
     generateSerialVersionUid(result);
