@@ -14,7 +14,7 @@ public class InputComponentGenerator extends HtmlElementComponentGenerator
   {
     return toBaseClassName(generationContext);
   }
-  
+
   @Override
   public void generate(GenerationContext generationContext)
   {
@@ -25,9 +25,9 @@ public class InputComponentGenerator extends HtmlElementComponentGenerator
     // In the generated class, the value of the attribute "name" should not contain any loop parts.
     // They will be added again when generating the name.
     inputComponent.attributes.put(
-        InputComponent.NAME_ATTR, 
+        InputComponent.NAME_ATTR,
         removeLoopPart(inputComponent.attributes.get(InputComponent.NAME_ATTR)));
-    
+
     // replace inheritance class
     result.classDefinition = new StringBuilder();
     generateClassDefinition(generationContext, InputComponent.class);
@@ -40,7 +40,7 @@ public class InputComponentGenerator extends HtmlElementComponentGenerator
   public void generateExtension(GenerationContext generationContext)
   {
     GeneratedClass result = generationContext.generatedClass;
-    
+
     String extensionClassName = getExtensionClassName(generationContext).getSimpleName();
 
     result.classPackage = generationContext.getPackage();

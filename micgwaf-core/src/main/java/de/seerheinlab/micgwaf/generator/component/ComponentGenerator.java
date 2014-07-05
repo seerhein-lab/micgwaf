@@ -17,9 +17,9 @@ public abstract class ComponentGenerator
    * Returns the class name of the component which will represent a parsed component
    * in the generated code. The component can either be a generated component, or a component
    * supplied in a component library.
-   * 
+   *
    * @param generationContext the generation context for the class, not null.
-   * 
+   *
    * @return the class name, not null.
    */
   public abstract JavaClassName getClassName(GenerationContext generationContext);
@@ -27,26 +27,26 @@ public abstract class ComponentGenerator
   /**
    * Returns the class name of the extension class containing user modifications to the generated class.
    * The component can either be a generated component, or a component supplied in a component library.
-   * 
+   *
    * @param generationContext the generation context for the class, not null.
-   * 
-   * @return the class name of the extension class. 
+   *
+   * @return the class name of the extension class.
    *         May return null if generateExtensionClass() returns null for the component.
    */
   public JavaClassName getExtensionClassName(GenerationContext generationContext)
   {
     return toExtensionClassName(generationContext.component.getId(), generationContext.getPackage());
   }
-  
+
   /**
    * Returns the class name of the class by which this component can be referenced in generated code.
    * The component can either be a generated component, or a component supplied in a component library.
    * If an extension class containing user modifications to the generating class exists,
    * the extension class is returned, otherwise the base class is returned.
-   * 
+   *
    * @param generationContext the generation context for the class, not null.
-   * 
-   * @return the class name of the extension class. 
+   *
+   * @return the class name of the extension class.
    *         May return null if generateExtensionClass() returns null for the component.
    */
   public JavaClassName getReferencableClassName(GenerationContext generationContext)
@@ -63,86 +63,86 @@ public abstract class ComponentGenerator
    * The method first checks if an extension class is generated, and if yes and the configuration
    * says that base classes without extension should follow the extension naming pattern, it forwards
    * to the toExtensionClassName method.
-   * If this is not the case, any loop part suffixes (starting with a colon :) and directory prefixes 
-   * (separated by a slash) are removed from the component id, 
+   * If this is not the case, any loop part suffixes (starting with a colon :) and directory prefixes
+   * (separated by a slash) are removed from the component id,
    * and the first character of the component id is converted to upper case.
-   * This modified id is then prefixed by the baseClassPrefix and baseClassSuffix 
+   * This modified id is then prefixed by the baseClassPrefix and baseClassSuffix
    * from the generator configuration.
-   * 
+   *
    * @param generationContext the component and package info, not null.
-   * 
+   *
    * @return the java class name for the component and package info, not null.
    */
   public JavaClassName toBaseClassName(GenerationContext generationContext)
   {
-    if (!generateExtensionClass(generationContext.component) 
+    if (!generateExtensionClass(generationContext.component)
         && !Generator.getGeneratorConfiguration().isBaseClassWithoutExtensionNamedLikeBaseClasses())
     {
       return toExtensionClassName(generationContext.component.getId(), generationContext.getPackage());
     }
     String normalizedId = removeDirectoryPrefix(removeLoopPart(generationContext.component.getId()));
-    String simpleName = Generator.getGeneratorConfiguration().getBaseClassPrefix() 
+    String simpleName = Generator.getGeneratorConfiguration().getBaseClassPrefix()
         + normalizedId.substring(0, 1).toUpperCase()
         + normalizedId.substring(1)
         + Generator.getGeneratorConfiguration().getBaseClassSuffix();
     return new JavaClassName(simpleName, generationContext.getPackage());
   }
-  
+
   /**
-   * Converts a component id and package info into a java class name following the extension class 
+   * Converts a component id and package info into a java class name following the extension class
    * naming pattern.
    * Any loop part suffixes (starting with a colon :) and any direcory prefixes (separated by a slash /)
-   * are removed from the component id, 
+   * are removed from the component id,
    * and the first character of the component id is converted to upper case.
-   * This modified id is then prefixed by the extensionClassPrefix and extensionClassSuffix 
+   * This modified id is then prefixed by the extensionClassPrefix and extensionClassSuffix
    * from the generator configuration.
-   * 
+   *
    * @param componentKey the key of the component to generate the class name for, not null.
    * @param componentPackage the package for the component, not null
-   * 
+   *
    * @return the java class name for the componentid and package info.
    */
   public JavaClassName toExtensionClassName(String componentId, String componentPackage)
   {
     String normalizedId = removeDirectoryPrefix(removeLoopPart(componentId));
-    String simpleName = Generator.getGeneratorConfiguration().getExtensionClassPrefix() 
+    String simpleName = Generator.getGeneratorConfiguration().getExtensionClassPrefix()
         + normalizedId.substring(0, 1).toUpperCase()
         + normalizedId.substring(1)
         + Generator.getGeneratorConfiguration().getExtensionClassSuffix();
     return new JavaClassName(simpleName, componentPackage);
   }
-  
+
   /**
    * Returns whether an extension class should be generated for the component.
-   * 
+   *
    * @param component the component to check, not null.
-   * 
+   *
    * @return true if an extension class is generated, false otherwise.
    */
   // Note: this method is used to quickly determine whether the extension class or the base class
   // should be accessed by other components.
   // It would also be possible to use the set-null semantics of the base class generation,
-  // but this would mean a performance penalty because each time this question is answered 
+  // but this would mean a performance penalty because each time this question is answered
   // a whole class body is potentionally created and thrown away.
   public abstract boolean generateExtensionClass(Component component);
-  
+
   /**
-   * Generates the component class representing the component. 
+   * Generates the component class representing the component.
    * The result is contained in the generatedClass field of the generationContext.
    * If no class should be generated, the generator must set the generatedClass field
    * of the generationContext to null.
-   * 
+   *
    * @param generationContext the generation context for the class, not null.
    */
   public abstract void generate(GenerationContext generationContext);
-  
+
   /**
    * Generates the component extension class representing the component.
    * The extension class contains user-specific extensions to the generated class.
    * The result is contained in the generatedClass field of the generationContext.
    * If no class should be generated, the generator may set the generatedClass field
    * of the generationContext to null.
-   * 
+   *
    * @param generationContext the generation context for the class, not null.
    *        The StringBuilder and indent fields of the generationContext are not used.
    */
@@ -152,21 +152,21 @@ public abstract class ComponentGenerator
    * Generates an initializer which initializes this component if this component is constructed
    * and assigned to a field.
    * If this component does not need to be initialized, the empty string can be returned.
-   * 
+   *
    * @param generationContext the generation context for the class, not null.
    * @param componentField the name of the field the component is assigned to, not null.
-   * 
+   *
    * @return the initializer java code, of the empty string if no initializer code is needed; not null.
    */
   public abstract void generateInitializer(GenerationContext generationContext, String componentField);
-  
+
   /**
-   * Generates a field or a local variable from a component. 
-   * If the component is not of the general Type Component, 
+   * Generates a field or a local variable from a component.
+   * If the component is not of the general Type Component,
    * the component is constructed using the constructor with the parent argument, assigned to
    * the local variable and field.
    * Afterwards, the component is initialized using the initializer.
-   * 
+   *
    * @param generationContext the generation context, not null.
    * @param modifier any modifier to the variable or field, e.g "public " or "final ".
    * @param fieldName the name of the field or variable
@@ -234,9 +234,9 @@ public abstract class ComponentGenerator
           child,
           generationContext.indent + 2);
       generateFieldOrVariableFromComponent(
-          childContext, 
-          "", 
-          fieldName, 
+          childContext,
+          "",
+          fieldName,
           "this");
       generationContext.generatedClass.classBody.append(indentString).append("  ")
           .append(componentField).append(".children.add(")
@@ -246,16 +246,16 @@ public abstract class ComponentGenerator
     }
     generationContext.generatedClass.classBody.append(indentString).append("}\n");
   }
-  
+
   /**
    * Generates an empty (except calling super) constructor for a component with an id and a parent argument.
-   * 
+   *
    * @param className the unqualified class name of the class for which the constructor is generated.
    * @param defaultId the id to use in the generated component if the id parameter is null in the constructor.
    * @param generatedClass the class to which body the constructor code should be appended.
    */
   public void generateConstructorWithIdAndParent(
-      String className, 
+      String className,
       String defaultId,
       GeneratedClass generatedClass)
   {
@@ -286,10 +286,10 @@ public abstract class ComponentGenerator
     }
     toAppendTo.append("  }\n\n");
   }
-  
+
   /**
    * Generates the class javadoc for component classes.
-   * 
+   *
    * @param component the component for which the javadoc should be generated
    * @param generatedClass the class in which the javadoc should be stored.
    * @param forExtension if the javadoc is generated for an extension class.
@@ -319,7 +319,7 @@ public abstract class ComponentGenerator
   }
 
   protected void generateClassDefinition(
-      GenerationContext generationContext, 
+      GenerationContext generationContext,
       Class<? extends Component> extensionClass)
   {
     generationContext.generatedClass.classDefinition
@@ -346,9 +346,9 @@ public abstract class ComponentGenerator
    * Returns a string in a form which can be used as string constant in a java source file.
    * The String is surrounded with double quotes, and backslashes, carriage returns and newlines
    * are replaced with the appropriate escape sequences.
-   *  
+   *
    * @param string the string to be converted to a string constant, not null.
-   * 
+   *
    * @return the string constant, not null.
    */
   public String asConstant(String string)
@@ -363,9 +363,9 @@ public abstract class ComponentGenerator
   /**
    * Removes the loop part of an id, extracting the original id of the component.
    * It is assumed that all loop parts are appended as suffixes starting with a colon.
-   * 
+   *
    * @param id the id to remove the loop part from, or null.
-   * 
+   *
    * @return the id without the loop part, not null if <code>id</code> is not null.
    */
   public String removeLoopPart(String id)
@@ -381,13 +381,13 @@ public abstract class ComponentGenerator
     }
     return id.substring(0, indexOfColon);
   }
-  
+
   /**
    * Removes the directory prefix of an id, extracting the original id of the component.
    * It is assumed that all directory prefixes are prepended separated by a slash.
-   * 
+   *
    * @param id the id to remove the directory prefix from, or null.
-   * 
+   *
    * @return the id without the directory prefix, not null if <code>id</code> is not null.
    */
   public String removeDirectoryPrefix(String id)
@@ -403,12 +403,12 @@ public abstract class ComponentGenerator
     }
     return id.substring(lastIndexOfSlash + 1);
   }
-  
+
   /**
    * Replaces all dots by underscores in an id.
-   * 
+   *
    * @param id the id to replace dots in, or null.
-   * 
+   *
    * @return the id with dots replaced by underscores, not null if <code>id</code> is not null.
    */
   public String replaceDots(String id)
@@ -419,8 +419,8 @@ public abstract class ComponentGenerator
     }
     return id.replace('.', '_');
   }
-  
-  
+
+
   public String getChildName(String baseName, int counter)
   {
     if (baseName == null || "".equals(baseName))
@@ -429,7 +429,7 @@ public abstract class ComponentGenerator
     }
     return baseName + "Child" + counter;
   }
-  
+
 
   public String getComponentFieldName(Component component, int componentCounter)
   {
@@ -456,7 +456,7 @@ public abstract class ComponentGenerator
 
   /**
    * Generates code for the serialVersionUID constant for serializable classes.
-   * 
+   *
    * @param generatedClass the class to which the code should be appended.
    */
   public void generateSerialVersionUid(GeneratedClass generatedClass)
@@ -465,11 +465,11 @@ public abstract class ComponentGenerator
     generatedClass.classBody.append("  /** Serial Version UID. */\n");
     generatedClass.classBody.append("  private static final long serialVersionUID = 1L;\n\n");
   }
-  
+
   /**
-   * Generates the changeChildHtmlId method for a component. 
+   * Generates the changeChildHtmlId method for a component.
    * The method adds the id of the component as prefix if the id is not null.
-   * 
+   *
    * @param fileContent the StringBuilder to which the code should be appended.
    */
   public void generateChangeChildHtmlId(GeneratedClass generatedClass)
@@ -494,10 +494,10 @@ public abstract class ComponentGenerator
         .append("    return htmlId;\n")
         .append("  }\n");
   }
-  
+
   protected void generateVariableComponentField(
       PartListComponent.ComponentPart part,
-      String componentField, 
+      String componentField,
       GeneratedClass generatedClass)
   {
     generatedClass.classBody.append("  public ").append(SnippetComponent.class.getSimpleName())
@@ -511,17 +511,17 @@ public abstract class ComponentGenerator
 
   /**
    * Generates getters and setters for variable parts.
-   * 
+   *
    * @param part the ComponentPart containing variable name, not null.
    * @param snippetVariableName the name of the snippet constant or field, not null.
    * @param generatedClass the class to which body the code should be appended.
    */
   public void generateVariableGetterSetter(
       PartListComponent.ComponentPart part,
-      String snippetVariableName, 
+      String snippetVariableName,
       GeneratedClass generatedClass)
   {
-    String getterSetterSuffix 
+    String getterSetterSuffix
         = part.variableName.substring(0,1).toUpperCase() + part.variableName.substring(1);
     generatedClass.classBody.append("\n  /**\n")
         .append("   * Returns the text content of the html text content variable ${")

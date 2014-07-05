@@ -14,7 +14,7 @@ public class RefComponentGenerator extends ComponentGenerator
   {
     RefComponent refComponent = (RefComponent) generationContext.component;
     if (refComponent.referencedComponent != null
-        && refComponent.referencedComponent.getGenerationParameters() != null 
+        && refComponent.referencedComponent.getGenerationParameters() != null
         && refComponent.referencedComponent.getGenerationParameters().fromComponentLib)
     {
       return new JavaClassName(
@@ -26,7 +26,7 @@ public class RefComponentGenerator extends ComponentGenerator
         refComponent.refid,
         generationContext.rootPackage + '.'+ subpackage);
   }
-  
+
   @Override
   public boolean generateExtensionClass(Component component)
   {
@@ -38,7 +38,7 @@ public class RefComponentGenerator extends ComponentGenerator
   {
     generationContext.generatedClass = null;
   }
-  
+
   @Override
   public void generateExtension(GenerationContext generationContext)
   {

@@ -11,25 +11,25 @@ public class EmptyComponentGenerator extends ComponentGenerator
   {
     return new JavaClassName(EmptyComponent.class);
   }
-  
+
   @Override
   public JavaClassName getExtensionClassName(GenerationContext generationContext)
   {
     return null;
   }
-  
+
   @Override
   public boolean generateExtensionClass(Component component)
   {
     return false;
   }
-  
+
   @Override
   public void generate(GenerationContext generationContext)
   {
     generationContext.generatedClass = null;
   }
-  
+
   @Override
   public void generateExtension(GenerationContext generationContext)
   {

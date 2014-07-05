@@ -14,11 +14,11 @@ public class ChildListComponentGenerator extends ComponentGenerator
     Component child = generationContext.component.getChildren().get(0);
     ComponentGenerator delegate = Generator.getGenerator(child);
     return new JavaClassName(
-        "ChildListComponent<" 
+        "ChildListComponent<"
             + delegate.getClassName(new GenerationContext(generationContext, child)).getSimpleName() + ">",
         ChildListComponent.class.getPackage().getName());
   }
-  
+
   @Override
   public JavaClassName getExtensionClassName(GenerationContext generationContext)
   {
@@ -32,21 +32,21 @@ public class ChildListComponentGenerator extends ComponentGenerator
     }
     return  new JavaClassName(
         "ChildListComponent<" + delegateClassName + ">",
-        ChildListComponent.class.getPackage().getName()); 
+        ChildListComponent.class.getPackage().getName());
   }
-  
+
   @Override
   public JavaClassName getReferencableClassName(GenerationContext generationContext)
   {
     return getExtensionClassName(generationContext);
   }
-  
+
   @Override
   public void generate(GenerationContext generationContext)
   {
     generationContext.generatedClass = null;
   }
-  
+
   @Override
   public void generateExtension(GenerationContext generationContext)
   {

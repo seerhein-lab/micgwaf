@@ -23,7 +23,7 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
   {
     return toBaseClassName(generationContext);
   }
-  
+
   @Override
   public void generate(GenerationContext generationContext)
   {
@@ -46,24 +46,24 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
     List<ComponentWithPath> inputs = new ArrayList<>();
     List<Component> componentPath = new ArrayList<>();
     getInputs(generationContext.component, inputs, componentPath);
-    
+
     for (InputComponent button : buttons)
     {
       generateButtonHookMethod(result, button, false);
     }
-    
+
     for (Map.Entry<InputComponent, Component> buttonEntry : buttonsInLoops.entrySet())
     {
       InputComponent button = buttonEntry.getKey();
       Component loopComponent = buttonEntry.getValue();
       generateButtonInLoopHookMethod(generationContext, button, loopComponent, false);
     }
-    
+
     for (ComponentWithPath input : inputs)
     {
       generateSubmittedValueGettersAndSetters(generationContext.component, result, input);
     }
-    
+
     result.classBody.append("\n  /**\n")
         .append("   * Hook method which is called when the form was submitted.\n")
         .append("   *\n")
@@ -101,7 +101,7 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
       InputComponent button = buttonEntry.getKey();
       Component loopComponent = buttonEntry.getValue();
       ComponentGenerator loopComponentGenerator = Generator.getGenerator(loopComponent);
-      JavaClassName loopComponentReferencableClassName 
+      JavaClassName loopComponentReferencableClassName
           = loopComponentGenerator.getReferencableClassName(
               new GenerationContext(generationContext, loopComponent));
       result.classBody.append("      for (").append(loopComponentReferencableClassName.getSimpleName())
@@ -133,10 +133,10 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
     String normalizedInputId = removeLoopPart(input.component.getId());
     StringBuilder pathToComponent = new StringBuilder();
     StringBuilder getterSetterSuffix = new StringBuilder();
-    StringBuilder refComponentPath = new StringBuilder(); 
+    StringBuilder refComponentPath = new StringBuilder();
     for (Component pathElement : input.path)
     {
-      if (pathElement.getId() != null 
+      if (pathElement.getId() != null
           && pathElement.getParent() != null) // do not output ids of component root referenced by RefComponents
       {
         pathToComponent.append(removeLoopPart(pathElement.getId())).append(".");
@@ -199,7 +199,7 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
     String bareButtonId = removeLoopPart(button.getId());
     String bareLoopComponentId = removeLoopPart(loopComponent.getId());
     ComponentGenerator loopComponentGenerator = Generator.getGenerator(loopComponent);
-    JavaClassName loopComponentReferencableClassName 
+    JavaClassName loopComponentReferencableClassName
         = loopComponentGenerator.getReferencableClassName(
             new GenerationContext(generationContext, loopComponent));
     generationContext.generatedClass.classBody.append("\n  /**\n")
@@ -278,7 +278,7 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
   public void generateExtension(GenerationContext generationContext)
   {
     GeneratedClass result = generationContext.generatedClass;
-    
+
     String extensionClassName = getExtensionClassName(generationContext).getSimpleName();
 
     result.classPackage = generationContext.getPackage();
@@ -286,7 +286,7 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
     generateExtensionDefinition(generationContext);
     generateSerialVersionUid(result);
     generateConstructorWithIdAndParent(extensionClassName, null, result);
-    
+
     List<InputComponent> buttons = new ArrayList<>();
     getButtons(generationContext.component, buttons);
     Map<InputComponent, Component> buttonsInLoops = new HashMap<>();
@@ -296,7 +296,7 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
     {
       generateButtonHookMethod(result, button, true);
     }
-    
+
     for (Map.Entry<InputComponent, Component> buttonEntry : buttonsInLoops.entrySet())
     {
       InputComponent button = buttonEntry.getKey();
@@ -304,7 +304,7 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
       generateButtonInLoopHookMethod(generationContext, button, loopComponent, true);
     }
   }
-  
+
   public void getButtons(Component component, List<InputComponent> buttons)
   {
     if (component instanceof InputComponent)
@@ -346,7 +346,7 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
       getButtonsInLoops(child, buttons);
     }
   }
-  
+
   public void getInputs(Component component, List<ComponentWithPath> inputs, List<Component> componentPath)
   {
     if (component instanceof InputComponent)
@@ -354,9 +354,9 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
       InputComponent inputComponent = (InputComponent) component;
       if (!inputComponent.isButton())
       {
-        // use subList because path contains base component, which we do not want to store as path member 
+        // use subList because path contains base component, which we do not want to store as path member
         inputs.add(new ComponentWithPath(
-            inputComponent, 
+            inputComponent,
             new ArrayList<>(componentPath.subList(1, componentPath.size() - 1))));
       }
     }
@@ -384,13 +384,13 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
     }
     componentPath.remove(componentPath.size() - 1);
   }
-  
+
   private static class ComponentWithPath
   {
     public Component component;
-    
+
     public List<Component> path;
-    
+
     public ComponentWithPath(Component component, List<Component> path)
     {
       this.component = component;

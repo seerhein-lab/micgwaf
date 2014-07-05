@@ -1,7 +1,6 @@
 package de.seerheinlab.micgwaf.generator.component;
 
 import de.seerheinlab.micgwaf.component.Component;
-import de.seerheinlab.micgwaf.generator.GeneratedClass;
 import de.seerheinlab.micgwaf.generator.JavaClassName;
 
 public class AnyComponentGenerator extends ComponentGenerator
@@ -11,7 +10,7 @@ public class AnyComponentGenerator extends ComponentGenerator
   {
     return new JavaClassName(Component.class);
   }
-  
+
   @Override
   public boolean generateExtensionClass(Component component)
   {
@@ -23,7 +22,7 @@ public class AnyComponentGenerator extends ComponentGenerator
   {
     generationContext.generatedClass = null;
   }
-  
+
   @Override
   public void generateExtension(GenerationContext generationContext)
   {

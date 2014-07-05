@@ -10,7 +10,7 @@ public class DefineComponentGenerator extends ComponentGenerator
   {
     return new JavaClassName(Component.class);
   }
-  
+
   @Override
   public boolean generateExtensionClass(Component component)
   {
@@ -22,7 +22,7 @@ public class DefineComponentGenerator extends ComponentGenerator
   {
     generationContext.generatedClass = null;
   }
-  
+
   @Override
   public void generateExtension(GenerationContext generationContext)
   {

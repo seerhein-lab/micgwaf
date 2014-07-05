@@ -25,7 +25,7 @@ public class TemplateIntegrationGenerator extends ComponentGenerator
   {
     return toBaseClassName(generationContext);
   }
-  
+
   @Override
   public void generate(GenerationContext generationContext)
   {
@@ -35,7 +35,7 @@ public class TemplateIntegrationGenerator extends ComponentGenerator
       return;
     }
     GeneratedClass result = generationContext.generatedClass;
-    
+
     TemplateIntegration templateIntegration = (TemplateIntegration) generationContext.component;
     JavaClassName javaClassName = getClassName(generationContext);
     String className = javaClassName.getSimpleName();
@@ -50,7 +50,7 @@ public class TemplateIntegrationGenerator extends ComponentGenerator
     result.imports.add(ChildListComponent.class.getName());
     result.imports.add(PartListComponent.class.getName());
     result.imports.add(PartListComponent.ComponentPart.class.getCanonicalName());
-    
+
     {
       RefComponent template = new RefComponent(templateIntegration.templateId, null, null);
       ComponentGenerator generator = Generator.getGenerator(template);
@@ -61,27 +61,27 @@ public class TemplateIntegrationGenerator extends ComponentGenerator
         result.imports.add(componentClass.getName());
       }
     }
-    
+
     for (Map.Entry<String, Component> entry : templateIntegration.definitions.entrySet())
     {
       Component definedComponent = entry.getValue();
       ComponentGenerator generator = Generator.getGenerator(definedComponent);
       JavaClassName componentClass = generator.getReferencableClassName(
           new GenerationContext(generationContext, definedComponent));
-      if (definedComponent instanceof RefComponent 
+      if (definedComponent instanceof RefComponent
           && !javaClassName.getPackage().equals(componentClass.getPackage()))
       {
         result.imports.add(componentClass.getName());
       }
     }
-    
+
     // class definition header
     generateClassJavadoc(generationContext.component, result, false);
     result.classDefinition.append("public class ").append(className)
         .append(" extends ").append(Component.class.getSimpleName())
         .append("\n");
     generateSerialVersionUid(result);
-    
+
     String templateFieldName = "template";
     {
       while (templateIntegration.definitions.keySet().contains(templateFieldName))
@@ -127,7 +127,7 @@ public class TemplateIntegrationGenerator extends ComponentGenerator
           .append(" = ").append(entry.getKey()).append(";\n");
     }
     result.classBody.append("  }\n\n");
-    
+
     // getChildren
     result.classBody
         .append("  @Override\n")
@@ -141,11 +141,11 @@ public class TemplateIntegrationGenerator extends ComponentGenerator
         .append("  {\n")
         .append("    ").append(templateFieldName).append(".render(writer);\n")
         .append("  }\n\n")
-        
+
         .append("  @Override\n")
         .append("  public void afterRender()\n")
         .append("  {\n")
-    
+
         .append("    ").append(templateFieldName).append(".afterRender();\n")
         .append("  }\n");
   }
@@ -154,7 +154,7 @@ public class TemplateIntegrationGenerator extends ComponentGenerator
   public void generateExtension(GenerationContext generationContext)
   {
     GeneratedClass result = generationContext.generatedClass;
-    
+
     String className = getClassName(generationContext).getSimpleName();
     String extensionClassName = getExtensionClassName(generationContext).getSimpleName();
     result.classPackage = generationContext.getPackage();
@@ -214,5 +214,5 @@ public class TemplateIntegrationGenerator extends ComponentGenerator
   public boolean generateExtensionClass(Component component)
   {
     return component.getId() != null;
-  }  
+  }
 }

@@ -26,7 +26,7 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
   {
     return toBaseClassName(generationContext);
   }
-  
+
   @Override
   public boolean generateExtensionClass(Component component)
   {
@@ -40,7 +40,7 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
     }
     return component.getParent() == null;
   }
-  
+
   @Override
   public void generate(GenerationContext generationContext)
   {
@@ -83,7 +83,7 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
             ComponentGenerator generator = Generator.getGenerator(part.component);
             JavaClassName componentClass = generator.getReferencableClassName(
                 new GenerationContext(generationContext, part.component));
-            if (part.component instanceof RefComponent 
+            if (part.component instanceof RefComponent
                 && !javaClassName.getPackage().equals(componentClass.getPackage()))
             {
               result.imports.add(componentClass.getName());
@@ -94,9 +94,9 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
     }
     generateClassJavadoc(generationContext.component, result, false);
     generateClassDefinition(generationContext, HtmlElementComponent.class);
-    
+
     generateSerialVersionUid(result);
-    
+
     // fields
     int componentCounter = 1;
     for (Component child : htmlElementCompont.children)
@@ -110,9 +110,9 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
           if (part.component != null)
           {
             generateFieldOrVariableFromComponent(
-                new GenerationContext(generationContext, part.component, 2), 
+                new GenerationContext(generationContext, part.component, 2),
                 "public ",
-                componentField, 
+                componentField,
                 "this");
           }
           else if (part.htmlSnippet != null)
@@ -204,7 +204,7 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
     }
     result.classBody.append("    return result;\n");
     result.classBody.append("  }\n");
-    
+
     componentCounter = 1;
     for (Component child : htmlElementCompont.children)
     {
@@ -232,7 +232,7 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
   }
 
   protected void generateConvenienceMethods(
-      HtmlElementComponent htmlElementComponent, 
+      HtmlElementComponent htmlElementComponent,
       GeneratedClass generatedClass)
   {
     if (htmlElementComponent.children.size() == 1)
@@ -300,7 +300,7 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
       }
     }
   }
-  
+
   @Override
   public void generateExtension(GenerationContext generationContext)
   {
