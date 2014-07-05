@@ -18,7 +18,7 @@ import de.seerheinlab.micgwaf.requesthandler.RequestHandler;
 public class WebappFilter implements Filter
 {
   public static final String APPLICATION_CLASS_NAME_INIT_PARAM = "applicationClassName";
-  
+
   @Override
   public void init(FilterConfig filterConfig) throws ServletException
   {
@@ -37,7 +37,7 @@ public class WebappFilter implements Filter
   public void doFilter(
         ServletRequest request,
         ServletResponse response,
-        FilterChain chain) 
+        FilterChain chain)
       throws IOException, ServletException
   {
     HttpServletRequest httpServletRequest = (HttpServletRequest) request;
@@ -45,7 +45,7 @@ public class WebappFilter implements Filter
     long startTime = System.currentTimeMillis();
 
     boolean processed = false;
-    Iterator<RequestHandler> requestHandlerIt 
+    Iterator<RequestHandler> requestHandlerIt
         = ApplicationBase.getApplication().getRequestHandlerChain().iterator();
     while (!processed && requestHandlerIt.hasNext())
     {

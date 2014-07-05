@@ -24,11 +24,11 @@ import de.seerheinlab.micgwaf.parser.HtmlParser;
 public class HtmlDevelopmentFilter implements Filter
 {
   public static final String HTML_DIR_INIT_PARAM = "htmlDir";
-  
+
   public File htmlDir;
-  
+
   public HtmlParser htmlParser;
-  
+
   @Override
   public void init(FilterConfig filterConfig) throws ServletException
   {
@@ -50,7 +50,7 @@ public class HtmlDevelopmentFilter implements Filter
   public void doFilter(
         ServletRequest request,
         ServletResponse response,
-        FilterChain chain) 
+        FilterChain chain)
       throws IOException, ServletException
   {
     HttpServletRequest httpServletRequest = (HttpServletRequest) request;
@@ -64,7 +64,7 @@ public class HtmlDevelopmentFilter implements Filter
     {
       componentId = componentId.substring(lastSlashPos + 1);
     }
-    
+
     int lastDotPos = componentId.lastIndexOf(".");
     if (lastDotPos != -1)
     {
