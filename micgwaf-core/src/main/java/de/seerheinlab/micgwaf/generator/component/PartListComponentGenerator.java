@@ -30,14 +30,14 @@ public class PartListComponentGenerator extends ComponentGenerator
   }
   
   @Override
-  public GeneratedClass generate(GenerationContext generationContext)
+  public void generate(GenerationContext generationContext)
   {
     if (generationContext.component.getId() == null)
     {
-      return null;
+      generationContext.generatedClass = null;
+      return;
     }
-    GeneratedClass result = new GeneratedClass();
-    generationContext.generatedClass = result;
+    GeneratedClass result = generationContext.generatedClass;
     
     PartListComponent partListComponent = (PartListComponent) generationContext.component;
     JavaClassName javaClassName = getClassName(generationContext);
@@ -168,16 +168,12 @@ public class PartListComponentGenerator extends ComponentGenerator
     {
       generateChangeChildHtmlId(result);
     }
-
-    generationContext.generatedClass = null;
-    return result;
   }
 
   @Override
-  public GeneratedClass generateExtension(GenerationContext generationContext)
+  public void generateExtension(GenerationContext generationContext)
   {
-    GeneratedClass result = new GeneratedClass();
-    generationContext.generatedClass = result;
+    GeneratedClass result = generationContext.generatedClass;
 
     String extensionClassName = getExtensionClassName(generationContext).getSimpleName();
 
@@ -190,9 +186,6 @@ public class PartListComponentGenerator extends ComponentGenerator
 
     generateSerialVersionUid(result);
     generateConstructorWithIdAndParent(extensionClassName, null, result);
-
-    generationContext.generatedClass = null;
-    return result;
   }
 
   @Override

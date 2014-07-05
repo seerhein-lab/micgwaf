@@ -20,7 +20,7 @@ public class GenerationContext
   /** The current indent for generation, if applicable. */
   public int indent;
   
-  /** The class which is currently generated, or null if a complete class is generated. */
+  /** The class which is currently generated. */
   public GeneratedClass generatedClass;
 
   /**

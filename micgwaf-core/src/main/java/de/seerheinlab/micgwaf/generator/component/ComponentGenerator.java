@@ -117,31 +117,36 @@ public abstract class ComponentGenerator
    * 
    * @param component the component to check, not null.
    * 
-   * @return true if an extension class should be generated, false otherwise.
+   * @return true if an extension class is generated, false otherwise.
    */
-  //TODO why flag method for extension class and return null for normal class?
+  // Note: this method is used to quickly determine whether the extension class or the base class
+  // should be accessed by other components.
+  // It would also be possible to use the set-null semantics of the base class generation,
+  // but this would mean a performance penalty because each time this question is answered 
+  // a whole class body is potentionally created and thrown away.
   public abstract boolean generateExtensionClass(Component component);
   
   /**
-   * Generates the component class representing the component.
+   * Generates the component class representing the component. 
+   * The result is contained in the generatedClass field of the generationContext.
+   * If no class should be generated, the generator must set the generatedClass field
+   * of the generationContext to null.
    * 
    * @param generationContext the generation context for the class, not null.
-   *        The StringBuilder and indent fields of the generationContext are not used.
-   * 
-   * @return the code for the generated class, or null if no class should be generated.
    */
-  public abstract GeneratedClass generate(GenerationContext generationContext);
+  public abstract void generate(GenerationContext generationContext);
   
   /**
    * Generates the component extension class representing the component.
    * The extension class contains user-specific extensions to the generated class.
+   * The result is contained in the generatedClass field of the generationContext.
+   * If no class should be generated, the generator may set the generatedClass field
+   * of the generationContext to null.
    * 
    * @param generationContext the generation context for the class, not null.
    *        The StringBuilder and indent fields of the generationContext are not used.
-   * 
-   * @return the code for the generated extension class, or null if no extension class should be generated.
    */
-  public abstract GeneratedClass generateExtension(GenerationContext generationContext);
+  public abstract void generateExtension(GenerationContext generationContext);
 
   /**
    * Generates an initializer which initializes this component if this component is constructed

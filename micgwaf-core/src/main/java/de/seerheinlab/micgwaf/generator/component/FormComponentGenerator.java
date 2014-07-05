@@ -25,10 +25,10 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
   }
   
   @Override
-  public GeneratedClass generate(GenerationContext generationContext)
+  public void generate(GenerationContext generationContext)
   {
-    GeneratedClass result = super.generate(generationContext);
-    generationContext.generatedClass = result;
+    super.generate(generationContext);
+    GeneratedClass result = generationContext.generatedClass;
 
     // replace inheritance
     result.classDefinition = new StringBuilder();
@@ -123,9 +123,6 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
         .append("    }\n")
         .append("    return result;\n")
         .append("  }\n");
-    
-    generationContext.generatedClass = null;
-    return result;
   }
 
   private void generateSubmittedValueGettersAndSetters(
@@ -278,10 +275,9 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
   }
 
   @Override
-  public GeneratedClass generateExtension(GenerationContext generationContext)
+  public void generateExtension(GenerationContext generationContext)
   {
-    GeneratedClass result = new GeneratedClass();
-    generationContext.generatedClass = result;
+    GeneratedClass result = generationContext.generatedClass;
     
     String extensionClassName = getExtensionClassName(generationContext).getSimpleName();
 
@@ -307,10 +303,6 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
       Component loopComponent = buttonEntry.getValue();
       generateButtonInLoopHookMethod(generationContext, button, loopComponent, true);
     }
-    
-   
-    generationContext.generatedClass = null;
-    return result;
   }
   
   public void getButtons(Component component, List<InputComponent> buttons)

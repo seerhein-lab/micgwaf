@@ -214,10 +214,12 @@ public class Generator
       Map<JavaClassName, String> filesToWrite)
   {
     ComponentGenerator componentGenerator = getGenerator(generationContext.component.getClass());
-    GeneratedClass generatedClass = componentGenerator.generate(generationContext);
-    if (generatedClass != null)
+    generationContext.generatedClass = new GeneratedClass();
+
+    componentGenerator.generate(generationContext);
+    if (generationContext.generatedClass != null)
     {
-      String result = generatedClass.toString();
+      String result = generationContext.generatedClass.toString();
       // TODO pass generatedClass instead of stringified result
       result = removeUnusedImports.removeUnusedImports(result);
       filesToWrite.put(
@@ -243,10 +245,12 @@ public class Generator
       Map<JavaClassName, String> filesToWrite)
   {
     ComponentGenerator componentGenerator = getGenerator(generationContext.component.getClass());
+    generationContext.generatedClass = new GeneratedClass();
+
     if (componentGenerator.generateExtensionClass(generationContext.component))
     {
-      GeneratedClass generatedClass = componentGenerator.generateExtension(generationContext);
-      String result = generatedClass.toString();
+      componentGenerator.generateExtension(generationContext);
+      String result = generationContext.generatedClass.toString();
       filesToWrite.put(
           componentGenerator.getExtensionClassName(generationContext),
           result);

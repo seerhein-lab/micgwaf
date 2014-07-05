@@ -27,14 +27,14 @@ public class TemplateIntegrationGenerator extends ComponentGenerator
   }
   
   @Override
-  public GeneratedClass generate(GenerationContext generationContext)
+  public void generate(GenerationContext generationContext)
   {
     if (generationContext.component.getId() == null)
     {
-      return null;
+      generationContext.generatedClass = null;
+      return;
     }
-    GeneratedClass result = new GeneratedClass();
-    generationContext.generatedClass = result;
+    GeneratedClass result = generationContext.generatedClass;
     
     TemplateIntegration templateIntegration = (TemplateIntegration) generationContext.component;
     JavaClassName javaClassName = getClassName(generationContext);
@@ -148,16 +148,12 @@ public class TemplateIntegrationGenerator extends ComponentGenerator
     
         .append("    ").append(templateFieldName).append(".afterRender();\n")
         .append("  }\n");
-    
-    generationContext.generatedClass = null;
-    return result;
   }
 
   @Override
-  public GeneratedClass generateExtension(GenerationContext generationContext)
+  public void generateExtension(GenerationContext generationContext)
   {
-    GeneratedClass result = new GeneratedClass();
-    generationContext.generatedClass = result;
+    GeneratedClass result = generationContext.generatedClass;
     
     String className = getClassName(generationContext).getSimpleName();
     String extensionClassName = getExtensionClassName(generationContext).getSimpleName();
@@ -171,9 +167,6 @@ public class TemplateIntegrationGenerator extends ComponentGenerator
 
     generateSerialVersionUid(result);
     generateConstructorWithIdAndParent(extensionClassName, null, result);
-
-    generationContext.generatedClass = null;
-    return result;
   }
 
   @Override

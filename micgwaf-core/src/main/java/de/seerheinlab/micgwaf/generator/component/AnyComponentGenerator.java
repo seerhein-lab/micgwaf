@@ -19,15 +19,14 @@ public class AnyComponentGenerator extends ComponentGenerator
   }
 
   @Override
-  public GeneratedClass generate(GenerationContext generationContext)
+  public void generate(GenerationContext generationContext)
   {
-    return null;
+    generationContext.generatedClass = null;
   }
   
   @Override
-  public GeneratedClass generateExtension(GenerationContext generationContext)
+  public void generateExtension(GenerationContext generationContext)
   {
-    return null;
   }
 
   @Override

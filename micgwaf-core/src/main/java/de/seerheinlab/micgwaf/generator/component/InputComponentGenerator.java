@@ -16,16 +16,17 @@ public class InputComponentGenerator extends HtmlElementComponentGenerator
   }
   
   @Override
-  public GeneratedClass generate(GenerationContext generationContext)
+  public void generate(GenerationContext generationContext)
   {
+    super.generate(generationContext);
+    GeneratedClass result = generationContext.generatedClass;
+
     InputComponent inputComponent = (InputComponent) generationContext.component;
     // In the generated class, the value of the attribute "name" should not contain any loop parts.
     // They will be added again when generating the name.
     inputComponent.attributes.put(
         InputComponent.NAME_ATTR, 
         removeLoopPart(inputComponent.attributes.get(InputComponent.NAME_ATTR)));
-    GeneratedClass result = super.generate(generationContext);
-    generationContext.generatedClass = result;
     
     // replace inheritance class
     result.classDefinition = new StringBuilder();
@@ -33,19 +34,14 @@ public class InputComponentGenerator extends HtmlElementComponentGenerator
 
     result.imports.add(HttpServletRequest.class.getName());
     result.imports.add(InputComponent.class.getName());
-
-    generationContext.generatedClass = null;
-    return result;
   }
 
   @Override
-  public GeneratedClass generateExtension(GenerationContext generationContext)
+  public void generateExtension(GenerationContext generationContext)
   {
-    GeneratedClass result = new GeneratedClass();
-    generationContext.generatedClass = result;
+    GeneratedClass result = generationContext.generatedClass;
     
-    String extensionClassName = getExtensionClassName(generationContext)
-          .getSimpleName();
+    String extensionClassName = getExtensionClassName(generationContext).getSimpleName();
 
     result.classPackage = generationContext.getPackage();
     result.imports.add(Component.class.getName());
@@ -53,8 +49,5 @@ public class InputComponentGenerator extends HtmlElementComponentGenerator
     generateExtensionDefinition(generationContext);
     generateSerialVersionUid(result);
     generateConstructorWithIdAndParent(extensionClassName, null, result);
-    
-    generationContext.generatedClass = null;
-    return result;
   }
 }

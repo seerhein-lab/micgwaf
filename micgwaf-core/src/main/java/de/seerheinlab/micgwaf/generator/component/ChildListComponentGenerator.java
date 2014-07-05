@@ -2,7 +2,6 @@ package de.seerheinlab.micgwaf.generator.component;
 
 import de.seerheinlab.micgwaf.component.ChildListComponent;
 import de.seerheinlab.micgwaf.component.Component;
-import de.seerheinlab.micgwaf.generator.GeneratedClass;
 import de.seerheinlab.micgwaf.generator.Generator;
 import de.seerheinlab.micgwaf.generator.GeneratorHelper;
 import de.seerheinlab.micgwaf.generator.JavaClassName;
@@ -43,15 +42,14 @@ public class ChildListComponentGenerator extends ComponentGenerator
   }
   
   @Override
-  public GeneratedClass generate(GenerationContext generationContext)
+  public void generate(GenerationContext generationContext)
   {
-    return null;
+    generationContext.generatedClass = null;
   }
   
   @Override
-  public GeneratedClass generateExtension(GenerationContext generationContext)
+  public void generateExtension(GenerationContext generationContext)
   {
-    return null;
   }
 
   @Override
@@ -84,5 +82,4 @@ public class ChildListComponentGenerator extends ComponentGenerator
   {
     return false;
   }
-
 }

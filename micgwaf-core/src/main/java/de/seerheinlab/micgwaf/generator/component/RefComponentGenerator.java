@@ -4,7 +4,6 @@ import java.util.Map;
 
 import de.seerheinlab.micgwaf.component.Component;
 import de.seerheinlab.micgwaf.component.RefComponent;
-import de.seerheinlab.micgwaf.generator.GeneratedClass;
 import de.seerheinlab.micgwaf.generator.Generator;
 import de.seerheinlab.micgwaf.generator.JavaClassName;
 
@@ -35,15 +34,14 @@ public class RefComponentGenerator extends ComponentGenerator
   }
 
   @Override
-  public GeneratedClass generate(GenerationContext generationContext)
+  public void generate(GenerationContext generationContext)
   {
-    return null;
+    generationContext.generatedClass = null;
   }
   
   @Override
-  public GeneratedClass generateExtension(GenerationContext generationContext)
+  public void generateExtension(GenerationContext generationContext)
   {
-    return null;
   }
 
   @Override

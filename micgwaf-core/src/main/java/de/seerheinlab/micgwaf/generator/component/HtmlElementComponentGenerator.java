@@ -42,13 +42,13 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
   }
   
   @Override
-  public GeneratedClass generate(GenerationContext generationContext)
+  public void generate(GenerationContext generationContext)
   {
-    GeneratedClass result = new GeneratedClass();
+    GeneratedClass result = generationContext.generatedClass;
     HtmlElementComponent htmlElementCompont = (HtmlElementComponent) generationContext.component;
     JavaClassName javaClassName = getClassName(generationContext);
     String className = javaClassName.getSimpleName();
-    generationContext.generatedClass = result;
+
     result.classPackage = generationContext.getPackage();
     result.imports.add(ChangesChildHtmlId.class.getName());
     result.imports.add(Component.class.getName());
@@ -229,8 +229,6 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
       generateChangeChildHtmlId(result);
     }
     generateConvenienceMethods(htmlElementCompont, result);
-    generationContext.generatedClass = null;
-    return result;
   }
 
   protected void generateConvenienceMethods(
@@ -304,11 +302,11 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
   }
   
   @Override
-  public GeneratedClass generateExtension(GenerationContext generationContext)
+  public void generateExtension(GenerationContext generationContext)
   {
     String className = getClassName(generationContext).getSimpleName();
     String extensionClassName = getExtensionClassName(generationContext).getSimpleName();
-    GeneratedClass result = new GeneratedClass();
+    GeneratedClass result =generationContext.generatedClass;
     result.classPackage = generationContext.getPackage();
     result.imports.add(Component.class.getName());
     generateClassJavadoc(generationContext.component, result, true);
@@ -316,7 +314,6 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
         .append(" extends ").append(className);
     generateSerialVersionUid(result);
     generateConstructorWithIdAndParent(extensionClassName, null, result);
-    return result;
   }
 
   @Override
