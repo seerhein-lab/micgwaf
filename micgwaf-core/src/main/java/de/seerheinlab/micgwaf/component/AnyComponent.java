@@ -23,6 +23,7 @@ public class AnyComponent extends Component
     this.name = name;
   }
 
+  @Override
   public List<Component> getChildren()
   {
     return new ArrayList<>();

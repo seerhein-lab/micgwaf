@@ -15,7 +15,7 @@ public class EmptyComponent extends Component
 
   /**
    * Constructor for an empty Component without id.
-   * 
+   *
    * @param parent the parent component.
    */
   public EmptyComponent(Component parent)
@@ -25,7 +25,7 @@ public class EmptyComponent extends Component
 
   /**
    * Constructor for an empty Component.
-   * 
+   *
    * @param id the id of the component.
    * @param parent the parent component.
    */

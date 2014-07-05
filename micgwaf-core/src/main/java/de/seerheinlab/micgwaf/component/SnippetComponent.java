@@ -16,10 +16,10 @@ public class SnippetComponent extends Component
 
   /** The text which is rendered to the output. */
   public String text;
-  
+
   /**
    * Constructor.
-   * 
+   *
    * @param parent the parent component. May be null if this is a standalone component (e.g. a page).
    */
   public SnippetComponent(Component parent)
@@ -28,12 +28,12 @@ public class SnippetComponent extends Component
   }
 
   /**
-   * Constructor. 
-   * 
+   * Constructor.
+   *
    * @param id the id of the component, may be null. The id is not used in this component.
    * @param text the text to be written to the output, or null to not write any text to the output.
    * @param parent the parent component. May be null if this is a standalone component (e.g. a page).
-   * 
+   *
    * @throws NullPointerException if text is null.
    */
   public SnippetComponent(String id, String text, Component parent)
@@ -41,11 +41,11 @@ public class SnippetComponent extends Component
     super(id, parent);
     this.text = text;
   }
-  
+
   /**
    * Returns the list of children of this component.
    * This component has no children and therefore returns an empty unmodifiable list.
-   * 
+   *
    * @return the list of children, not null.
    */
   @Override

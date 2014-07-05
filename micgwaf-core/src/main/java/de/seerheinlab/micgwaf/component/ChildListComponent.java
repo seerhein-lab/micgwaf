@@ -33,16 +33,17 @@ public class ChildListComponent<T extends Component> extends Component implement
     children.add(child);
   }
 
+  @Override
   public List<T> getChildren()
   {
     return children;
   }
-  
+
   /**
    * Adds the given child.
-   * 
+   *
    * @param child the child to add, not null.
-   * 
+   *
    * @throws NullPointerException if child is null.
    */
   public void add(T child)
@@ -50,7 +51,7 @@ public class ChildListComponent<T extends Component> extends Component implement
     Assertions.assertNotNull(child, "child");
     children.add(child);
   }
-  
+
   /**
    * Clears the list of children.
    */
@@ -67,7 +68,7 @@ public class ChildListComponent<T extends Component> extends Component implement
       child.render(writer);
     }
   }
-  
+
   @Override
   public String changeChildHtmlId(Component child, String htmlId)
   {

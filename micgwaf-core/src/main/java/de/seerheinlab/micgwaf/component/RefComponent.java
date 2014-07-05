@@ -11,8 +11,8 @@ import de.seerheinlab.micgwaf.component.PartListComponent.ComponentPart;
 
 /**
  * Component which references another component by its id.
- * 
- * WARNING this component temporarily changes the component tree while rendering. 
+ *
+ * WARNING this component temporarily changes the component tree while rendering.
  */
 public class RefComponent extends Component implements ChangesChildHtmlId
 {
@@ -20,23 +20,24 @@ public class RefComponent extends Component implements ChangesChildHtmlId
   private static final long serialVersionUID = 1L;
 
   public String refid;
-  
+
   public Component referencedComponent;
-  
+
   public Map<String, String> variableValues = new HashMap<>();
-  
+
   public RefComponent(String refid, String id, Component parent)
   {
     super(id, parent);
     this.refid = refid;
   }
-  
+
+  @Override
   public List<Component> getChildren()
   {
     return new ArrayList<>();
   }
 
-  
+
   @Override
   public void resolveComponentReferences(Map<String, ? extends Component> allComponents)
   {
@@ -50,7 +51,7 @@ public class RefComponent extends Component implements ChangesChildHtmlId
 
   /**
    * Renders this component.
-   * 
+   *
    * NOTE: This method is not fit to be used in multiple instances, because
    * it temporarily changes the referenced component's parent attribute.
    */
@@ -87,8 +88,8 @@ public class RefComponent extends Component implements ChangesChildHtmlId
   }
 
   private void setVariablesInPartListComponent(
-      Component component, 
-      Map<String, String> variableValues, 
+      Component component,
+      Map<String, String> variableValues,
       Map<String, String> oldVariableValues)
   {
     if (component instanceof PartListComponent)
@@ -115,7 +116,7 @@ public class RefComponent extends Component implements ChangesChildHtmlId
   }
 
   /**
-   * If the id of this component and its parent is non null, 
+   * If the id of this component and its parent is non null,
    * the id of this component is added as a prefix to the passed id and returned;
    * otherwise, the passed id is returned unchanged.
    *
@@ -127,9 +128,9 @@ public class RefComponent extends Component implements ChangesChildHtmlId
   @Override
   public String changeChildHtmlId(Component child, String htmlId)
   {
-    // do not prefix page id (page component has no parent) 
+    // do not prefix page id (page component has no parent)
     // or component which is the endpoint of the reference (has same id)
-    if (parent != null && !htmlId.equals(refid)) 
+    if (parent != null && !htmlId.equals(refid))
     {
       return refid + ":" + htmlId;
     }

@@ -19,10 +19,10 @@ public class PartListComponent extends Component
 
   /** The list of parts. */
   public final List<ComponentPart> parts;
-  
+
   /**
    * Constructs a SnippetListComponent containing no parts.
-   * 
+   *
    * @param parent the parent component. May be null if this is a standalone component (e.g. a page).
    */
   public PartListComponent(Component parent)
@@ -33,7 +33,7 @@ public class PartListComponent extends Component
 
   /**
    * Constructs a SnippetListComponent with an id, containing no parts.
-   * 
+   *
    * @param id the id of the component, may be null. The id is not used in this component.
    * @param parent the parent component. May be null if this is a standalone component (e.g. a page).
    */
@@ -45,7 +45,7 @@ public class PartListComponent extends Component
 
   /**
    * Constructs a SnippetListComponent with the given initial parts.
-   * 
+   *
    * @param id the id of the component, may be null. The id is not used in this component.
    * @param parts the initial parts of this component, not null. This list is copied, but it contents
    *        are not cloned in any way.
@@ -57,7 +57,8 @@ public class PartListComponent extends Component
     Assertions.assertNotNull(parts, "parts");
     this.parts = new ArrayList<>(parts);
   }
-  
+
+  @Override
   public void resolveComponentReferences(Map<String, ? extends Component> allComponents)
   {
     super.resolveComponentReferences(allComponents);
@@ -69,7 +70,8 @@ public class PartListComponent extends Component
       }
     }
   }
-  
+
+  @Override
   public List<Component> getChildren()
   {
     List<Component> result = new ArrayList<>();
@@ -107,12 +109,12 @@ public class PartListComponent extends Component
       }
     }
   }
-  
+
   /**
    * Returns a shallow copy of this object.
    * The part list is copied and thus may be changed in the copy without affecting the copy origin.
    * However, the referenced components (the parts and the parent reference) are not copied.
-   * 
+   *
    * @return a shallow copy of this object, not null.
    */
   public PartListComponent copy()
@@ -124,7 +126,7 @@ public class PartListComponent extends Component
     }
     return result;
   }
-  
+
   /**
    * A part of the SnippetList component.
    * Contains either a HTML Snippet or a child component.
@@ -132,26 +134,26 @@ public class PartListComponent extends Component
   public static class ComponentPart implements Cloneable
   {
     public String htmlSnippet;
-    
+
     public String variableName;
-    
+
     public String variableDefaultValue;
-    
+
     public Component component;
-    
+
     public static ComponentPart fromHtmlSnippet(String htmlSnippet)
     {
       ComponentPart result = new ComponentPart();
       result.htmlSnippet = htmlSnippet;
       return result;
     }
-    
+
     /**
      * Creates a component part from a variable.
-     * 
+     *
      * @param variableName the name of the variable to create the part from, not null.
      * @param variableDefaultValue the default value of the variable, not null.
-     * 
+     *
      * @return the created ComponentPart, not null.
      */
     public static ComponentPart fromVariable(String variableName, String variableDefaultValue)
@@ -164,9 +166,9 @@ public class PartListComponent extends Component
 
     /**
      * Creates a component part from a component.
-     * 
+     *
      * @param component the component to create the part from, not null.
-     * 
+     *
      * @return the created ComponentPart, not null.
      */
     public static ComponentPart fromComponent(Component component)
@@ -176,6 +178,7 @@ public class PartListComponent extends Component
       return result;
     }
 
+    @Override
     public ComponentPart clone()
     {
       try

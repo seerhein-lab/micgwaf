@@ -14,11 +14,11 @@ public class TemplateIntegration extends Component
 {
   /** serialVersionUID. */
   private static final long serialVersionUID = 1L;
-  
+
   public Map<String, Component> definitions = new LinkedHashMap<>();
-  
+
   public String templateId;
-  
+
   public PartListComponent template;
 
   public TemplateIntegration(Component parent)
@@ -37,7 +37,7 @@ public class TemplateIntegration extends Component
     }
     if (!(templateCandidate instanceof PartListComponent))
     {
-      throw new IllegalStateException("template must be of class SnippetListComponent but is of class" 
+      throw new IllegalStateException("template must be of class SnippetListComponent but is of class"
           + templateCandidate.getClass().getName());
     }
     template = ((PartListComponent) templateCandidate).copy();
@@ -56,7 +56,7 @@ public class TemplateIntegration extends Component
           Component referencedComponent = ((DefineComponent) part.component).referencedComponent;
           if (referencedComponent == null)
           {
-            throw new IllegalStateException("No component bound to component definition, name=" 
+            throw new IllegalStateException("No component bound to component definition, name="
                 + ((DefineComponent) part.component).name);
           }
           part.component = referencedComponent;
@@ -64,7 +64,7 @@ public class TemplateIntegration extends Component
       }
     }
   }
-  
+
   @Override
   public List<? extends Component> getChildren()
   {

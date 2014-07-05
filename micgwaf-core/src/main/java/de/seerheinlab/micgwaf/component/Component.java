@@ -13,7 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * Base class of all components.
  * A component is a part of a HTML page that knows how to render itself and how to process HTTP requests.
- * 
+ *
  * All components must be serializable (because the component state is stored in serialized form
  * between requests).
  */
@@ -24,17 +24,17 @@ public abstract class Component implements Serializable
 
   /** The component id. Can be null, but if set, it should be unique in a the current context (e.g. page). */
   protected String id;
-  
-  /** The parent of the component, or null if this is a standalone component (e.g. a page). */ 
+
+  /** The parent of the component, or null if this is a standalone component (e.g. a page). */
   protected Component parent;
-  
+
   /** Parameters used for generation. Not used during runtime. */
   protected GenerationParameters generationParameters;
-  
+
   /**
-   * Constructor. 
-   * 
-   * @param id the id of the component, may be null. 
+   * Constructor.
+   *
+   * @param id the id of the component, may be null.
    *        If set, it should be unique in the current context (e.g. page).
    * @param parent the parent component. May be null if this is a standalone component (e.g. a page).
    */
@@ -43,17 +43,17 @@ public abstract class Component implements Serializable
     this.id = id;
     this.parent = parent;
   }
-  
+
   /**
    * Returns the list of children of this component.
-   * 
+   *
    * @return the list of children, not null.
    */
   public abstract List<? extends Component> getChildren();
-  
+
   /**
    * Binds other components to this component, i.e. resolves component references.
-   * 
+   *
    * @param allComponents all known standalone components, keyed by their id, not null.
    */
   public void resolveComponentReferences(Map<String, ? extends Component> allComponents)
@@ -63,13 +63,13 @@ public abstract class Component implements Serializable
       child.resolveComponentReferences(allComponents);
     }
   }
-  
+
   /**
    * Calculates the HTML id of a component, taking into account potential parents implementing the
    * ChangesChildHtmlId interface.
-   * 
+   *
    * @param initialHtmlId the initial HTML id of this component, or null.
-   * 
+   *
    * @return the HTML id with the modifications of all ancestors implementing the ChangesChildHtmlId
    *         interfaces, or null if null wass passed in.
    */
@@ -91,16 +91,16 @@ public abstract class Component implements Serializable
     }
     return parent.getHtmlId(newId);
   }
-  
-  /** 
-   * Renders the component. 
-   * 
+
+  /**
+   * Renders the component.
+   *
    * @param writer the writer to render to, not null.
-   * 
+   *
    * @throws IOException if the writer does not accept the rendered output.
    */
   public abstract void render(Writer writer) throws IOException;
-  
+
   /**
    * Hook method which is called after a component tree has been rendered.
    * Typically used to reset state which should only be retained for one rendering.
@@ -115,12 +115,12 @@ public abstract class Component implements Serializable
 
   /**
    * Processes the HTTP request and executes any actions triggered by the request.
-   * 
+   *
    * @param request the request to process, not null.
-   * 
+   *
    * @return the page to render after processing, or null if this component does not wish another
    *         page to be rendered.
-   *         note: if more than one child component wishes to redirect to another page, 
+   *         note: if more than one child component wishes to redirect to another page,
    *         the last component wins.
    */
   public Component processRequest(HttpServletRequest request)
@@ -132,12 +132,12 @@ public abstract class Component implements Serializable
     }
     return toRedirectTo;
   }
-  
+
   /**
    * Processes the HTTP request and executes any actions triggered by the request.
-   * 
+   *
    * @param request the request to process, not null.
-   * 
+   *
    * @return The component which produces the snippet to render as a response to this ajax request,
    *         or null to signal that this component or its children are not interested in
    *         this ajax request.
@@ -149,7 +149,7 @@ public abstract class Component implements Serializable
     for (Component child : getChildren())
     {
       Component toRedirectTo = child.processAjaxRequest(request);
-      if (toRedirectTo != null) 
+      if (toRedirectTo != null)
       {
         return toRedirectTo;
       }
@@ -159,9 +159,9 @@ public abstract class Component implements Serializable
 
   /**
    * Returns the nearest ancestor of the component with the given class.
-   * 
+   *
    * @param classOfAncestor the class of the ancestor, not null.
-   * 
+   *
    * @return the nearest ancestor, or null if no such ancestor exists.
    */
   @SuppressWarnings("unchecked")
@@ -177,31 +177,31 @@ public abstract class Component implements Serializable
     }
     return parent.getAncestor(classOfAncestor);
   }
-  
+
   /**
    * Returns the component's parent.
-   * 
+   *
    * @return the parent component, or null if the component is standalone (e.g. a page)
    */
   public Component getParent()
   {
     return parent;
   }
-  
+
   /**
    * Sets the component's parent.
-   * 
+   *
    * @param parent the parent component, or null if the component is standalone (e.g. a page)
    */
   public void setParent(Component parent)
   {
     this.parent = parent;
   }
-  
+
   /**
-   * Returns the component id. 
+   * Returns the component id.
    * If set, it should be unique in a the current context (e.g. page), but this is not enforced.
-   * 
+   *
    * @return the component id, or null.
    */
   public String getId()
@@ -211,17 +211,17 @@ public abstract class Component implements Serializable
 
   /**
    * Sets the component id. If set, the id should be unique in a the current context (e.g. page).
-   * 
+   *
    * @param id the component id, or null.
    */
   public void setId(String id)
   {
     this.id = id;
   }
-  
+
   /**
    * Returns the parameters used for generation.
-   * 
+   *
    * @return the parameters for generation, null if not set or in the runtime.
    */
   public GenerationParameters getGenerationParameters()
@@ -231,20 +231,20 @@ public abstract class Component implements Serializable
 
   /**
    * Sets the parameters used for generation.
-   * 
+   *
    * @param generationParameters the parameters for generation, or null.
    */
   public void setGenerationParameters(GenerationParameters generationParameters)
   {
     this.generationParameters = generationParameters;
   }
-  
-  
+
+
   /**
    * Helper method to replace XML special characters by their respective entities.
-   * 
+   *
    * @param toEscape the string to escape, may be null.
-   * 
+   *
    * @return the escaped string, or null if null is passed in.
    */
   public String escapeXmlText(String toEscape)
@@ -263,9 +263,9 @@ public abstract class Component implements Serializable
 
   /**
    * Helper method to resolve entities for XML special characters.
-   * 
+   *
    * @param toResolve the string to resolve entities in, may be null.
-   * 
+   *
    * @return the resolved string, or null if null is passed in.
    */
   public String resolveXmlEntities(String toResolve)
@@ -281,14 +281,14 @@ public abstract class Component implements Serializable
     result = result.replace("&amp;", "&");
     return result;
   }
-  
+
   /**
    * Creates an instance of the given component class by calling the two-arg constructor String, Component.
-   * 
+   *
    * @param componentClass the component class, not null.
-   * 
+   *
    * @return the component instance, not null.
-   * 
+   *
    * @throws RuntimeException if construction fails.
    */
   public static Component getInstance(Class<? extends Component> componentClass)
@@ -296,7 +296,7 @@ public abstract class Component implements Serializable
     Constructor<?>[] constructors = componentClass.getConstructors();
     for (Constructor<?> constructor : constructors)
     {
-      if ((constructor.getParameterTypes().length == 2) 
+      if ((constructor.getParameterTypes().length == 2)
           && (constructor.getParameterTypes()[0] == String.class)
           && (constructor.getParameterTypes()[1] == Component.class))
       {
@@ -304,7 +304,7 @@ public abstract class Component implements Serializable
         try
         {
           instance = (Component) constructor.newInstance(new Object[] {null, null});
-        } 
+        }
         catch (InstantiationException | IllegalAccessException
             | IllegalArgumentException | InvocationTargetException e)
         {
@@ -313,7 +313,7 @@ public abstract class Component implements Serializable
         return instance;
       }
     }
-    throw new RuntimeException("Component of class " + componentClass.getName() 
+    throw new RuntimeException("Component of class " + componentClass.getName()
         + " has no constructor with two parameters (String, Component)");
   }
 }

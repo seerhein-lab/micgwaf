@@ -11,15 +11,16 @@ public class DefineComponent extends Component
   private static final long serialVersionUID = 1L;
 
   public String name;
-  
+
   public Component referencedComponent;
-  
+
   public DefineComponent(String name, Component parent)
   {
     super(null, parent);
     this.name = name;
   }
-  
+
+  @Override
   public List<Component> getChildren()
   {
     List<Component> result = new ArrayList<>();

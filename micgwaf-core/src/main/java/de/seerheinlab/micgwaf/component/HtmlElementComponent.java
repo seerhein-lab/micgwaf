@@ -17,9 +17,9 @@ public class HtmlElementComponent extends Component
   private static final long serialVersionUID = 1L;
 
   public static final char ELEMENT_OPEN_CHAR = '<';
-  
+
   public static final char ELEMENT_CLOSE_CHAR = '>';
-  
+
   public static final char ELEMENT_END_CHAR = '/';
 
   public static final char SPACE_CHAR = ' ';
@@ -27,19 +27,19 @@ public class HtmlElementComponent extends Component
   public static final char EQUALS_CHAR = '=';
 
   public static final char QUOT_CHAR = '"';
-  
+
   public static final String CLASS_ATTR = "class";
 
   public Map<String, String> attributes = new LinkedHashMap<>();
 
   public String elementName;
-  
+
   public final List<Component> children = new ArrayList<Component>();
-  
+
   public boolean renderSelf = true;
-  
+
   public boolean renderChildren = true;
-  
+
   public HtmlElementComponent(Component parent)
   {
     super(null, parent);
@@ -56,6 +56,7 @@ public class HtmlElementComponent extends Component
     this.elementName = elementName;
   }
 
+  @Override
   public List<Component> getChildren()
   {
     return children;
@@ -65,7 +66,7 @@ public class HtmlElementComponent extends Component
    * Returns the attributes to be used for rendering.
    * This implementation adds the id of the component as id attribute, if not null.
    * This method may be overwritten in subclasses.
-   * 
+   *
    * @return the attributes for rendering, in a map with a defined iteration order, not null.
    */
   public Map<String, String> getRenderedAttributes()
@@ -78,11 +79,11 @@ public class HtmlElementComponent extends Component
     renderedAttributes.put("id", getHtmlId(renderedAttributes.get("id")));
     return renderedAttributes;
   }
-  
+
   /**
    * Sets whether to render this component and its children.
    *
-   * @param render false for not rendering the component and its visible children, 
+   * @param render false for not rendering the component and its visible children,
    *       true for rendering the component and its visible children.
    */
   public void setRender(boolean render)
@@ -90,10 +91,10 @@ public class HtmlElementComponent extends Component
     renderSelf = render;
     renderChildren = render;
   }
-  
+
   /**
    * Sets the class attribute to the passed value.
-   * 
+   *
    * @param styleClass the value of the class attribute, or null to remove the class attribute.
    */
   public void setClass(String styleClass)
@@ -107,13 +108,13 @@ public class HtmlElementComponent extends Component
       attributes.put(CLASS_ATTR, styleClass);
     }
   }
-  
+
   /**
    * Adds a CSS class to an attribute if it is not already present.
    * The class is appended to the existing class attribute value, separated by a space character.
-   * 
+   *
    * @param toAdd the class to add, not null, must not contain spaces.
-   * 
+   *
    * @throws NullPointerException if toAdd is null.
    * @throws IllegalArgumentException if toAdd contains spaces.
    */
@@ -127,7 +128,7 @@ public class HtmlElementComponent extends Component
     {
       throw new IllegalArgumentException("toAdd must not contain spaces, but is \"" + toAdd + "\"");
     }
-    
+
     String oldClass = attributes.get(CLASS_ATTR);
     if (oldClass == null)
     {
@@ -146,14 +147,14 @@ public class HtmlElementComponent extends Component
     }
     attributes.put(CLASS_ATTR, oldClass + " " + toAdd);
   }
-  
+
   /**
    * Removes a CSS class to an attribute if it is present.
-   * The class attribute value is split into tokens separated by spaces, 
+   * The class attribute value is split into tokens separated by spaces,
    * and if any token equals <code>toRemove</code>, this token is removed.
-   * 
+   *
    * @param toRemove the class to remove, not null, should not contain spaces.
-   * 
+   *
    * @throws NullPointerException if toRemove is null.
    * @throws IllegalArgumentException if toRemove contains spaces.
    */
@@ -182,18 +183,18 @@ public class HtmlElementComponent extends Component
       {
         if (newClass.length() != 0)
         {
-          newClass.append(" "); 
+          newClass.append(" ");
         }
         newClass.append(token);
       }
     }
     attributes.put(CLASS_ATTR, newClass.toString());
   }
-  
+
   @Override
   public void render(Writer writer) throws IOException
   {
-    Map<String, String> renderedAttributes = getRenderedAttributes(); 
+    Map<String, String> renderedAttributes = getRenderedAttributes();
     if (renderSelf)
     {
       writer.write(ELEMENT_OPEN_CHAR);

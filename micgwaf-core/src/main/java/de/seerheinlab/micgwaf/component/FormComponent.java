@@ -14,17 +14,17 @@ public class FormComponent extends HtmlElementComponent
 
   /** The name of the form HTML element. */
   public static final String FORM_ELEM = "form";
-  
+
   /**
    * Whether this form was submitted.
-   * This field is set during the processRequest method of the component 
+   * This field is set during the processRequest method of the component
    * and cleared in the afterRender method.
    */
   public boolean submitted;
 
   /**
    * Constructor without id.
-   * 
+   *
    * @param parent the parent component, or null for a standalone component.
    */
   public FormComponent(Component parent)
@@ -34,7 +34,7 @@ public class FormComponent extends HtmlElementComponent
 
   /**
    * Constructor.
-   * 
+   *
    * @param id the id of the component, or null if the component has no id.
    * @param parent the parent component, or null for a standalone component.
    */
@@ -50,7 +50,7 @@ public class FormComponent extends HtmlElementComponent
     checkSubmitted(this);
     return result;
   }
-  
+
   @Override
   public Map<String, String> getRenderedAttributes()
   {
@@ -64,7 +64,7 @@ public class FormComponent extends HtmlElementComponent
    * Checks whether the passed component was submitted and sets the submitted flag of this class accordingly.
    * The check works by asking all (child and self) input components whether they were submitted,
    * if one of them was submitted, the form was submitted.
-   * 
+   *
    * @param component the component to check, not null.
    */
   public void checkSubmitted(Component component)
@@ -86,7 +86,7 @@ public class FormComponent extends HtmlElementComponent
       checkSubmitted(child);
     }
   }
-  
+
   @Override
   public void afterRender()
   {
