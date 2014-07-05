@@ -129,19 +129,20 @@ public class TemplateIntegrationGenerator extends ComponentGenerator
     result.classBody.append("  }\n\n");
     
     // getChildren
-    result.classBody.append("  @Override\n")
+    result.classBody
+        .append("  @Override\n")
         .append("  public List<Component> getChildren()\n")
         .append("  {\n")
         .append("    return ").append(templateFieldName).append(".getChildren();\n")
-        .append("  }\n")
+        .append("  }\n\n")
 
-        .append("\n  @Override\n")
+        .append("  @Override\n")
         .append("  public void render(Writer writer) throws IOException\n")
         .append("  {\n")
-    
         .append("    ").append(templateFieldName).append(".render(writer);\n")
-        .append("  }\n")
-        .append("\n  @Override\n")
+        .append("  }\n\n")
+        
+        .append("  @Override\n")
         .append("  public void afterRender()\n")
         .append("  {\n")
     
