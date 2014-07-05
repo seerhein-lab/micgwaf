@@ -5,27 +5,26 @@ import java.util.Map;
 
 public class ContentHandlerRegistry
 {
-
   public static final String MULTIPLE_ATTR = "multiple";
-  
+
   public static final String DEFAULT_RENDER_ATTR = "defaultRender";
-  
+
   public static final String DEFAULT_RENDER_SELF_ATTR = "defaultRenderSelf";
-  
+
   public static final String DEFAULT_RENDER_CHILDREN_ATTR = "defaultRenderChildren";
-  
+
   public static final String GENRATE_EXTENSION_CLASS_ATTR = "generateExtensionClass";
 
   /**
    * Key is name of attribute in our namespace, value is handler.
    */
-  public static Map<String, ContentHandlerFactory> attributeHandlerMap 
+  public static Map<String, ContentHandlerFactory> attributeHandlerMap
       = new LinkedHashMap<String, ContentHandlerFactory>();
-  
+
   /**
    * Key is name of element in our namespace, value is handler.
    */
-  public static Map<String, ContentHandlerFactory> elementHandlerMap 
+  public static Map<String, ContentHandlerFactory> elementHandlerMap
       = new LinkedHashMap<String, ContentHandlerFactory>();
 
   static

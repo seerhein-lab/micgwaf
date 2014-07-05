@@ -11,5 +11,4 @@ public class ComponentRefContentHandlerFactory implements ContentHandlerFactory
   {
     return new ComponentRefContentHandler();
   }
-
 }

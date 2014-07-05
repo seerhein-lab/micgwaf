@@ -11,5 +11,4 @@ public class DefineContentHandlerFactory implements ContentHandlerFactory
   {
     return new DefineContentHandler();
   }
-
 }

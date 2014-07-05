@@ -17,23 +17,23 @@ public class ComponentRefContentHandler extends ContentHandler
   public static final String COMPONENT_REF_ID_ATTR = "id";
 
   public static final String COMPONENT_REF_ELEMENT_NAME = "componentRef";
-  
+
   public String refid;
-  
+
   public String id;
-  
+
   public Map<String, String> variableValues = new HashMap<>();
 
   @Override
   public void startElement(
         String uri,
         String localName,
-        String qName, 
-        Attributes attributes) 
-      throws SAXException 
+        String qName,
+        Attributes attributes)
+      throws SAXException
   {
-    if (!Constants.XML_NAMESPACE.equals(uri) 
-        || !ComponentRefContentHandler.COMPONENT_REF_ELEMENT_NAME.equals(localName)) 
+    if (!Constants.XML_NAMESPACE.equals(uri)
+        || !ComponentRefContentHandler.COMPONENT_REF_ELEMENT_NAME.equals(localName))
     {
       throw new SAXException("unknown Element " + uri + ":" + localName);
     }
@@ -56,12 +56,12 @@ public class ComponentRefContentHandler extends ContentHandler
     }
     if (refid == null || "".equals(refid.trim()))
     {
-      throw new SAXException("Attribute " + ComponentRefContentHandler.COMPONENT_REF_REFID_ATTR 
+      throw new SAXException("Attribute " + ComponentRefContentHandler.COMPONENT_REF_REFID_ATTR
           + " is required on element " + qName);
     }
   }
-  
-  
+
+
   @Override
   public void child(Component child) throws SAXException
   {

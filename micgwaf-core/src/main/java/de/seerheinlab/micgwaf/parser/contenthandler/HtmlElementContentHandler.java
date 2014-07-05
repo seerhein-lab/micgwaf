@@ -1,4 +1,4 @@
-package de.seerheinlab.micgwaf.parser.contenthandler; 
+package de.seerheinlab.micgwaf.parser.contenthandler;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -19,39 +19,39 @@ import de.seerheinlab.micgwaf.util.Constants;
 public class HtmlElementContentHandler extends ContentHandler
 {
   public static final String ID_ATTR = "id";
-  
+
   public String elementName;
 
   public String id;
-  
+
   public boolean multiple = false;
-  
+
   public Map<String, String> attributeValues = new LinkedHashMap<>();
-  
+
   public List<Component> children = new ArrayList<>();
-  
+
   public Boolean render;
-  
+
   public Boolean renderSelf;
-  
+
   public Boolean renderChildren;
-  
+
   public GenerationParameters generationParameters = new GenerationParameters();
 
   @Override
   public void startElement(
         String uri,
         String localName,
-        String qName, 
-        Attributes attributes) 
-      throws SAXException 
+        String qName,
+        Attributes attributes)
+      throws SAXException
   {
     elementName = localName;
     for (int i = 0; i < attributes.getLength(); ++i)
     {
       String attributeUri = attributes.getURI(i);
       String attributeName = attributes.getLocalName(i);
-      if ("".equals(attributeName)) 
+      if ("".equals(attributeName))
       {
         attributeName = attributes.getQName(i);
       }
@@ -65,27 +65,27 @@ public class HtmlElementContentHandler extends ContentHandler
       {
         id = value;
       }
-      else if (Constants.XML_NAMESPACE.equals(attributeUri) 
+      else if (Constants.XML_NAMESPACE.equals(attributeUri)
           && ContentHandlerRegistry.MULTIPLE_ATTR.equals(attributeName))
       {
         multiple = true;
       }
-      else if (Constants.XML_NAMESPACE.equals(attributeUri) 
+      else if (Constants.XML_NAMESPACE.equals(attributeUri)
           && ContentHandlerRegistry.GENRATE_EXTENSION_CLASS_ATTR.equals(attributeName))
      {
         generationParameters.generateExtensionClass = Boolean.parseBoolean(value);
       }
-      else if (Constants.XML_NAMESPACE.equals(attributeUri) 
+      else if (Constants.XML_NAMESPACE.equals(attributeUri)
           && ContentHandlerRegistry.DEFAULT_RENDER_ATTR.equals(attributeName))
       {
         render = Boolean.parseBoolean(value);
       }
-      else if (Constants.XML_NAMESPACE.equals(attributeUri) 
+      else if (Constants.XML_NAMESPACE.equals(attributeUri)
           && ContentHandlerRegistry.DEFAULT_RENDER_SELF_ATTR.equals(attributeName))
       {
         renderSelf = Boolean.parseBoolean(value);
       }
-      else if (Constants.XML_NAMESPACE.equals(attributeUri) 
+      else if (Constants.XML_NAMESPACE.equals(attributeUri)
           && ContentHandlerRegistry.DEFAULT_RENDER_CHILDREN_ATTR.equals(attributeName))
       {
         renderChildren = Boolean.parseBoolean(value);
@@ -97,12 +97,12 @@ public class HtmlElementContentHandler extends ContentHandler
     }
     if (id == null || "".equals(id.trim()))
     {
-      throw new SAXException("Attribute " + Constants.XML_NAMESPACE + ":"+ HtmlElementContentHandler.ID_ATTR 
+      throw new SAXException("Attribute " + Constants.XML_NAMESPACE + ":"+ HtmlElementContentHandler.ID_ATTR
           + " is required on element " + qName);
     }
   }
-  
-  
+
+
   @Override
   public void child(Component child)
   {
@@ -159,7 +159,7 @@ public class HtmlElementContentHandler extends ContentHandler
     {
       Component result = new ChildListComponent<HtmlElementComponent>(
           id + "List",
-          null, 
+          null,
           htmlElementComponent);
       htmlElementComponent.setParent(result);
       return result;

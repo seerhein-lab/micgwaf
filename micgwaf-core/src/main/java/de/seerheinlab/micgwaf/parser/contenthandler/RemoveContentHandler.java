@@ -15,17 +15,17 @@ public class RemoveContentHandler extends ContentHandler
   public void startElement(
         String uri,
         String localName,
-        String qName, 
-        Attributes attributes) 
-      throws SAXException 
+        String qName,
+        Attributes attributes)
+      throws SAXException
   {
-    if (!Constants.XML_NAMESPACE.equals(uri) || !REMOVE_ELEMENT_NAME.equals(localName)) 
+    if (!Constants.XML_NAMESPACE.equals(uri) || !REMOVE_ELEMENT_NAME.equals(localName))
     {
       throw new SAXException("unknown Element " + uri + ":" + localName);
     }
   }
-  
-  
+
+
   @Override
   public void child(Component child) throws SAXException
   {

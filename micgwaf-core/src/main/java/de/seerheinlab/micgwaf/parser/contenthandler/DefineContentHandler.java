@@ -13,33 +13,33 @@ public class DefineContentHandler extends ContentHandler
   public static final String NAME_ATTR = "name";
 
   public static final String DEFINE_ELEMENT_NAME = "define";
-  
+
   public String name;
-  
+
   public Component child;
 
   @Override
   public void startElement(
         String uri,
         String localName,
-        String qName, 
-        Attributes attributes) 
-      throws SAXException 
+        String qName,
+        Attributes attributes)
+      throws SAXException
   {
     // check for define elements
-    if (!Constants.XML_NAMESPACE.equals(uri) || !DefineContentHandler.DEFINE_ELEMENT_NAME.equals(localName)) 
+    if (!Constants.XML_NAMESPACE.equals(uri) || !DefineContentHandler.DEFINE_ELEMENT_NAME.equals(localName))
     {
       throw new SAXException("unknown Element " + uri + ":" + localName);
     }
     name = attributes.getValue(DefineContentHandler.NAME_ATTR);
     if (name == null || "".equals(name.trim()))
     {
-      throw new SAXException("Attribute " + DefineContentHandler.NAME_ATTR 
+      throw new SAXException("Attribute " + DefineContentHandler.NAME_ATTR
           + " is required on element " + qName);
     }
   }
-  
-  
+
+
   @Override
   public void child(Component child) throws SAXException
   {
@@ -65,7 +65,7 @@ public class DefineContentHandler extends ContentHandler
       this.child = childList;
    }
   }
-  
+
   @Override
   public DefineComponent finished() throws SAXException
   {

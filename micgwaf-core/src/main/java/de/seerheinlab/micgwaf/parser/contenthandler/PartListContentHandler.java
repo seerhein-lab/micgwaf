@@ -20,24 +20,24 @@ public class PartListContentHandler extends ContentHandler
   private static final char VARIABLE_DEFAULT_VALUE_SEPARATOR = ':';
 
   public StringBuilder currentStringPart = new StringBuilder();
-  
-  private PartListComponent component = new PartListComponent(null);
+
+  private final PartListComponent component = new PartListComponent(null);
 
   @Override
   public void startElement(
         String uri,
         String localName,
-        String qName, 
-        Attributes attributes) 
-      throws SAXException 
+        String qName,
+        Attributes attributes)
+      throws SAXException
   {
     currentStringPart.append("<").append(localName);
     if (attributes != null)
     {
-      for (int i = 0; i < attributes.getLength(); i++) 
+      for (int i = 0; i < attributes.getLength(); i++)
       {
         String attributeName = attributes.getLocalName(i); // Attr name
-        if ("".equals(attributeName)) 
+        if ("".equals(attributeName))
         {
           attributeName = attributes.getQName(i);
         }
@@ -56,13 +56,15 @@ public class PartListContentHandler extends ContentHandler
     }
     currentStringPart.append(">");
   }
-  
+
+  @Override
   public void endElement(String uri, String localName, String qName)
       throws SAXException
   {
     currentStringPart.append("</").append(localName).append(">");
   }
-  
+
+  @Override
   public void characters(char[] ch, int start, int length)
       throws SAXException
   {
@@ -72,9 +74,9 @@ public class PartListContentHandler extends ContentHandler
 
   /**
    * Extracts variables and snippets from a String.
-   * 
+   *
    * @param toParse the String to parse, not null.
-   * 
+   *
    * @throws SAXException if an imcomplete variable definition is found.
    */
   protected void extractVariablesAndSnippets(String toParse)
@@ -92,7 +94,7 @@ public class PartListContentHandler extends ContentHandler
       if (indexOfStart == -1)
       {
         currentStringPart.append(toParse);
-        break; 
+        break;
       }
       int indexOfEnd = toParse.indexOf(VARIABLE_END, indexOfStart);
       if (indexOfEnd == -1)
@@ -109,7 +111,7 @@ public class PartListContentHandler extends ContentHandler
         component.parts.add(PartListComponent.ComponentPart.fromHtmlSnippet(currentStringPart.toString()));
         currentStringPart = new StringBuilder();
       }
-      String variableContent 
+      String variableContent
           = toParse.substring(indexOfStart + VARIABLE_START.length(), indexOfEnd);
       int indexOfColon = variableContent.indexOf(VARIABLE_DEFAULT_VALUE_SEPARATOR);
       if (indexOfColon == -1)
@@ -127,6 +129,7 @@ public class PartListContentHandler extends ContentHandler
   }
 
 
+  @Override
   public void ignorableWhitespace(char[] ch, int start, int length)
       throws SAXException
   {
@@ -135,7 +138,7 @@ public class PartListContentHandler extends ContentHandler
       currentStringPart.append(ch[i]);
     }
   }
-  
+
   @Override
   public void child(Component child)
   {
