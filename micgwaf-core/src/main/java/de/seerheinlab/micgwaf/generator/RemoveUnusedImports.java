@@ -8,7 +8,7 @@ import java.util.StringTokenizer;
 
 /**
  * Utility for removing unused imports from generated classes.
- * 
+ *
  * The tool simply checks if imported class names appear more than once in the file;
  * if no, the import is removed.
  * This may be overly defensive, there are certainly situations where the import can be removed
@@ -18,14 +18,14 @@ import java.util.StringTokenizer;
 public class RemoveUnusedImports
 {
   private static final String IMPORT = "import ";
-  
+
   private static final String SEMICOLON = ";";
- 
+
   /**
    * Removes unused imports from a java source file.
-   * 
+   *
    * @param toProcess the content of the java source file, not null.
-   * 
+   *
    * @return the content with removed imports, not null.
    */
   public String removeUnusedImports(String toProcess)

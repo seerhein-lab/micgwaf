@@ -7,9 +7,9 @@ public class GeneratorHelper
 {
   /**
    * Returns the indent String for an indent number.
-   * 
+   *
    * @param indent the indent index.
-   * 
+   *
    * @return the corresponding indent String, not null.
    */
   public static String getIndentString(int indent)
@@ -22,13 +22,13 @@ public class GeneratorHelper
     }
     return result.toString();
   }
-  
+
   /**
    * Indents a String with the given number of spaced.
-   * 
+   *
    * @param toIndent the String to indent, not null.
    * @param indent the indent, not null.
-   * 
+   *
    * @return the indented String.
    */
   public static String indent(String toIndent, int indent)

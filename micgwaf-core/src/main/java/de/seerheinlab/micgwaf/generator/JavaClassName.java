@@ -7,10 +7,10 @@ import static de.seerheinlab.micgwaf.util.Assertions.assertNotNull;
  */
 public class JavaClassName
 {
-  private String packageName;
+  private final String packageName;
 
-  private String simpleName;
-  
+  private final String simpleName;
+
   public JavaClassName(String simpleName, String packageName)
   {
     assertNotNull(packageName, "packageName");
@@ -18,37 +18,37 @@ public class JavaClassName
     this.packageName = packageName;
     this.simpleName = simpleName;
   }
-  
+
   public JavaClassName(Class<?> clazz)
   {
     assertNotNull(clazz, "clazz");
     this.packageName = clazz.getPackage().getName();
     this.simpleName = clazz.getSimpleName();
   }
-  
+
   /**
    * Returns the package of the java class.
-   * 
+   *
    * @return the package name, not null.
    */
   public String getPackage()
   {
     return packageName;
   }
-  
+
   /**
    * Returns the simple (unqualified) name of the java class.
-   * 
+   *
    * @return the simple name, not null.
    */
   public String getSimpleName()
   {
     return simpleName;
   }
-  
+
   /**
    * Returns the fully qualified name of the java class.
-   * 
+   *
    * @return the fully qualified name, not null.
    */
   public String getName()
@@ -59,10 +59,10 @@ public class JavaClassName
     }
     return simpleName;
   }
-  
+
   /**
    * Converts the class name to the name of the java source file.
-   * 
+   *
    * @return the name of the java source file, relative to the root package directory, not null.
    */
   public String getSourceFile()
@@ -74,11 +74,11 @@ public class JavaClassName
 
   /**
    * Returns whether this class name references the passed class <code>clazz</code>.
-   * 
+   *
    * @param clazz the class to check against, not null.
-   * 
+   *
    * @return true it this class name describes the name of <code>clazz</code>, false otherwise.
-   * 
+   *
    * @throws NullPointerException if <code>clazz</code> is null.
    */
   public boolean isNameFor(Class<?> clazz)

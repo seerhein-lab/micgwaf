@@ -6,19 +6,20 @@ import java.util.List;
 public class GeneratedClass
 {
   public String classPackage = "";
-  
+
   public List<String> imports = new ArrayList<>();
-  
+
   public StringBuilder classJavadoc = new StringBuilder();
-  
+
   public List<String> classAnnotations = new ArrayList<>();
-  
+
   public StringBuilder classDefinition = new StringBuilder();
 
   public StringBuilder classBody = new StringBuilder();
-  
+
   public List<GeneratedClass> innerClasses = new ArrayList<>();
-  
+
+  @Override
   public String toString()
   {
     StringBuilder result = new StringBuilder();
@@ -31,7 +32,7 @@ public class GeneratedClass
     appendMainPart(result, 0);
     return result.toString();
   }
-  
+
   public void appendMainPart(StringBuilder result, int indent)
   {
     result.append(GeneratorHelper.indent(classJavadoc.toString(), indent)).append("\n");
@@ -48,7 +49,7 @@ public class GeneratedClass
     }
     result.append(GeneratorHelper.indent("}\n", indent));
   }
-  
+
   public List<String> calculateImports()
   {
     List<String> result = new ArrayList<>(imports);

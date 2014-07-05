@@ -39,7 +39,7 @@ import de.seerheinlab.micgwaf.util.Assertions;
  * Entry point for generating the component classes from HTML.
  * The generate() methods parses the HTML files and writes the resulting component sources into the target
  * directories. The directory structure in the source folder is retained.
- * The main method 
+ * The main method
  */
 public class Generator
 {
@@ -48,19 +48,19 @@ public class Generator
   private static final char SLASH = '/';
 
   /** All parsed root components, keyed by their component id. */
-  public static final Map<Class<? extends Component>, ComponentGenerator> componentGeneratorMap 
+  public static final Map<Class<? extends Component>, ComponentGenerator> componentGeneratorMap
       = new HashMap<>();
-      
+
   /** Post-processor to remove unused imports. */
   public static RemoveUnusedImports removeUnusedImports = new RemoveUnusedImports();
-  
+
   /** The configuration of the generator. */
-  public static GeneratorConfiguration generatorConfiguration; 
-  
+  public static GeneratorConfiguration generatorConfiguration;
+
   /** Reference to the default generator configuration. */
-  public static String configurationClasspathResource 
+  public static String configurationClasspathResource
       = "/de/seerheinlab/micgwaf/config/default-micgwaf-codegen.properties";
-  
+
   static
   {
     componentGeneratorMap.put(PartListComponent.class, new PartListComponentGenerator());
@@ -74,21 +74,21 @@ public class Generator
     componentGeneratorMap.put(TemplateIntegration.class, new TemplateIntegrationGenerator());
     componentGeneratorMap.put(DefineComponent.class, new DefineComponentGenerator());
   }
-  
+
   /**
    * Generates code for all xhtml files in a directory and the contained subdirectories.
-   * The generated code includes base component classes, extension component classes, 
+   * The generated code includes base component classes, extension component classes,
    * and a component registry class.
-   * 
+   *
    * @param sourceDirectory The directory containing the XHTML files (extension .xhtml).
    * @param targetDirectory The directory where component source files are written.
    *        Existing files in this directory are overwritten each generation run without notice.
    * @param extensionsTargetDirectory The directory where component extension source files are written.
    *        These files are intended for modification by the user, thus existing files are not overwritten.
    * @param baseComponentPackage the base package for component classes.
-   * 
+   *
    * @throws IOException if generated files cannot be written to the file system.
-   * @throws RuntimeException if an error during generation occurs. 
+   * @throws RuntimeException if an error during generation occurs.
    */
   public void generate(
         File sourceDirectory,
@@ -99,23 +99,23 @@ public class Generator
   {
     generate(sourceDirectory, targetDirectory, extensionsTargetDirectory, baseComponentPackage, null);
   }
-  
+
   /**
    * Generates code for all xhtml files in a directory and the contained subdirectories.
-   * The generated code includes base component classes, extension component classes, 
+   * The generated code includes base component classes, extension component classes,
    * and a component registry class.
-   * 
+   *
    * @param sourceDirectory The directory containing the XHTML files (extension .xhtml).
    * @param targetDirectory The directory where component source files are written.
    *        Existing files in this directory are overwritten each generation run without notice.
    * @param extensionsTargetDirectory The directory where component extension source files are written.
    *        These files are intended for modification by the user, thus existing files are not overwritten.
    * @param rootPackage the base package for component classes.
-   * @param classLoader the class loader to use for component lib discovery, 
+   * @param classLoader the class loader to use for component lib discovery,
    *       or null to use the default classloader.
-   * 
+   *
    * @throws IOException if generated files cannot be written to the file system.
-   * @throws RuntimeException if an error during generation occurs. 
+   * @throws RuntimeException if an error during generation occurs.
    */
   public void generate(
         File sourceDirectory,
@@ -134,7 +134,7 @@ public class Generator
 
       String key = entry.getKey();
       String subpackage = getComponentSubpackage(key);
-      
+
       Map<JavaClassName, String> componentFilesToWrite = new HashMap<>();
       Map<JavaClassName, String> extensionFilesToWrite = new HashMap<>();
       if (component.getGenerationParameters() != null
@@ -165,9 +165,9 @@ public class Generator
 
   /**
    * Returns a component's subpackage for a component key.
-   * 
+   *
    * @param componentKey the component key, containing slashes ('/') as part separator.
-   * 
+   *
    * @return the package prefix, which is the key with slashes replaced by dots.
    */
   public static String getComponentSubpackage(String componentKey)
@@ -178,11 +178,11 @@ public class Generator
   /**
    * Writes a file to the file system using ISO-8859-1 encoding.
    * Parent directories are created if they do not exist.
-   * 
+   *
    * @param targetFile the file to write to, not null.
    * @param content the content of the file, not null.
    * @param overwrite whether existing files should be overwritten.
-   * 
+   *
    * @throws IOException if writing to the file system fails.
    */
   public void writeFile(File targetFile, String content, boolean overwrite) throws IOException
@@ -200,11 +200,11 @@ public class Generator
       FileUtils.writeStringToFile(targetFile, content, "ISO-8859-1");
     }
   }
-  
+
   /**
    * Generates the base class for a component and its children,
    * and adds the generated content to the <code>filesToWrite</code> map.
-   * 
+   *
    * @param GenerationContext the generation context for the generated class, not null
    * @param filesToWrite a map where the generated files are stored: the key is the class name,
    *        and the value is the content of the file.
@@ -231,11 +231,11 @@ public class Generator
       generateComponentBaseClass(new GenerationContext(generationContext, child), filesToWrite);
     }
   }
-  
+
   /**
    * Generates the extension class for a component and its children,
    * and adds the generated content to the <code>filesToWrite</code> map.
-   * 
+   *
    * @param GenerationContext the generation context for the generated class, not null
    * @param filesToWrite a map where the generated files are stored: the key is the class name,
    *        and the value is the content of the file.
@@ -260,11 +260,11 @@ public class Generator
       generateComponentExtensionClass(new GenerationContext(generationContext, child), filesToWrite);
     }
   }
-  
+
   /**
    * Generates the component registry class and writes it to the file system.
-   * 
-   * @param componentMap a map where all referenceable components are stored: 
+   *
+   * @param componentMap a map where all referenceable components are stored:
    *        the key is the component id, and the value is the Component itself.
    * @param targetDirectory the root directory (excluding package structure) to which the source file
    *        should be written.
@@ -321,12 +321,12 @@ public class Generator
     File targetFile = new File(targetDirectory, javaClassName.getSourceFile());
     writeFile(targetFile, content.toString(), true);
   }
-  
+
   /**
    * Returns a ComponentGenerator for a component.
-   * 
+   *
    * @param component the component, not null.
-   * 
+   *
    * @return the component generator, or null if no component generator is registersed for the component.
    */
   public static ComponentGenerator getGenerator(Component component)
@@ -337,11 +337,11 @@ public class Generator
 
   /**
    * Returns the ComponentGenerator for the passed component class.
-   * 
+   *
    * @param componentClass the component class to get a generator for, not null.
-   * 
+   *
    * @return the ComponentGenerator for the generator class, not null.
-   * 
+   *
    * @throws IllegalArgumentException if the componentClass does not have a ComponentGenerator.
    */
   public static ComponentGenerator getGenerator(Class<? extends Component> componentClass)
@@ -355,12 +355,12 @@ public class Generator
   }
 
   /**
-   * Returns the configuration of the generator. 
+   * Returns the configuration of the generator.
    * If the configuration is not yet loaded, it will be loaded, using the current value of
    * configurationClasspathResource.
-   * 
+   *
    * @return the generator configuration, not null.
-   * 
+   *
    * @throws RuntimeException if the configuration could not be loaded.
    */
   public static GeneratorConfiguration getGeneratorConfiguration()
@@ -370,7 +370,7 @@ public class Generator
       try
       {
         generatorConfiguration = new GeneratorConfiguration(configurationClasspathResource);
-      } 
+      }
       catch (Exception e)
       {
         throw new RuntimeException("Could not load generator configuration from classpath resource "
@@ -380,17 +380,17 @@ public class Generator
     }
     return generatorConfiguration;
   }
-  
+
   /**
    * Runs the generation.
    * If <code>argv</code> does not contain 5 elements, an usage message is written and nothing is done.
-   * 
-   * @param argv The arguments. Must contains 5 elements, these are 
+   *
+   * @param argv The arguments. Must contains 5 elements, these are
    *        configurationClasspathResource, componentDir, targetDirectory, extensionsTargetDirectory,
    *        baseComponentPackage
-   *        
+   *
    * @throws IOException if generated files cannot be written to the file system.
-   * @throws RuntimeException if an error during generation occurs.    
+   * @throws RuntimeException if an error during generation occurs.
    */
   public static void main(String[] argv) throws IOException
   {
