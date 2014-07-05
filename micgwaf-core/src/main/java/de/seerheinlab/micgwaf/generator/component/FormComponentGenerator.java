@@ -279,13 +279,11 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
   {
     GeneratedClass result = generationContext.generatedClass;
 
-    String extensionClassName = getExtensionClassName(generationContext).getSimpleName();
-
     result.classPackage = generationContext.getPackage();
     result.imports.add(Component.class.getName());
     generateExtensionDefinition(generationContext);
     generateSerialVersionUid(result);
-    generateConstructorWithIdAndParent(extensionClassName, null, result);
+    generateExtensionConstructor(generationContext);
 
     List<InputComponent> buttons = new ArrayList<>();
     getButtons(generationContext.component, buttons);
