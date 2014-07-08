@@ -219,9 +219,8 @@ public class Generator
     componentGenerator.generate(generationContext);
     if (generationContext.generatedClass != null)
     {
+      removeUnusedImports.removeUnusedImports(generationContext.generatedClass);
       String result = generationContext.generatedClass.toString();
-      // TODO pass generatedClass instead of stringified result
-      result = removeUnusedImports.removeUnusedImports(result);
       filesToWrite.put(
           componentGenerator.getClassName(generationContext),
           result);

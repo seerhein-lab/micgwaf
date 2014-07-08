@@ -1,106 +1,97 @@
 package de.seerheinlab.micgwaf.generator;
 
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.StringTokenizer;
 
 /**
  * Utility for removing unused imports from generated classes.
  *
- * The tool simply checks if imported class names appear more than once in the file;
- * if no, the import is removed.
+ * The tool simply checks if imported class names appears in class definition, class body
+ * or class annotations, if no, the import is removed.
  * This may be overly defensive, there are certainly situations where the import can be removed
- * although the class name appears more than once, however, such cases are rare and as ther is no
- * big harm in having unused imports, these cases are not consoidered.
+ * although the class name appears more than once, however, such cases are rare and as there is no
+ * big harm in having unused imports, these cases are not considered.
  */
 public class RemoveUnusedImports
 {
-  private static final String IMPORT = "import ";
-
-  private static final String SEMICOLON = ";";
-
   /**
    * Removes unused imports from a java source file.
    *
    * @param toProcess the content of the java source file, not null.
-   *
-   * @return the content with removed imports, not null.
    */
-  public String removeUnusedImports(String toProcess)
+  public void removeUnusedImports(GeneratedClass toProcess)
   {
-    // key is the line number of the import, value is the unqualified name of the imported class.
+    // key is the number of the import, value is the unqualified name of the imported class.
     Map<Integer, String> unqualifiedImportedClasses = new LinkedHashMap<>();
     Set<String> qualifiedImportedClasses = new HashSet<>();
-    StringTokenizer tokenizer = new StringTokenizer(toProcess, "\n", true);
-    Set<Integer> linesToRemove = new HashSet<>();
-    int lineNumber = 0;
-    while (tokenizer.hasMoreTokens())
+    Set<Integer> importsToRemove = new HashSet<>();
+    int importNumber = 0;
+    for (String importedClass : toProcess.imports)
     {
-      String token = tokenizer.nextToken();
-      if ("\n".equals(token))
+      if (qualifiedImportedClasses.contains(importedClass))
       {
+        // duplicate Import, remove
+        importsToRemove.add(importNumber);
         continue;
       }
-      if (token.startsWith(IMPORT) && token.endsWith(SEMICOLON))
+      qualifiedImportedClasses.add(importedClass);
+      int classNameStart = importedClass.lastIndexOf(".") + 1;
+      if (classNameStart > 0)
       {
-        token = token.replace("\r ", "");
-        token = token.substring(IMPORT.length(), token.length() - SEMICOLON.length());
-        token = token.replace("static ", "");
-        if (qualifiedImportedClasses.contains(token))
-        {
-          // duplicate import, remove
-          linesToRemove.add(lineNumber);
-        }
-        else
-        {
-          qualifiedImportedClasses.add(token.trim());
-          int classNameStart = token.lastIndexOf(".") + 1;
-          if (classNameStart > 0)
-          {
-            String className = token.substring(classNameStart);
-            unqualifiedImportedClasses.put(lineNumber, className);
-          }
-        }
+        String className = importedClass.substring(classNameStart);
+        unqualifiedImportedClasses.put(importNumber, className);
       }
-      lineNumber++;
+      importNumber++;
     }
     for (Map.Entry<Integer, String> importedClassEntry : unqualifiedImportedClasses.entrySet())
     {
       String className = importedClassEntry.getValue();
-      if (toProcess.indexOf(className) == toProcess.lastIndexOf(className))
+      if (!classNameUsed(className, toProcess))
       {
-        linesToRemove.add(importedClassEntry.getKey());
+        importsToRemove.add(importedClassEntry.getKey());
       }
     }
-    StringBuilder result = new StringBuilder(toProcess.length());
-    tokenizer = new StringTokenizer(toProcess, "\n", true);
-    lineNumber = 0;
-    boolean skip = false;
-    while (tokenizer.hasMoreTokens())
+
+    importNumber = 0;
+    Iterator<String> importIt = toProcess.imports.iterator();
+    while (importIt.hasNext())
     {
-      String token = tokenizer.nextToken();
-      if ("\n".equals(token))
+      importIt.next();
+      if (importsToRemove.contains(importNumber))
       {
-        if (!skip)
-        {
-          result.append(token);
-        }
-        skip = false;
-        continue;
+        importIt.remove();
       }
-      if (!linesToRemove.contains(lineNumber))
-      {
-        result.append(token);
-        skip = false;
-      }
-      else
-      {
-        skip = true;
-      }
-      lineNumber++;
+      ++importNumber;
     }
-    return result.toString();
+  }
+
+  protected boolean classNameUsed(String className, GeneratedClass generatedClass)
+  {
+    for (String classAnnotation : generatedClass.classAnnotations)
+    {
+      if (classAnnotation.contains(className))
+      {
+        return true;
+      }
+    }
+    if (generatedClass.classDefinition.indexOf(className) != -1)
+    {
+      return true;
+    }
+    if (generatedClass.classBody.indexOf(className) != -1)
+    {
+      return true;
+    }
+    for (GeneratedClass innerClass : generatedClass.innerClasses)
+    {
+      if (classNameUsed(className, innerClass))
+      {
+        return true;
+      }
+    }
+    return false;
   }
 }
