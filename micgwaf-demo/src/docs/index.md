@@ -38,6 +38,40 @@ These are not meant to be edited and will be overwritten without warning each ti
 For keeping the generated components up to date,
 running "mvn generate-sources" or an equivalent command is necessary after changing the source HTML files.
 
+Project Setup
+-------------
+
+You can create an automatic builder in eclipse, which will automatically re-generate the generated sources
+if you change the HTML files.
+For this, it is necessary that you have the micgwaf project itself anywhere on the disk in a built state.
+Do the following:
+- right-click on the project -> Properties -> Builders -> New...
+- Choose "Program"
+- Enter "micgwaf builder" as name
+- in the "main" tab:
+  - enter the path to a java binary in the "Location" field
+  - enter the project's directory (e.g. ${workspace_loc:/micgwaf-demo}) in the "Working Directory" field
+  - enter the classpath and the program arguments into the "Arguments" field, e.g.:
+    -cp "../micgwaf-core/target/classes;F:/java/maven/localrepo/javax/servlet/servlet-api/2.5/servlet-api-2.5.jar;
+        F:\java\maven\localrepo\commons-io\commons-io\2.4\commons-io-2.4.jar"
+     de.seerheinlab.micgwaf.generator.Generator
+     /de/seerheinlab/micgwaf/config/default-micgwaf-codegen.properties
+     src/main/html
+     target/generated-sources
+     src/main/generated-java
+     de.seerheinlab.test.micgwaf.component
+- in the "refresh" tab, choose "Refresh upon completion", "The project containing the selected Resource", 
+  "Recurse into sub folders".
+- in the "build options" tab:
+  - choose the following values in the "Run the builder" section:
+    - After a "Clean"
+    - During manual builds
+    - During auto builds
+  - Check the "specify working set of relevant resources", press the "specify resources" button
+    and select the src/main/html folder
+
+Note: This will not clean generated classes which are no longer needed
+
 Best practices
 --------------
 
