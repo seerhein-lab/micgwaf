@@ -312,8 +312,12 @@ public abstract class ComponentGenerator
       GenerationContext generationContext,
       Class<? extends Component> extensionClass)
   {
-    generationContext.generatedClass.classDefinition
-        .append("public class ").append(getClassName(generationContext).getSimpleName())
+    generationContext.generatedClass.classDefinition.append("public ");
+    if (!generateExtensionClass(generationContext.component))
+    {
+      generationContext.generatedClass.classDefinition.append("static ");
+    }
+    generationContext.generatedClass.classDefinition.append("class ").append(getClassName(generationContext).getSimpleName())
         .append(" extends ").append(extensionClass.getSimpleName());
     // TODO why is this necessary ?
     if (generationContext.component.getParent() == null)

@@ -214,20 +214,29 @@ public class Generator
       Map<JavaClassName, String> filesToWrite)
   {
     ComponentGenerator componentGenerator = getGenerator(generationContext.component.getClass());
-    generationContext.generatedClass = new GeneratedClass();
+    boolean writeClassFile = componentGenerator.generateExtensionClass(generationContext.component);
+    GeneratedClass generatedClass = new GeneratedClass();
+    if (!writeClassFile)
+    {
+      generationContext.generatedClass.innerClasses.add(generatedClass);
+    }
+    generationContext.generatedClass = generatedClass;
 
     componentGenerator.generate(generationContext);
-    if (generationContext.generatedClass != null)
+    for (Component child : generationContext.component.getChildren())
+    {
+      // allow for setting generatedClass null in generatonContext
+      generationContext.generatedClass = generatedClass;
+      generateComponentBaseClass(new GenerationContext(generationContext, child), filesToWrite);
+    }
+
+    if (generationContext.generatedClass != null && writeClassFile)
     {
       removeUnusedImports.removeUnusedImports(generationContext.generatedClass);
       String result = generationContext.generatedClass.toString();
       filesToWrite.put(
           componentGenerator.getClassName(generationContext),
           result);
-    }
-    for (Component child : generationContext.component.getChildren())
-    {
-      generateComponentBaseClass(new GenerationContext(generationContext, child), filesToWrite);
     }
   }
 

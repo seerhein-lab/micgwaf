@@ -291,7 +291,7 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
                   .append("  public Component setTextContent(String text)\n")
                   .append("  {\n")
                   .append("    ").append(componentField).append(".text = escapeXmlText(text);\n")
-                  .append("    return this;")
+                  .append("    return this;\n")
                   .append("  }\n");
             }
           }

@@ -28,26 +28,40 @@ public class GeneratedClass
     {
       result.append("import ").append(toImport).append(";\n");
     }
-    result.append(";\n");
-    appendMainPart(result, 0);
+    result.append("\n");
+    appendMainPart(result, 0, true);
     return result.toString();
   }
 
-  public void appendMainPart(StringBuilder result, int indent)
+  public void appendMainPart(StringBuilder result, int indent, boolean innerClassesInClassBody)
   {
-    result.append(GeneratorHelper.indent(classJavadoc.toString(), indent)).append("\n");
-    for (String classAnnotation : classAnnotations)
+    if (!isSelfEmpty())
     {
-      result.append(GeneratorHelper.indent(classAnnotation, indent)).append("\n");
+      result.append("\n");
+      result.append(GeneratorHelper.indent(classJavadoc.toString(), indent)).append("\n");
+      for (String classAnnotation : classAnnotations)
+      {
+        result.append(GeneratorHelper.indent(classAnnotation, indent)).append("\n");
+      }
+      result.append(GeneratorHelper.indent(classDefinition.toString(), indent)).append("\n");
+      result.append(GeneratorHelper.indent("{\n", indent));
+      result.append(GeneratorHelper.indent(classBody.toString(), indent)).append("\n");
+      if (!innerClassesInClassBody)
+      {
+        result.append(GeneratorHelper.indent("}\n", indent));
+      }
     }
-    result.append(GeneratorHelper.indent(classDefinition.toString(), indent)).append("\n");
-    result.append(GeneratorHelper.indent("{\n", indent));
-    result.append(GeneratorHelper.indent(classBody.toString(), indent)).append("\n");
     for (GeneratedClass innerClass : innerClasses)
     {
-      innerClass.appendMainPart(result, indent + 2);
+      if (!innerClass.isEmpty())
+      {
+        innerClass.appendMainPart(result, indent == 0 ? 2 : indent, false);
+      }
     }
-    result.append(GeneratorHelper.indent("}\n", indent));
+    if (innerClassesInClassBody && !isSelfEmpty())
+    {
+      result.append(GeneratorHelper.indent("}\n", indent));
+    }
   }
 
   public List<String> calculateImports()
@@ -64,5 +78,29 @@ public class GeneratedClass
       }
     }
     return result;
+  }
+
+  public void clearImportsRecursively()
+  {
+    imports.clear();
+    for (GeneratedClass innerClass : innerClasses)
+    {
+      innerClass.clearImportsRecursively();
+    }
+  }
+
+  public boolean isEmpty()
+  {
+    return (classAnnotations.isEmpty()
+        && classDefinition.length() == 0
+        && classBody.length() == 0
+        && innerClasses.isEmpty());
+  }
+
+  public boolean isSelfEmpty()
+  {
+    return (classAnnotations.isEmpty()
+        && classDefinition.length() == 0
+        && classBody.length() == 0);
   }
 }

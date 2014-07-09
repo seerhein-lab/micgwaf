@@ -3,6 +3,7 @@ package de.seerheinlab.micgwaf.generator;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -24,6 +25,10 @@ public class RemoveUnusedImports
    */
   public void removeUnusedImports(GeneratedClass toProcess)
   {
+    List<String> imports = toProcess.calculateImports();
+    toProcess.clearImportsRecursively();
+    toProcess.imports.addAll(imports);
+
     // key is the number of the import, value is the unqualified name of the imported class.
     Map<Integer, String> unqualifiedImportedClasses = new LinkedHashMap<>();
     Set<String> qualifiedImportedClasses = new HashSet<>();
