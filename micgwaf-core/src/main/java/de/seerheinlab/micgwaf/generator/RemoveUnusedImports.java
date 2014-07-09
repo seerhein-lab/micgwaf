@@ -40,6 +40,7 @@ public class RemoveUnusedImports
       {
         // duplicate Import, remove
         importsToRemove.add(importNumber);
+        importNumber++;
         continue;
       }
       qualifiedImportedClasses.add(importedClass);
