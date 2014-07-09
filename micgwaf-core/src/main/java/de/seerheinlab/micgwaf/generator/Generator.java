@@ -415,10 +415,10 @@ public class Generator
     String extensionsTargetDirectory = argv[3];
     String baseComponentPackage = argv[4];
     System.out.println("micgwaf generator running with:\n"
-        + "configurationClasspathResource: " + configurationClasspathResource
-        + "componentDir                  : " + componentDir
-        + "targetDirectory               : " + targetDirectory
-        + "extensionsTargetDirectory     : " + extensionsTargetDirectory
+        + "configurationClasspathResource: " + configurationClasspathResource + "\n"
+        + "componentDir                  : " + componentDir + "\n"
+        + "targetDirectory               : " + targetDirectory + "\n"
+        + "extensionsTargetDirectory     : " + extensionsTargetDirectory + "\n"
         + "baseComponentPackage          : " + baseComponentPackage);
     Generator.configurationClasspathResource = configurationClasspathResource;
     new Generator().generate(
