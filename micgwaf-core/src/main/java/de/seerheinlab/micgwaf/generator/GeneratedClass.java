@@ -48,7 +48,7 @@ public class GeneratedClass
       result.append(GeneratorHelper.indent(classBody.toString(), indent)).append("\n");
       if (!innerClassesInClassBody)
       {
-        result.append(GeneratorHelper.indent("}\n", indent));
+        result.append(GeneratorHelper.getIndentString(indent)).append("}\n");
       }
     }
     for (GeneratedClass innerClass : innerClasses)
@@ -60,7 +60,7 @@ public class GeneratedClass
     }
     if (innerClassesInClassBody && !isSelfEmpty())
     {
-      result.append(GeneratorHelper.indent("}\n", indent));
+      result.append(GeneratorHelper.getIndentString(indent)).append("}\n");
     }
   }
 
