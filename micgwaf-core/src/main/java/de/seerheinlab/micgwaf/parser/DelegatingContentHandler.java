@@ -23,8 +23,6 @@ import de.seerheinlab.micgwaf.util.Constants;
  */
 public class DelegatingContentHandler extends DefaultHandler
 {
-  public static final String REMOVE_ELEMENT_NAME = "remove";
-
   public List<DelegateReference> delegateList = new ArrayList<>();
 
   public DelegateReference currentDelegate;
