@@ -17,7 +17,7 @@ a m:id attribute or is itself in the m namespace.
 The mapping between elements and components is defined in the class
 de.seerheinlab.micgwaf.parser.contenthandler.ContentHandlerRegistry.
 
-Currently, the mapping is as follows
+Currently, the mapping is as follows (TODO add description what element/attribute does)
 
 <table>
   <tr>
