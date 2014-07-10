@@ -65,8 +65,6 @@ Currently, the mapping is as follows
 </table>
 
 If HTML text is encountered which does not fit into the above categories, a PartListComponent is created.
-There are other elements in the m namespace which do not get translated into own components.
-These are: TODO
 
 The following attributes in the m namespace do not create a component on their own, 
 but define the behavior of a component or the handling of the component in the parent component: 
