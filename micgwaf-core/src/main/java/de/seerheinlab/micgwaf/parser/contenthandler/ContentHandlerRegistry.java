@@ -11,14 +11,19 @@ import java.util.Map;
  */
 public class ContentHandlerRegistry
 {
+  /** The name of the "multiple" attribute in the micgwaf namespace. */
   public static final String MULTIPLE_ATTR = "multiple";
 
+  /** The name of the "defaultRender" attribute in the micgwaf namespace. */
   public static final String DEFAULT_RENDER_ATTR = "defaultRender";
 
+  /** The name of the "defaultRenderSelf" attribute in the micgwaf namespace. */
   public static final String DEFAULT_RENDER_SELF_ATTR = "defaultRenderSelf";
 
+  /** The name of the "defaultRenderChildren" attribute in the micgwaf namespace. */
   public static final String DEFAULT_RENDER_CHILDREN_ATTR = "defaultRenderChildren";
 
+  /** The name of the "generateExtensionClass" attribute in the micgwaf namespace. */
   public static final String GENRATE_EXTENSION_CLASS_ATTR = "generateExtensionClass";
 
   /**
