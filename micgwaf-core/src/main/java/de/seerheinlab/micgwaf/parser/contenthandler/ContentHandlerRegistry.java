@@ -3,6 +3,12 @@ package de.seerheinlab.micgwaf.parser.contenthandler;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+/**
+ * Contains all known attributes elements within the micgwaf namespace.
+ * All of the known elements and some attributes are handled by handlers stored in the
+ * <code>elementHandlerMap</code> and <code>attributeHandlerMap</code>.
+ * The other known attributes are defined as constants.
+ */
 public class ContentHandlerRegistry
 {
   public static final String MULTIPLE_ATTR = "multiple";
@@ -16,12 +22,14 @@ public class ContentHandlerRegistry
   public static final String GENRATE_EXTENSION_CLASS_ATTR = "generateExtensionClass";
 
   /**
+   * All Handlers which handle XML attributes in the micgwaf namespace.
    * Key is name of attribute in our namespace, value is handler.
    */
   public static Map<String, ContentHandlerFactory> attributeHandlerMap
       = new LinkedHashMap<String, ContentHandlerFactory>();
 
   /**
+   * All Handlers which handle XML elements in the micgwaf namespace.
    * Key is name of element in our namespace, value is handler.
    */
   public static Map<String, ContentHandlerFactory> elementHandlerMap
