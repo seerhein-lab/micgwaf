@@ -16,6 +16,7 @@ import de.seerheinlab.micgwaf.parser.contenthandler.ContentHandler;
 import de.seerheinlab.micgwaf.parser.contenthandler.ContentHandlerFactory;
 import de.seerheinlab.micgwaf.parser.contenthandler.ContentHandlerRegistry;
 import de.seerheinlab.micgwaf.parser.contenthandler.PartListContentHandler;
+import de.seerheinlab.micgwaf.util.Assertions;
 import de.seerheinlab.micgwaf.util.Constants;
 
 /**
@@ -23,10 +24,16 @@ import de.seerheinlab.micgwaf.util.Constants;
  */
 public class DelegatingContentHandler extends DefaultHandler
 {
+  /** The stack of handlers which handle started but not yet closed XML elements. */
   public List<DelegateReference> delegateList = new ArrayList<>();
 
   public DelegateReference currentDelegate;
 
+  /**
+   * How deep the current stack of open XML elements is, minus one.
+   * -1 signifies "outside the document".
+   * 0 means we are inside the root XML element.
+   */
   public int contentDepth = -1;
 
   public Component currentResult;
@@ -39,7 +46,6 @@ public class DelegatingContentHandler extends DefaultHandler
         Attributes attributes)
       throws SAXException
   {
-
     boolean newHandlerFound = false;
     // check whether this is an element with our namespace
     if (Constants.XML_NAMESPACE.equals(uri))
@@ -174,14 +180,34 @@ public class DelegatingContentHandler extends DefaultHandler
     currentDelegate.contentHandler.ignorableWhitespace(ch, start, length);
   }
 
+  /**
+   * Contains a content handler plus additional information about which XML part is handled
+   * by the content handler.
+   */
   private static class DelegateReference
   {
+    /**
+     * The XML content depth just before the XML Element
+     * which is handled by this reference's content handler.
+     */
     public int startDepth;
+    /** Whether the handler was started on raw text. */
     public boolean startedOnText;
+    /** The content handler stored in this reference. */
     public ContentHandler contentHandler;
 
+    /**
+     * Constructor.
+     * @param startDepth The XML content depth just before the XML Element
+     *        which is handled by this reference's content handler.
+     * @param contentHandler The content handler stored in this reference, not null.
+     * @param startedOnText Whether the handler was started on raw text.
+     *
+     * @throws NullPointerException if null was passed for <code>contentHandler</code>.
+     */
     public DelegateReference(int startDepth, ContentHandler contentHandler, boolean startedOnText)
     {
+      Assertions.assertNotNull(contentHandler, "contentHandler");
       this.startDepth = startDepth;
       this.contentHandler = contentHandler;
       this.startedOnText = startedOnText;
