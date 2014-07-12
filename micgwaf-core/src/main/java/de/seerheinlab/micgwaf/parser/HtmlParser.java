@@ -27,22 +27,33 @@ import de.seerheinlab.micgwaf.component.GenerationParameters;
  */
 public class HtmlParser
 {
+  /** The suffix of the files being parsed. */
   private static final String XHTML_SUFFIX = ".xhtml";
 
+  /** The resource where micgwaf components in libraries are defined. */
   private static final String COMPONENTS_PROPERTIES_RESOURCE = "META-INF/micgwaf-components.properties";
 
+  /** The SAX feature for using namespaces. */
   private static final String SAX_NAMESPACE_FEATURE_NAME = "http://xml.org/sax/features/namespaces";
 
   /**
-   * Parses the HTML files in a directory and generates components from them.
-   * Only files directly in the given directory with the suffix .xhtml are parsed,
-   * all other files are ignored.
-   * The created components are stored in the returned map.
-   * The map key is the component id, and the map value is the root component for a HTML source file.
+   * Reads all available components.
+   * This is, two things are done:
+   * <ul>
+   *   <li>All component definitions are read from the classpath.</li>
+   *   <li>All XHTML files in the source directory are read and components are created from them.</li>
+   * </ul>
+   * The read components are stored in the returned map.
+   * The map key is the component id, prefixed with the directory tree to the component
+   * in case of he components created from parsing the XHTML file,
+   * and the map value is the root component for a XHTML source file.
    *
-   * @param sourceDirectory the directory where the parsed files reside, not null.
+   * @param sourceDirectory the base directory in which the files to parse reside, not null.
    *
    * @return the map with the parsed components, one entry for each parsed file.
+   *
+   * @throws NullPointerException if <code>sourceDirectory<code> is null.
+   * @throws IllegalArgumentException if <code>sourceDirectory<code> is not a directory.
    */
   public Map<String, Component> readComponents(File sourceDirectory)
   {
@@ -57,7 +68,8 @@ public class HtmlParser
    *   <li>All XHTML files in the source directory are read and components are created from them.</li>
    * </ul>
    * The read components are stored in the returned map.
-   * The map key is the component id, prefixed with the directory tree to the component,
+   * The map key is the component id, prefixed with the directory tree to the component
+   * in case of he components created from parsing the XHTML file,
    * and the map value is the root component for a XHTML source file.
    *
    * @param sourceDirectory the directory where the parsed files reside, not null.
@@ -65,6 +77,10 @@ public class HtmlParser
    *       or null to use this classes' class loader.
    *
    * @return the map with the parsed components, one entry for each parsed file.
+   *
+   * @throws NullPointerException if <code>sourceDirectory<code> is null.
+   * @throws IllegalArgumentException if <code>sourceDirectory<code> is not a directory.
+   * @throws RuntimeException if an error occurs during parsing.
    */
   public Map<String, Component> readComponents(File sourceDirectory, ClassLoader classLoader)
   {
@@ -79,7 +95,7 @@ public class HtmlParser
     }
 
     Map<String, Component> result = discoverComponentsFromClasspath(classLoader);
-    parseComponents(sourceDirectory, result, "");
+    parseComponents(sourceDirectory, "", result);
     return result;
   }
 
@@ -88,7 +104,7 @@ public class HtmlParser
    * All files in the given directory and its subdirectories with the suffix .xhtml are parsed,
    * all other files are ignored.
    * One component (the root component for the file) is stored in the map per file,
-   * the root component typically contains other components.
+   * the root component typically contains other components as children.
    *
    * @param sourceDirectory the directory where the parsed files reside, not null.
    * @param componentMap the map to store the parsed components in.
@@ -96,7 +112,7 @@ public class HtmlParser
    *        and the map value is the root component for a XHTML source file
    * @param prefix the prefix for the component key, to be able to prefix the directory path.
    */
-  private void parseComponents(File sourceDirectory, Map<String, Component> componentMap, String prefix)
+  protected void parseComponents(File sourceDirectory, String prefix, Map<String, Component> componentMap)
   {
     File[] files = sourceDirectory.listFiles();
     for (File file : files)
@@ -104,25 +120,40 @@ public class HtmlParser
       String fileName = file.getName();
       if (file.isFile() && fileName.endsWith(XHTML_SUFFIX))
       {
-        try
-        {
-          FileInputStream inputStream = new FileInputStream(file);
-          Component component = parse(inputStream);
-          if (component.getId() == null)
-          {
-            component.setId(fileName.substring(0, fileName.length() - XHTML_SUFFIX.length()));
-          }
-          componentMap.put(prefix + component.getId(), component);
-        }
-        catch (SAXException | IOException | ParserConfigurationException e)
-        {
-          throw new RuntimeException(e);
-        }
+        parseAndStore(file, prefix, componentMap);
       }
       else if (file.isDirectory())
       {
-        parseComponents(file, componentMap, prefix + file.getName() + "/" );
+        parseComponents(file, prefix + file.getName() + "/", componentMap);
       }
+    }
+  }
+
+  /**
+   * Parses a XHTML file and stores the result in the passed component map.
+   *
+   * @param file the file to parse, not null.
+   * @param prefix the directory path prefix for the id, not null.
+   * @param componentMap the component map to store the parsed component in, not null.
+   *
+   * @throws RuntimeException if an error occurs during parsing.
+   */
+  protected void parseAndStore(File file, String prefix, Map<String, Component> componentMap)
+  {
+    String fileName = file.getName();
+    try
+    {
+      FileInputStream inputStream = new FileInputStream(file);
+      Component component = parse(inputStream);
+      if (component.getId() == null)
+      {
+        component.setId(fileName.substring(0, fileName.length() - XHTML_SUFFIX.length()));
+      }
+      componentMap.put(prefix + component.getId(), component);
+    }
+    catch (SAXException | IOException | ParserConfigurationException e)
+    {
+      throw new RuntimeException(e);
     }
   }
 
@@ -137,7 +168,7 @@ public class HtmlParser
    * @throws IOException if reading from the stream fails.
    * @throws ParserConfigurationException if the SAX parser cannot be configured.
    */
-  public Component parse(InputStream inputStream)
+  protected Component parse(InputStream inputStream)
       throws SAXException, IOException, ParserConfigurationException
   {
     SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
@@ -157,13 +188,13 @@ public class HtmlParser
    * Reads all component definitions from the classpath and returns component instances.
    * It first reads all files with the class path defined in <code>COMPONENTS_PROPERTIES_RESOURCE</code>,
    * and then parses them as property file, the key is the component key, and the value is the class name
-   * of the components. The read components are stored in the returned hash map.
+   * of the components. The read components are stored in the returned map.
    *
    * @param classLoader the class loader to use, or null to use this classes class loader.
    *
    * @return the map with the component instances, keyed by their component key.
    */
-  public Map<String, Component> discoverComponentsFromClasspath(ClassLoader classLoader)
+  protected Map<String, Component> discoverComponentsFromClasspath(ClassLoader classLoader)
   {
     Map<String, Component> result = new HashMap<>();
     if (classLoader == null)
@@ -184,23 +215,10 @@ public class HtmlParser
         }
         for (Map.Entry<Object, Object> entry: properties.entrySet())
         {
-          String key = entry.getKey().toString();
-          String value = entry.getValue().toString();
-          Class<?> clazz = Class.forName(value);
-          if (!Component.class.isAssignableFrom(clazz))
-          {
-            throw new RuntimeException(
-                "Class " + value + " defined in " + url + " is not a Component");
-          }
-          @SuppressWarnings("unchecked")
-          Class<? extends Component> componentClass = (Class<? extends Component>) clazz;
-          Component instance = Component.getInstance(componentClass);
-          if (instance.getGenerationParameters() == null)
-          {
-            instance.setGenerationParameters(new GenerationParameters());
-          }
-          instance.getGenerationParameters().fromComponentLib = true;
-          result.put(key, instance);
+          String componentKey = entry.getKey().toString();
+          String componentClassName = entry.getValue().toString();
+          Component instance = getComponentInstance(componentClassName);
+          result.put(componentKey, instance);
         }
       }
     }
@@ -209,5 +227,35 @@ public class HtmlParser
       throw new RuntimeException(e);
     }
     return result;
+  }
+
+  /**
+   * Instantiates and returns the component with the class name <code>componentClassName</code>.
+   *
+   * @param componentClassName the class name of the component to instantiate.
+   *
+   * @return an instance of the component, not null.
+   *
+   * @throws ClassNotFoundException if the class cannot be found.
+   * @throws RuntimeException if the class is not a subclass of de.seerheinlab.micgwaf.component.Component.
+   */
+  protected Component getComponentInstance(String componentClassName)
+      throws ClassNotFoundException
+  {
+    Class<?> clazz = Class.forName(componentClassName);
+    if (!Component.class.isAssignableFrom(clazz))
+    {
+      throw new RuntimeException(
+          "Class " + componentClassName + " is not a Component");
+    }
+    @SuppressWarnings("unchecked")
+    Class<? extends Component> componentClass = (Class<? extends Component>) clazz;
+    Component instance = Component.getInstance(componentClass);
+    if (instance.getGenerationParameters() == null)
+    {
+      instance.setGenerationParameters(new GenerationParameters());
+    }
+    instance.getGenerationParameters().fromComponentLib = true;
+    return instance;
   }
 }
