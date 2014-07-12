@@ -12,7 +12,6 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
 import de.seerheinlab.micgwaf.component.Component;
-import de.seerheinlab.micgwaf.parser.HtmlParser;
 
 public class ParseAndRenderTest
 {
@@ -20,7 +19,7 @@ public class ParseAndRenderTest
   public void testRenderComponentRefs() throws Exception
   {
     File componentDir = new File("src/test/resources/de/seerheinlab/micgwaf/componentref");
-    Map<String, Component> components 
+    Map<String, Component> components
         = new HtmlParser().readComponents(componentDir);
     assertEquals(3, components.size());
     for (Component component : components.values())
@@ -35,12 +34,12 @@ public class ParseAndRenderTest
     expected = expected.replace("\r\n", "\n");
     assertEquals(expected, stringWriter.toString());
   }
-  
+
   @Test
   public void testRenderForm() throws Exception
   {
-    File componentDir = new File("src/test/resources/de/seerheinlab/micgwaf/parser");
-    Map<String, Component> components 
+    File componentDir = new File("src/test/resources/de/seerheinlab/micgwaf/form");
+    Map<String, Component> components
         = new HtmlParser().readComponents(componentDir);
     assertEquals(1, components.size());
     StringWriter stringWriter = new StringWriter();
@@ -56,7 +55,7 @@ public class ParseAndRenderTest
   public void testRenderTemplatedPage() throws Exception
   {
     File componentDir = new File("src/test/resources/de/seerheinlab/micgwaf/template");
-    Map<String, Component> components 
+    Map<String, Component> components
         = new HtmlParser().readComponents(componentDir);
     assertEquals(3, components.size());
     for (Component component : components.values())
@@ -76,7 +75,7 @@ public class ParseAndRenderTest
   public void testRenderVariables() throws Exception
   {
     File componentDir = new File("src/test/resources/de/seerheinlab/micgwaf/variable");
-    Map<String, Component> components 
+    Map<String, Component> components
         = new HtmlParser().readComponents(componentDir);
     assertEquals(3, components.size());
     for (Component component : components.values())
@@ -96,7 +95,7 @@ public class ParseAndRenderTest
   public void testChildAndParentReferences() throws Exception
   {
     File componentDir = new File("src/test/resources/de/seerheinlab/micgwaf/componentref");
-    Map<String, Component> components 
+    Map<String, Component> components
         = new HtmlParser().readComponents(componentDir);
     assertEquals(3, components.size());
     Component root = components.get("root");

@@ -145,6 +145,7 @@ public class PartListContentHandler extends ContentHandler
     component.parts.add(PartListComponent.ComponentPart.fromHtmlSnippet(currentStringPart.toString()));
     currentStringPart = new StringBuilder();
     component.parts.add(PartListComponent.ComponentPart.fromComponent(child));
+    child.setParent(component);
   }
 
   @Override

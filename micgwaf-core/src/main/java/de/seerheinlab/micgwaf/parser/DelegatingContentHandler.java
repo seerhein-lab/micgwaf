@@ -118,18 +118,25 @@ public class DelegatingContentHandler extends DefaultHandler
   {
     contentDepth--;
     boolean endElementCalled = false;
+    // check whether to pass the end element to the active handler
+    // this is the case if the element is a child element of the element which started the content handler
+    // (if such an element exists)
     if (!currentDelegate.startedOnText || contentDepth != currentDelegate.startDepth)
     {
       currentDelegate.contentHandler.endElement(uri, localName, qName);
       endElementCalled = true;
     }
+    // while the start depth of the active handler is reached
+    // and there are still any remaining content handlers parked,
+    // finish the active handler, establish parent-child relations
+    // and store the result of the old active handler as child in the new active handler
+    // (as long as the parsed result is not an EmptyComponent)
+    //
+    // Use while loop because nested PartListContentHandler can have same depth
+    // as surrounding content handler
     while (contentDepth == currentDelegate.startDepth && !delegateList.isEmpty())
     {
       currentResult = currentDelegate.contentHandler.finished();
-      for (Component child : currentResult.getChildren())
-      {
-        child.setParent(currentResult);
-      }
       currentDelegate = delegateList.remove(delegateList.size() - 1);
       if (!(currentResult instanceof EmptyComponent))
       {
@@ -153,14 +160,10 @@ public class DelegatingContentHandler extends DefaultHandler
   public void endDocument() throws SAXException
   {
     currentResult = currentDelegate.contentHandler.finished();
-    for (Component child : currentResult.getChildren())
-    {
-      child.setParent(currentResult);
-    }
   }
 
   @Override
-  public void characters (char[] ch, int start, int length)
+  public void characters(char[] ch, int start, int length)
       throws SAXException
   {
     if (!(currentDelegate.contentHandler instanceof PartListContentHandler))
@@ -168,13 +171,14 @@ public class DelegatingContentHandler extends DefaultHandler
       ContentHandler contentHandler = new PartListContentHandler();
       delegateList.add(currentDelegate);
       // -1 because text is same content depth as start of previous element
+      // So the PartListContentHandler is exited when the surrounded element is exited
       currentDelegate = new DelegateReference(contentDepth - 1, contentHandler, true);
     }
     currentDelegate.contentHandler.characters(ch, start, length);
   }
 
   @Override
-  public void ignorableWhitespace (char ch[], int start, int length)
+  public void ignorableWhitespace(char ch[], int start, int length)
       throws SAXException
   {
     currentDelegate.contentHandler.ignorableWhitespace(ch, start, length);

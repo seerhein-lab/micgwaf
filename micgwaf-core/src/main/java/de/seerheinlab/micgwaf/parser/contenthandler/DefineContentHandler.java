@@ -63,7 +63,7 @@ public class DefineContentHandler extends ContentHandler
       childList.children.add(child);
       child.setParent(childList);
       this.child = childList;
-   }
+    }
   }
 
   @Override

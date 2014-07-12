@@ -25,42 +25,54 @@ Currently, the mapping is as follows (TODO add description what element/attribut
     <th>Name</th>
     <th>Resulting Component</th>
     <th>Supported attributes</th>
+    <th>Description</th>
   </tr>
   <tr>
     <td>Element</td>
     <td>m:componentRef</td>
     <td>RefComponent</td>
     <td>id, refid, and dynamic attributes</td>
+    <td></td>
   </tr>
   <tr>
     <td>Element</td>
     <td>m:remove</td>
     <td>EmptyComponent</td>
     <td></td>
+    <td>
+      The html inside a m:remove is removed when parsing. 
+      This can be useful when adding source comments which should not be present in the output HTML,
+      or when viewing the HTML directly into a browser 
+      (which is not recommended, better use micgwaf's live parse mode).
+    </td>
   </tr>
   <tr>
     <td>Element</td>
     <td>m:insert</td>
     <td>AnyComponent</td>
     <td>name</td>
+    <td></td>
   </tr>
   <tr>
     <td>Element</td>
     <td>m:useTemplate</td>
     <td>TemplateIntegration</td>
     <td>templateId</td>
+    <td></td>
   </tr>
   <tr>
     <td>Element</td>
     <td>m:define</td>
     <td>DefineComponent</td>
     <td>name</td>
+    <td></td>
   </tr>
   <tr>
     <td>Attribute</td>
     <td>m:id</td>
     <td>HtmlElementComponent or ChildListComponent</td>
     <td>m:multiple, and all HTML attributes</td>
+    <td></td>
   </tr>
 </table>
 

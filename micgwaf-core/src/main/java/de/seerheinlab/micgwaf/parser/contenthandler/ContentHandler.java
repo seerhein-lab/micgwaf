@@ -9,7 +9,9 @@ public abstract class ContentHandler extends DefaultHandler
 {
   /**
    * Called when another handler has parsed a child component,
-   * which is inserted into this component by this method.
+   * which is inserted into the content handler's main component by this method.
+   * The Handler's responsibility is to add the component to its children, if it accepts any, and to
+   * set the child's parent to the main component.
    */
   public abstract void child(Component component) throws SAXException;
 

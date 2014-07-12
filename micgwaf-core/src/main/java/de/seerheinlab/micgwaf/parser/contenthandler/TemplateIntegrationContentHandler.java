@@ -100,6 +100,7 @@ public class TemplateIntegrationContentHandler extends ContentHandler
     }
     DefineComponent defineComponentChild = (DefineComponent) child;
     result.definitions.put(defineComponentChild.name, child);
+    child.setParent(result);
   }
 
   @Override
