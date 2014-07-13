@@ -3,9 +3,9 @@ package de.seerheinlab.micgwaf.generator.component;
 import java.util.List;
 
 import de.seerheinlab.micgwaf.component.Component;
-import de.seerheinlab.micgwaf.component.PartListComponent;
-import de.seerheinlab.micgwaf.component.RefComponent;
 import de.seerheinlab.micgwaf.component.SnippetComponent;
+import de.seerheinlab.micgwaf.component.parse.PartListComponent;
+import de.seerheinlab.micgwaf.component.parse.ReferenceComponent;
 import de.seerheinlab.micgwaf.generator.GeneratedClass;
 import de.seerheinlab.micgwaf.generator.Generator;
 import de.seerheinlab.micgwaf.generator.GeneratorHelper;
@@ -431,9 +431,9 @@ public abstract class ComponentGenerator
     {
       return removeDirectoryPrefix(removeLoopPart(component.getId()));
     }
-    else if (component instanceof RefComponent)
+    else if (component instanceof ReferenceComponent)
     {
-      RefComponent refComponent = (RefComponent) component;
+      ReferenceComponent refComponent = (ReferenceComponent) component;
       return removeDirectoryPrefix(replaceDots(refComponent.refid));
     }
     return "component" + componentCounter;

@@ -54,5 +54,7 @@ The implementations used mainly during parsing are
 
 - PartListComponent: Contains HTML snippets and child components.
   Is used by parsing whenever plain HTM snippets appear (TODO check: not SnippetComponent?)
-- TemplateIntegration: Component which binds together the template to be used in a HTML file
+- UseTemplateComponent: Component which binds together the template to be used in a HTML file
   and the template snippet defined in that page. Represents the m:useTemplate tag.
+- DefineComponent: Defines a part to be inserted into a placeholder of a template. 
+  Represents the m:define tag.

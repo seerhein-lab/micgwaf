@@ -8,9 +8,9 @@ import java.util.List;
 import de.seerheinlab.micgwaf.component.ChangesChildHtmlId;
 import de.seerheinlab.micgwaf.component.ChildListComponent;
 import de.seerheinlab.micgwaf.component.Component;
-import de.seerheinlab.micgwaf.component.PartListComponent;
-import de.seerheinlab.micgwaf.component.RefComponent;
 import de.seerheinlab.micgwaf.component.SnippetComponent;
+import de.seerheinlab.micgwaf.component.parse.PartListComponent;
+import de.seerheinlab.micgwaf.component.parse.ReferenceComponent;
 import de.seerheinlab.micgwaf.config.ApplicationBase;
 import de.seerheinlab.micgwaf.generator.GeneratedClass;
 import de.seerheinlab.micgwaf.generator.Generator;
@@ -60,7 +60,7 @@ public class PartListComponentGenerator extends ComponentGenerator
         ComponentGenerator generator = Generator.getGenerator(part.component);
         JavaClassName componentClass = generator.getReferencableClassName(
             new GenerationContext(generationContext, part.component));
-        if (part.component instanceof RefComponent
+        if (part.component instanceof ReferenceComponent
             && !javaClassName.getPackage().equals(componentClass.getPackage()))
         {
           result.imports.add(componentClass.getName());

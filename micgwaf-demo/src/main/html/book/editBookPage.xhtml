@@ -10,16 +10,16 @@
   <body>
     <div id="contentArea" class="container">
       <h2>Enter Book</h2>
-      <m:componentRef refid="parts/messageBox" />
+      <m:m:reference refid="parts/messageBox" />
       <form m:id="bookForm">
         <div class="row">
           <div class="col-md-6">
-            <m:componentRef refid="parts/validatedInput" id="author" label="Author"/>
-            <m:componentRef refid="parts/validatedInput" id="title" label="Title"/>
+            <m:m:reference refid="parts/validatedInput" id="author" label="Author"/>
+            <m:m:reference refid="parts/validatedInput" id="title" label="Title"/>
           </div>
           <div class="col-md-6">
-            <m:componentRef refid="parts/validatedInput" id="publisher" label="Publisher"/>
-            <m:componentRef refid="parts/validatedInput" id="isbn" label="ISBN"/>
+            <m:m:reference refid="parts/validatedInput" id="publisher" label="Publisher"/>
+            <m:m:reference refid="parts/validatedInput" id="isbn" label="ISBN"/>
           </div>
         </div>      
         <button m:id="okButton" type="submit" title="Save this book" class="btn btn-default">Save</button>

@@ -3,8 +3,8 @@ package de.seerheinlab.micgwaf.generator.component;
 import java.util.Map;
 
 import de.seerheinlab.micgwaf.component.Component;
-import de.seerheinlab.micgwaf.component.EmptyComponent;
-import de.seerheinlab.micgwaf.component.RefComponent;
+import de.seerheinlab.micgwaf.component.parse.ReferenceComponent;
+import de.seerheinlab.micgwaf.component.parse.RemoveComponent;
 import de.seerheinlab.micgwaf.generator.Generator;
 import de.seerheinlab.micgwaf.generator.JavaClassName;
 
@@ -13,7 +13,7 @@ public class RefComponentGenerator extends ComponentGenerator
   @Override
   public JavaClassName getClassName(GenerationContext generationContext)
   {
-    RefComponent refComponent = (RefComponent) generationContext.component;
+    ReferenceComponent refComponent = (ReferenceComponent) generationContext.component;
     if (refComponent.referencedComponent != null
         && refComponent.referencedComponent.getGenerationParameters() != null
         && refComponent.referencedComponent.getGenerationParameters().fromComponentLib)
@@ -24,7 +24,7 @@ public class RefComponentGenerator extends ComponentGenerator
     }
     String subpackage = Generator.getComponentSubpackage(refComponent.refid);
     GenerationContext subpackageGenerationContext = new GenerationContext(
-        new EmptyComponent(refComponent.refid, null),
+        new RemoveComponent(refComponent.refid, null), // use any component with the correct id
         generationContext.rootPackage,
         subpackage);
     return getExtensionClassName(subpackageGenerationContext);
@@ -50,7 +50,7 @@ public class RefComponentGenerator extends ComponentGenerator
   @Override
   public void generateInitializer(GenerationContext generationContext, String componentField)
   {
-    RefComponent refComponent = (RefComponent) generationContext.component;
+    ReferenceComponent refComponent = (ReferenceComponent) generationContext.component;
     if (refComponent.variableValues.isEmpty())
     {
       return;

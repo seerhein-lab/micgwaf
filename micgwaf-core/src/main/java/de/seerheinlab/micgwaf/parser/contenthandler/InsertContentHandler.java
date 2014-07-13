@@ -3,8 +3,8 @@ package de.seerheinlab.micgwaf.parser.contenthandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-import de.seerheinlab.micgwaf.component.InsertComponent;
 import de.seerheinlab.micgwaf.component.Component;
+import de.seerheinlab.micgwaf.component.parse.InsertComponent;
 import de.seerheinlab.micgwaf.util.Constants;
 
 public class InsertContentHandler extends ContentHandler

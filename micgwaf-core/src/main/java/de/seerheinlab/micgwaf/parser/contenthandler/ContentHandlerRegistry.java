@@ -43,8 +43,8 @@ public class ContentHandlerRegistry
   static
   {
     elementHandlerMap.put(
-        ComponentRefContentHandler.COMPONENT_REF_ELEMENT_NAME,
-        new ComponentRefContentHandlerFactory());
+        ReferenceContentHandler.COMPONENT_REF_ELEMENT_NAME,
+        new ReferenceContentHandlerFactory());
     elementHandlerMap.put(
         RemoveContentHandler.REMOVE_ELEMENT_NAME,
         new RemoveContentHandlerFactory());
@@ -52,8 +52,8 @@ public class ContentHandlerRegistry
         InsertContentHandler.INSERT_ELEMENT_NAME,
         new InsertContentHandlerFactory());
     elementHandlerMap.put(
-        TemplateIntegrationContentHandler.USE_TEMPLATE_ELEMENT_NAME,
-        new TemplateIntegrationContentHandlerFactory());
+        UseTemplateContentHandler.USE_TEMPLATE_ELEMENT_NAME,
+        new UseTemplateContentHandlerFactory());
     elementHandlerMap.put(
         DefineContentHandler.DEFINE_ELEMENT_NAME,
         new DefineContentHandlerFactory());

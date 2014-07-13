@@ -11,7 +11,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import de.seerheinlab.micgwaf.component.Component;
-import de.seerheinlab.micgwaf.component.EmptyComponent;
+import de.seerheinlab.micgwaf.component.parse.RemoveComponent;
 import de.seerheinlab.micgwaf.parser.contenthandler.ContentHandler;
 import de.seerheinlab.micgwaf.parser.contenthandler.ContentHandlerFactory;
 import de.seerheinlab.micgwaf.parser.contenthandler.ContentHandlerRegistry;
@@ -130,7 +130,7 @@ public class DelegatingContentHandler extends DefaultHandler
     // and there are still any remaining content handlers parked,
     // finish the active handler, establish parent-child relations
     // and store the result of the old active handler as child in the new active handler
-    // (as long as the parsed result is not an EmptyComponent)
+    // (as long as the parsed result is not an RemoveComponent)
     //
     // Use while loop because nested PartListContentHandler can have same depth
     // as surrounding content handler
@@ -138,7 +138,7 @@ public class DelegatingContentHandler extends DefaultHandler
     {
       currentResult = currentDelegate.contentHandler.finished();
       currentDelegate = delegateList.remove(delegateList.size() - 1);
-      if (!(currentResult instanceof EmptyComponent))
+      if (!(currentResult instanceof RemoveComponent))
       {
         currentDelegate.contentHandler.child(currentResult);
       }

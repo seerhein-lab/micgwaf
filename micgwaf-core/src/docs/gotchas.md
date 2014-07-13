@@ -11,4 +11,4 @@ Gotchas
   - input components in loops add :${loopCounter} to the name attribute.
   - input components which are not buttons use the submitted value as new value of the "value" attribute
     if they are re-rendered.
-  - the content inside micgwaf:componentRef and micgwaf:remove elements is removed.
+  - the content inside m:reference and m:remove elements is removed.

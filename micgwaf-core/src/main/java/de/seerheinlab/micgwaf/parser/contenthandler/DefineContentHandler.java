@@ -5,7 +5,7 @@ import org.xml.sax.SAXException;
 
 import de.seerheinlab.micgwaf.component.ChildListComponent;
 import de.seerheinlab.micgwaf.component.Component;
-import de.seerheinlab.micgwaf.component.DefineComponent;
+import de.seerheinlab.micgwaf.component.parse.DefineComponent;
 import de.seerheinlab.micgwaf.util.Constants;
 
 public class DefineContentHandler extends ContentHandler

@@ -7,16 +7,16 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 import de.seerheinlab.micgwaf.component.Component;
-import de.seerheinlab.micgwaf.component.RefComponent;
+import de.seerheinlab.micgwaf.component.parse.ReferenceComponent;
 import de.seerheinlab.micgwaf.util.Constants;
 
-public class ComponentRefContentHandler extends ContentHandler
+public class ReferenceContentHandler extends ContentHandler
 {
   public static final String COMPONENT_REF_REFID_ATTR = "refid";
 
   public static final String COMPONENT_REF_ID_ATTR = "id";
 
-  public static final String COMPONENT_REF_ELEMENT_NAME = "componentRef";
+  public static final String COMPONENT_REF_ELEMENT_NAME = "reference";
 
   public String refid;
 
@@ -33,7 +33,7 @@ public class ComponentRefContentHandler extends ContentHandler
       throws SAXException
   {
     if (!Constants.XML_NAMESPACE.equals(uri)
-        || !ComponentRefContentHandler.COMPONENT_REF_ELEMENT_NAME.equals(localName))
+        || !ReferenceContentHandler.COMPONENT_REF_ELEMENT_NAME.equals(localName))
     {
       throw new SAXException("unknown Element " + uri + ":" + localName);
     }
@@ -41,11 +41,11 @@ public class ComponentRefContentHandler extends ContentHandler
     {
       String attributeQName = attributes.getQName(i);
       String value = attributes.getValue(i);
-      if (ComponentRefContentHandler.COMPONENT_REF_REFID_ATTR.equals(attributeQName))
+      if (ReferenceContentHandler.COMPONENT_REF_REFID_ATTR.equals(attributeQName))
       {
         refid = value;
       }
-      else if (ComponentRefContentHandler.COMPONENT_REF_ID_ATTR.equals(attributeQName))
+      else if (ReferenceContentHandler.COMPONENT_REF_ID_ATTR.equals(attributeQName))
       {
         id = value;
       }
@@ -56,7 +56,7 @@ public class ComponentRefContentHandler extends ContentHandler
     }
     if (refid == null || "".equals(refid.trim()))
     {
-      throw new SAXException("Attribute " + ComponentRefContentHandler.COMPONENT_REF_REFID_ATTR
+      throw new SAXException("Attribute " + ReferenceContentHandler.COMPONENT_REF_REFID_ATTR
           + " is required on element " + qName);
     }
   }
@@ -70,9 +70,9 @@ public class ComponentRefContentHandler extends ContentHandler
   }
 
   @Override
-  public RefComponent finished() throws SAXException
+  public ReferenceComponent finished() throws SAXException
   {
-    RefComponent result = new RefComponent(refid, id, null);
+    ReferenceComponent result = new ReferenceComponent(refid, id, null);
     result.variableValues = variableValues;
     return result;
   }

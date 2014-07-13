@@ -4,7 +4,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 import de.seerheinlab.micgwaf.component.Component;
-import de.seerheinlab.micgwaf.component.EmptyComponent;
+import de.seerheinlab.micgwaf.component.parse.RemoveComponent;
 import de.seerheinlab.micgwaf.util.Constants;
 
 public class RemoveContentHandler extends ContentHandler
@@ -33,8 +33,8 @@ public class RemoveContentHandler extends ContentHandler
   }
 
   @Override
-  public EmptyComponent finished() throws SAXException
+  public RemoveComponent finished() throws SAXException
   {
-    return new EmptyComponent(null);
+    return new RemoveComponent(null);
   }
 }

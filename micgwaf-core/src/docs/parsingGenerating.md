@@ -29,15 +29,15 @@ Currently, the mapping is as follows (TODO add description what element/attribut
   </tr>
   <tr>
     <td>Element</td>
-    <td>m:componentRef</td>
-    <td>RefComponent</td>
+    <td>m:reference</td>
+    <td>ReferenceComponent</td>
     <td>id, refid, and dynamic attributes</td>
     <td></td>
   </tr>
   <tr>
     <td>Element</td>
     <td>m:remove</td>
-    <td>EmptyComponent</td>
+    <td>RemoveComponent</td>
     <td></td>
     <td>
       The html inside a m:remove is removed when parsing. 
@@ -49,16 +49,21 @@ Currently, the mapping is as follows (TODO add description what element/attribut
   <tr>
     <td>Element</td>
     <td>m:insert</td>
-    <td>PlaceholderComponent</td>
+    <td>InsertComponent</td>
     <td>name</td>
-    <td></td>
+    <td>
+      A placeholder where content can be inserted in a template.
+    </td>
   </tr>
   <tr>
     <td>Element</td>
     <td>m:useTemplate</td>
-    <td>TemplateIntegration</td>
+    <td>UseTemplateComponent</td>
     <td>templateId</td>
-    <td></td>
+    <td>
+      Can only contain m:define elements as direct children; 
+      static html and other components are forbidden.
+    </td>
   </tr>
   <tr>
     <td>Element</td>
@@ -70,7 +75,7 @@ Currently, the mapping is as follows (TODO add description what element/attribut
   <tr>
     <td>Attribute</td>
     <td>m:id</td>
-    <td>HtmlElementComponent or ChildListComponent</td>
+    <td>HtmlElementComponent or a child (FormComponent, InputComponent)</td>
     <td>m:multiple, and all HTML attributes</td>
     <td></td>
   </tr>
@@ -132,7 +137,7 @@ Variables are used to render variable text or HTML.
 Currently, variables are interpreted in XHTML character sections
 or in attribute values of elements which do not have a m:id attribute only.
 Variables are parsed as a ComponentPart with the variable field set in the PartListComponent.
-Variable values can be defined in componentRef tags, where an attribute with the name of the variable
+Variable values can be defined in m:reference tags, where an attribute with the name of the variable
 can be used to define the variable value.
 These additional attributes are stored in the variableValues field of the RefComponent component.
 

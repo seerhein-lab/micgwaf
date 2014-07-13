@@ -1,14 +1,16 @@
-package de.seerheinlab.micgwaf.component;
+package de.seerheinlab.micgwaf.component.parse;
 
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.seerheinlab.micgwaf.component.Component;
+
 /**
- * An empty component which does nothing.
+ * An empty component which does nothing. Represents the m:remove tag in parsed HTML. Only used for parsing.
  */
-public class EmptyComponent extends Component
+public class RemoveComponent extends Component
 {
   /** Serial Version UID. */
   private static final long serialVersionUID = 1L;
@@ -18,7 +20,7 @@ public class EmptyComponent extends Component
    *
    * @param parent the parent component.
    */
-  public EmptyComponent(Component parent)
+  public RemoveComponent(Component parent)
   {
     super(null, parent);
   }
@@ -29,7 +31,7 @@ public class EmptyComponent extends Component
    * @param id the id of the component.
    * @param parent the parent component.
    */
-  public EmptyComponent(String id, Component parent)
+  public RemoveComponent(String id, Component parent)
   {
     super(id, parent);
   }

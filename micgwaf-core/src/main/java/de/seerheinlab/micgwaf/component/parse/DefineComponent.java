@@ -1,10 +1,16 @@
-package de.seerheinlab.micgwaf.component;
+package de.seerheinlab.micgwaf.component.parse;
 
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.seerheinlab.micgwaf.component.Component;
+
+/**
+ * Component to define a block to be inserted into a templated page.
+ * Represents the m:define element in parsed HTML. Only used for parsing.
+ */
 public class DefineComponent extends Component
 {
   /** Serial Version UID. */

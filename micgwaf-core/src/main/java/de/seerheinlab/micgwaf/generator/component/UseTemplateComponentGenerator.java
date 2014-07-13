@@ -8,17 +8,17 @@ import java.util.Map;
 
 import de.seerheinlab.micgwaf.component.ChildListComponent;
 import de.seerheinlab.micgwaf.component.Component;
-import de.seerheinlab.micgwaf.component.DefineComponent;
-import de.seerheinlab.micgwaf.component.PartListComponent;
-import de.seerheinlab.micgwaf.component.RefComponent;
-import de.seerheinlab.micgwaf.component.TemplateIntegration;
+import de.seerheinlab.micgwaf.component.parse.DefineComponent;
+import de.seerheinlab.micgwaf.component.parse.PartListComponent;
+import de.seerheinlab.micgwaf.component.parse.ReferenceComponent;
+import de.seerheinlab.micgwaf.component.parse.UseTemplateComponent;
 import de.seerheinlab.micgwaf.config.ApplicationBase;
 import de.seerheinlab.micgwaf.generator.GeneratedClass;
 import de.seerheinlab.micgwaf.generator.Generator;
 import de.seerheinlab.micgwaf.generator.GeneratorHelper;
 import de.seerheinlab.micgwaf.generator.JavaClassName;
 
-public class TemplateIntegrationGenerator extends ComponentGenerator
+public class UseTemplateComponentGenerator extends ComponentGenerator
 {
   @Override
   public JavaClassName getClassName(GenerationContext generationContext)
@@ -36,7 +36,7 @@ public class TemplateIntegrationGenerator extends ComponentGenerator
     }
     GeneratedClass result = generationContext.generatedClass;
 
-    TemplateIntegration templateIntegration = (TemplateIntegration) generationContext.component;
+    UseTemplateComponent useTemplateComponent = (UseTemplateComponent) generationContext.component;
     JavaClassName javaClassName = getClassName(generationContext);
     String className = javaClassName.getSimpleName();
 
@@ -52,7 +52,7 @@ public class TemplateIntegrationGenerator extends ComponentGenerator
     result.imports.add(PartListComponent.ComponentPart.class.getCanonicalName());
 
     {
-      RefComponent template = new RefComponent(templateIntegration.templateId, null, null);
+      ReferenceComponent template = new ReferenceComponent(useTemplateComponent.templateId, null, null);
       ComponentGenerator generator = Generator.getGenerator(template);
       JavaClassName componentClass = generator.getReferencableClassName(
           new GenerationContext(generationContext, template));
@@ -62,13 +62,13 @@ public class TemplateIntegrationGenerator extends ComponentGenerator
       }
     }
 
-    for (Map.Entry<String, Component> entry : templateIntegration.definitions.entrySet())
+    for (Map.Entry<String, Component> entry : useTemplateComponent.definitions.entrySet())
     {
       Component definedComponent = entry.getValue();
       ComponentGenerator generator = Generator.getGenerator(definedComponent);
       JavaClassName componentClass = generator.getReferencableClassName(
           new GenerationContext(generationContext, definedComponent));
-      if (definedComponent instanceof RefComponent
+      if (definedComponent instanceof ReferenceComponent
           && !javaClassName.getPackage().equals(componentClass.getPackage()))
       {
         result.imports.add(componentClass.getName());
@@ -84,11 +84,11 @@ public class TemplateIntegrationGenerator extends ComponentGenerator
 
     String templateFieldName = "template";
     {
-      while (templateIntegration.definitions.keySet().contains(templateFieldName))
+      while (useTemplateComponent.definitions.keySet().contains(templateFieldName))
       {
         templateFieldName = "_" + templateFieldName;
       }
-      RefComponent template = new RefComponent(templateIntegration.templateId, null, null);
+      ReferenceComponent template = new ReferenceComponent(useTemplateComponent.templateId, null, null);
       ComponentGenerator generator = Generator.getGenerator(template);
       result.classBody.append("\n");
       generator.generateFieldOrVariableFromComponent(
@@ -110,16 +110,20 @@ public class TemplateIntegrationGenerator extends ComponentGenerator
       .append("  {\n")
       .append("    super(id == null ? \"").append(generationContext.component.getId())
           .append("\" : id, parent);\n");
-    for (Map.Entry<String, Component> entry : templateIntegration.definitions.entrySet())
+    for (Map.Entry<String, Component> entry : useTemplateComponent.definitions.entrySet())
     {
-      Component componentDefinition = entry.getValue();
-      if (componentDefinition instanceof DefineComponent)
+      Component child = entry.getValue();
+      if (!(child instanceof DefineComponent))
       {
-        componentDefinition = ((DefineComponent) componentDefinition).referencedComponent;
+        throw new IllegalStateException(
+            "Only " + DefineComponent.class.getName() + " components may be children of a "
+              + UseTemplateComponent.class.getName() + " component"
+              + " (Only m:define elements are allowed as children of m:useTemplate elements)");
       }
-      ComponentGenerator generator = Generator.getGenerator(componentDefinition);
+      Component referencedComponent = ((DefineComponent) child).referencedComponent;
+      ComponentGenerator generator = Generator.getGenerator(referencedComponent);
       generator.generateFieldOrVariableFromComponent(
-          new GenerationContext(generationContext, componentDefinition, 4),
+          new GenerationContext(generationContext, referencedComponent, 4),
           "",
           entry.getKey(),
           "this");

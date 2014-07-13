@@ -1,4 +1,4 @@
-package de.seerheinlab.micgwaf.component;
+package de.seerheinlab.micgwaf.component.parse;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -7,10 +7,13 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import de.seerheinlab.micgwaf.component.Component;
+
 /**
- * Component for integrating with a template. Only used for parsing.
+ * Component for defining a templated page.
+ * Represents the m:useTemplate tag in parsed HTML. Only used for parsing.
  */
-public class TemplateIntegration extends Component
+public class UseTemplateComponent extends Component
 {
   /** serialVersionUID. */
   private static final long serialVersionUID = 1L;
@@ -21,7 +24,7 @@ public class TemplateIntegration extends Component
 
   public PartListComponent template;
 
-  public TemplateIntegration(Component parent)
+  public UseTemplateComponent(Component parent)
   {
     super(null, parent);
   }

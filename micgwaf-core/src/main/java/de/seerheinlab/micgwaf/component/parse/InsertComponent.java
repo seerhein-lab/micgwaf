@@ -1,16 +1,16 @@
-package de.seerheinlab.micgwaf.component;
+package de.seerheinlab.micgwaf.component.parse;
 
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayList;
 import java.util.List;
 
+import de.seerheinlab.micgwaf.component.Component;
 import de.seerheinlab.micgwaf.util.Assertions;
 
 /**
- * Acts as a placeholder for any component which can be inserted ad the
- * specified location. Only used for parsing, e.g. for insert elements in
- * templates.
+ * Acts as a placeholder for any component which can be inserted ad the specified location.
+ * Represents the m:insert element in parsed HTML. Only used for parsing.
  */
 public class InsertComponent extends Component
 {

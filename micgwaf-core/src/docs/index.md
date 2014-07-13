@@ -60,7 +60,7 @@ Creating XHTML files and Generating Code
     or by changing its renderSelf or renderChildren attributes).
   - use m:multiple="true" for components which can appear multiple times (so they are referenced as lists
     and not as single references in the parent component).
-  - use the element m:componentRef to reference other components. The refid attribute references the name
+  - use the element m:reference to reference other components. The refid attribute references the name
     of the components. Only components defined in their own xhtml file can be referenced. for these,
     the default id is the file name minus the .xhtml extension.
   - for defining page templates, define a normal html file as template, and use a 

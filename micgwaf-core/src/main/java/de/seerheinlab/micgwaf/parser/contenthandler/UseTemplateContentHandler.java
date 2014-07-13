@@ -4,18 +4,18 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 import de.seerheinlab.micgwaf.component.Component;
-import de.seerheinlab.micgwaf.component.DefineComponent;
-import de.seerheinlab.micgwaf.component.PartListComponent;
-import de.seerheinlab.micgwaf.component.TemplateIntegration;
+import de.seerheinlab.micgwaf.component.parse.DefineComponent;
+import de.seerheinlab.micgwaf.component.parse.PartListComponent;
+import de.seerheinlab.micgwaf.component.parse.UseTemplateComponent;
 import de.seerheinlab.micgwaf.util.Constants;
 
-public class TemplateIntegrationContentHandler extends ContentHandler
+public class UseTemplateContentHandler extends ContentHandler
 {
   public static final String TEMPLATE_ID_ATTR = "templateId";
 
   public static final String USE_TEMPLATE_ELEMENT_NAME = "useTemplate";
 
-  public TemplateIntegration result = new TemplateIntegration(null);
+  public UseTemplateComponent result = new UseTemplateComponent(null);
 
   public String templateId;
 
@@ -29,7 +29,7 @@ public class TemplateIntegrationContentHandler extends ContentHandler
   {
     // check for useTemplate elements
     if (!Constants.XML_NAMESPACE.equals(uri)
-        || !TemplateIntegrationContentHandler.USE_TEMPLATE_ELEMENT_NAME.equals(localName))
+        || !UseTemplateContentHandler.USE_TEMPLATE_ELEMENT_NAME.equals(localName))
     {
       throw new SAXException("unknown Element " + uri + ":" + localName);
     }
@@ -56,7 +56,7 @@ public class TemplateIntegrationContentHandler extends ContentHandler
           {
             throw new IllegalArgumentException(
                 "Children of "
-                + TemplateIntegrationContentHandler.USE_TEMPLATE_ELEMENT_NAME
+                + UseTemplateContentHandler.USE_TEMPLATE_ELEMENT_NAME
                 + " elements must not be markup, found "
                 + part.htmlSnippet);
           }
@@ -69,7 +69,7 @@ public class TemplateIntegrationContentHandler extends ContentHandler
           {
             throw new IllegalArgumentException(
                 "Children of "
-                + TemplateIntegrationContentHandler.USE_TEMPLATE_ELEMENT_NAME
+                + UseTemplateContentHandler.USE_TEMPLATE_ELEMENT_NAME
                 + " elements must not be markup, found "
                 + part.variableName);
           }
@@ -92,7 +92,7 @@ public class TemplateIntegrationContentHandler extends ContentHandler
     if (!(child instanceof DefineComponent))
     {
       throw new IllegalArgumentException("Children of "
-          + TemplateIntegrationContentHandler.USE_TEMPLATE_ELEMENT_NAME
+          + UseTemplateContentHandler.USE_TEMPLATE_ELEMENT_NAME
           + " elements must be "
           + DefineContentHandler.DEFINE_ELEMENT_NAME
           + " elements, found "
@@ -104,7 +104,7 @@ public class TemplateIntegrationContentHandler extends ContentHandler
   }
 
   @Override
-  public TemplateIntegration finished() throws SAXException
+  public UseTemplateComponent finished() throws SAXException
   {
     result.templateId = templateId;
     return result;

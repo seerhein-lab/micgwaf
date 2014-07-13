@@ -6,7 +6,7 @@ import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
 import de.seerheinlab.micgwaf.component.Component;
-import de.seerheinlab.micgwaf.component.PartListComponent;
+import de.seerheinlab.micgwaf.component.parse.PartListComponent;
 import de.seerheinlab.micgwaf.util.Constants;
 
 public class PartListContentHandler extends ContentHandler

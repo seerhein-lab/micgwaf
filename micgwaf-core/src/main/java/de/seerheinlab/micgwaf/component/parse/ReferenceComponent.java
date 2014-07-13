@@ -1,4 +1,4 @@
-package de.seerheinlab.micgwaf.component;
+package de.seerheinlab.micgwaf.component.parse;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -7,14 +7,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import de.seerheinlab.micgwaf.component.PartListComponent.ComponentPart;
+import de.seerheinlab.micgwaf.component.ChangesChildHtmlId;
+import de.seerheinlab.micgwaf.component.Component;
+import de.seerheinlab.micgwaf.component.HtmlElementComponent;
+import de.seerheinlab.micgwaf.component.parse.PartListComponent.ComponentPart;
 
 /**
- * Component which references another component by its id.
+ * Component which references another component by storing the key of the referenced component.
+ * Represents the m:reference element in parsed HTML. Only used for parsing.
  *
  * WARNING this component temporarily changes the component tree while rendering.
  */
-public class RefComponent extends Component implements ChangesChildHtmlId
+public class ReferenceComponent extends Component implements ChangesChildHtmlId
 {
   /** Serial Version UID. */
   private static final long serialVersionUID = 1L;
@@ -25,7 +29,7 @@ public class RefComponent extends Component implements ChangesChildHtmlId
 
   public Map<String, String> variableValues = new HashMap<>();
 
-  public RefComponent(String refid, String id, Component parent)
+  public ReferenceComponent(String refid, String id, Component parent)
   {
     super(id, parent);
     this.refid = refid;

@@ -1,4 +1,4 @@
-package de.seerheinlab.micgwaf.component;
+package de.seerheinlab.micgwaf.component.parse;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -6,11 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import de.seerheinlab.micgwaf.component.Component;
 import de.seerheinlab.micgwaf.util.Assertions;
 
 /**
  * A component representing a list of HTML snippets or other components (called parts).
- * This component is mainly used during parsing HTML documents.
+ * This component is only used during parsing HTML documents.
  */
 public class PartListComponent extends Component
 {

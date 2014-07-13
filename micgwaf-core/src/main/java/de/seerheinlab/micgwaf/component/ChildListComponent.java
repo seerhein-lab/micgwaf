@@ -8,7 +8,9 @@ import java.util.List;
 import de.seerheinlab.micgwaf.util.Assertions;
 
 /**
- * A Component consisting solely of a list of child components.
+ * A Component consisting solely of a list of child components of the same type.
+ *
+ * @param <T> the type of components this list contains.
  */
 public class ChildListComponent<T extends Component> extends Component implements ChangesChildHtmlId
 {

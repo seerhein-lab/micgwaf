@@ -11,7 +11,7 @@ import de.seerheinlab.micgwaf.component.ChildListComponent;
 import de.seerheinlab.micgwaf.component.Component;
 import de.seerheinlab.micgwaf.component.FormComponent;
 import de.seerheinlab.micgwaf.component.InputComponent;
-import de.seerheinlab.micgwaf.component.RefComponent;
+import de.seerheinlab.micgwaf.component.parse.ReferenceComponent;
 import de.seerheinlab.micgwaf.generator.GeneratedClass;
 import de.seerheinlab.micgwaf.generator.Generator;
 import de.seerheinlab.micgwaf.generator.JavaClassName;
@@ -141,7 +141,7 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
       {
         pathToComponent.append(removeLoopPart(pathElement.getId())).append(".");
       }
-      if (pathElement instanceof RefComponent && pathElement.getId() != null)
+      if (pathElement instanceof ReferenceComponent && pathElement.getId() != null)
       {
         getterSetterSuffix.append(pathElement.getId().substring(0, 1).toUpperCase())
             .append(pathElement.getId().substring(1));
@@ -366,9 +366,9 @@ public class FormComponentGenerator extends HtmlElementComponentGenerator
       return;
     }
     componentPath.add(component);
-    if (component instanceof RefComponent)
+    if (component instanceof ReferenceComponent)
     {
-      RefComponent refComponent = (RefComponent) component;
+      ReferenceComponent refComponent = (ReferenceComponent) component;
       if (refComponent.referencedComponent != null)
       {
         getInputs(refComponent.referencedComponent, inputs, componentPath);

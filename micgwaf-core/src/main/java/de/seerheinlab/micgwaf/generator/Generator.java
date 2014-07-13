@@ -7,30 +7,28 @@ import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 
-import de.seerheinlab.micgwaf.component.InsertComponent;
 import de.seerheinlab.micgwaf.component.ChildListComponent;
 import de.seerheinlab.micgwaf.component.Component;
 import de.seerheinlab.micgwaf.component.ComponentRegistry;
-import de.seerheinlab.micgwaf.component.DefineComponent;
-import de.seerheinlab.micgwaf.component.EmptyComponent;
 import de.seerheinlab.micgwaf.component.FormComponent;
 import de.seerheinlab.micgwaf.component.HtmlElementComponent;
 import de.seerheinlab.micgwaf.component.InputComponent;
-import de.seerheinlab.micgwaf.component.PartListComponent;
-import de.seerheinlab.micgwaf.component.RefComponent;
-import de.seerheinlab.micgwaf.component.TemplateIntegration;
-import de.seerheinlab.micgwaf.generator.component.InsertComponentGenerator;
+import de.seerheinlab.micgwaf.component.parse.DefineComponent;
+import de.seerheinlab.micgwaf.component.parse.InsertComponent;
+import de.seerheinlab.micgwaf.component.parse.PartListComponent;
+import de.seerheinlab.micgwaf.component.parse.ReferenceComponent;
+import de.seerheinlab.micgwaf.component.parse.UseTemplateComponent;
 import de.seerheinlab.micgwaf.generator.component.ChildListComponentGenerator;
 import de.seerheinlab.micgwaf.generator.component.ComponentGenerator;
 import de.seerheinlab.micgwaf.generator.component.DefineComponentGenerator;
-import de.seerheinlab.micgwaf.generator.component.EmptyComponentGenerator;
 import de.seerheinlab.micgwaf.generator.component.FormComponentGenerator;
 import de.seerheinlab.micgwaf.generator.component.GenerationContext;
 import de.seerheinlab.micgwaf.generator.component.HtmlElementComponentGenerator;
 import de.seerheinlab.micgwaf.generator.component.InputComponentGenerator;
+import de.seerheinlab.micgwaf.generator.component.InsertComponentGenerator;
 import de.seerheinlab.micgwaf.generator.component.PartListComponentGenerator;
 import de.seerheinlab.micgwaf.generator.component.RefComponentGenerator;
-import de.seerheinlab.micgwaf.generator.component.TemplateIntegrationGenerator;
+import de.seerheinlab.micgwaf.generator.component.UseTemplateComponentGenerator;
 import de.seerheinlab.micgwaf.generator.config.GeneratorConfiguration;
 import de.seerheinlab.micgwaf.parser.HtmlParser;
 import de.seerheinlab.micgwaf.util.Assertions;
@@ -67,11 +65,10 @@ public class Generator
     componentGeneratorMap.put(HtmlElementComponent.class, new HtmlElementComponentGenerator());
     componentGeneratorMap.put(InputComponent.class, new InputComponentGenerator());
     componentGeneratorMap.put(FormComponent.class, new FormComponentGenerator());
-    componentGeneratorMap.put(RefComponent.class, new RefComponentGenerator());
+    componentGeneratorMap.put(ReferenceComponent.class, new RefComponentGenerator());
     componentGeneratorMap.put(ChildListComponent.class, new ChildListComponentGenerator());
-    componentGeneratorMap.put(EmptyComponent.class, new EmptyComponentGenerator());
     componentGeneratorMap.put(InsertComponent.class, new InsertComponentGenerator());
-    componentGeneratorMap.put(TemplateIntegration.class, new TemplateIntegrationGenerator());
+    componentGeneratorMap.put(UseTemplateComponent.class, new UseTemplateComponentGenerator());
     componentGeneratorMap.put(DefineComponent.class, new DefineComponentGenerator());
   }
 
