@@ -17,3 +17,4 @@ TODO
 - generate only class files for classes with an m:id and use inner classes for the rest
   - check where to set GeneratedClass in generationContext (with package and possibly class definition)
 - unify generation method parameters and their order
+- why does xml header and doctype not get rendered?
