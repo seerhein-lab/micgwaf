@@ -8,25 +8,46 @@ import java.util.List;
 import de.seerheinlab.micgwaf.util.Assertions;
 
 /**
- * A Component consisting of a list of child components.
+ * A Component consisting solely of a list of child components.
  */
 public class ChildListComponent<T extends Component> extends Component implements ChangesChildHtmlId
 {
   /** serial Version UID. */
   private static final long serialVersionUID = 1L;
 
+  /** The children of this component. */
   public final List<T> children = new ArrayList<T>();
 
+  /**
+   * Constructor without an id.
+   *
+   * @param parent the parent component. May be null if this is a standalone component (e.g. a page).
+   */
   public ChildListComponent(Component parent)
   {
     super(null, parent);
   }
 
+  /**
+   * Constructor.
+   *
+   * @param id the id of the component, may be null.
+   *        If set, it should be unique in the current context (e.g. page).
+   * @param parent the parent component. May be null if this is a standalone component (e.g. a page).
+   */
   public ChildListComponent(String id, Component parent)
   {
     super(id, parent);
   }
 
+  /**
+   * Constructor with a single child..
+   *
+   * @param id the id of the component, may be null.
+   *        If set, it should be unique in the current context (e.g. page).
+   * @param parent the parent component. May be null if this is a standalone component (e.g. a page).
+   * @param child a single child to be added into the component at construction time.
+   */
   public ChildListComponent(String id, Component parent, T child)
   {
     super(id, parent);
@@ -40,7 +61,7 @@ public class ChildListComponent<T extends Component> extends Component implement
   }
 
   /**
-   * Adds the given child.
+   * Adds the given child at the end of the list of children..
    *
    * @param child the child to add, not null.
    *
@@ -69,6 +90,14 @@ public class ChildListComponent<T extends Component> extends Component implement
     }
   }
 
+  /**
+   * Changes the id of a child by adding a colon an the index of the child in the list.
+   *
+   * @param child the child which HTML id should be changed, not null.
+   * @param htmlId the HTML id to change, not null.
+   *
+   * @return the changed HTML id, not null.
+   */
   @Override
   public String changeChildHtmlId(Component child, String htmlId)
   {
