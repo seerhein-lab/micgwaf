@@ -23,117 +23,72 @@ public class GeneratedSourcesTest
   @Test
   public void testRenderSinglePage() throws Exception
   {
-    GeneratorAndCompiler.generateAndCompile("src/test/resources/de/seerheinlab/micgwaf/singlepage", null);
-
-    URLClassLoader classLoader = getClassLoader();
-    initMicgwaf(classLoader);
-    String pageContent = invokeRenderForPage(
-        "de.seerheinlab.micgwaf.test.generated.singlePage.ExtensionClassPrefixSinglePageExtensionClassSuffix",
-        classLoader);
-    File componentDir = new File("src/test/resources/de/seerheinlab/micgwaf/singlepage");
-    String expected = FileUtils.readFileToString(new File(componentDir, "expected.txt"));
-    expected = expected.replace("\r\n", "\n");
-    assertEquals(expected, pageContent);
+    testParseAndCompile("de/seerheinlab/micgwaf/singlepage", "singlePage");
   }
 
   @Test
   public void testRemove() throws Exception
   {
-    GeneratorAndCompiler.generateAndCompile("src/test/resources/de/seerheinlab/micgwaf/remove", null);
-
-    URLClassLoader classLoader = getClassLoader();
-    initMicgwaf(classLoader);
-    String pageContent = invokeRenderForPage(
-        "de.seerheinlab.micgwaf.test.generated.root.ExtensionClassPrefixRootExtensionClassSuffix",
-        classLoader);
-    File componentDir = new File("src/test/resources/de/seerheinlab/micgwaf/remove");
-    String expected = FileUtils.readFileToString(new File(componentDir, "expected.txt"));
-    expected = expected.replace("\r\n", "\n");
-    assertEquals(expected, pageContent);
+    testParseAndCompile("de/seerheinlab/micgwaf/remove", "root");
   }
 
   @Test
-  public void testRenderComponentRefs() throws Exception
+  public void testReferences() throws Exception
   {
-    GeneratorAndCompiler.generateAndCompile("src/test/resources/de/seerheinlab/micgwaf/componentref", null);
-
-    URLClassLoader classLoader = getClassLoader();
-    initMicgwaf(classLoader);
-    String pageContent = invokeRenderForPage(
-        "de.seerheinlab.micgwaf.test.generated.root.ExtensionClassPrefixRootExtensionClassSuffix",
-        classLoader);
-    File componentDir = new File("src/test/resources/de/seerheinlab/micgwaf/componentref");
-    String expected = FileUtils.readFileToString(new File(componentDir, "expected.txt"));
-    expected = expected.replace("\r\n", "\n");
-    assertEquals(expected, pageContent);
+    testParseAndCompile("de/seerheinlab/micgwaf/componentref", "root");
   }
 
   @Test
   public void testRenderForm() throws Exception
   {
-    GeneratorAndCompiler.generateAndCompile("src/test/resources/de/seerheinlab/micgwaf/form", null);
-
-    URLClassLoader classLoader = getClassLoader();
-    initMicgwaf(classLoader);
-    String pageContent = invokeRenderForPage(
-        "de.seerheinlab.micgwaf.test.generated.form.ExtensionClassPrefixFormExtensionClassSuffix",
-        classLoader);
-    File componentDir = new File("src/test/resources/de/seerheinlab/micgwaf/form");
-    String expected = FileUtils.readFileToString(new File(componentDir, "expected.txt"));
-    expected = expected.replace("\r\n", "\n");
-    assertEquals(expected, pageContent);
+    testParseAndCompile("de/seerheinlab/micgwaf/form", "form");
   }
 
   @Test
   public void testRenderTemplate() throws Exception
   {
-    GeneratorAndCompiler.generateAndCompile("src/test/resources/de/seerheinlab/micgwaf/template", null);
-
-    URLClassLoader classLoader = getClassLoader();
-    initMicgwaf(classLoader);
-    String pageContent = invokeRenderForPage(
-        "de.seerheinlab.micgwaf.test.generated.templatedPage.ExtensionClassPrefixTemplatedPageExtensionClassSuffix",
-        classLoader);
-    File componentDir = new File("src/test/resources/de/seerheinlab/micgwaf/template");
-    String expected = FileUtils.readFileToString(new File(componentDir, "expected.txt"));
-    expected = expected.replace("\r\n", "\n");
-    assertEquals(expected, pageContent);
+    testParseAndCompile("de/seerheinlab/micgwaf/template", "templatedPage");
   }
 
   @Test
   public void testRenderVariables() throws Exception
   {
-    GeneratorAndCompiler.generateAndCompile("src/test/resources/de/seerheinlab/micgwaf/variable", null);
-
-    URLClassLoader classLoader = getClassLoader();
-    initMicgwaf(classLoader);
-    String pageContent = invokeRenderForPage(
-        "de.seerheinlab.micgwaf.test.generated.body.ExtensionClassPrefixBodyExtensionClassSuffix",
-        classLoader);
-    File componentDir = new File("src/test/resources/de/seerheinlab/micgwaf/variable");
-    String expected = FileUtils.readFileToString(new File(componentDir, "expected.txt"));
-    expected = expected.replace("\r\n", "\n");
-    assertEquals(expected, pageContent);
+    testParseAndCompile("de/seerheinlab/micgwaf/variable", "body");
   }
 
   @Test
   public void testRenderComponentRefsInLib() throws Exception
   {
-    URLClassLoader classLoader = LoadComponentLibTest.createClassloaderWithLibJars();
-    GeneratorAndCompiler.generateAndCompile(
-        "src/test/resources/de/seerheinlab/micgwaf/componentlib",
-        classLoader);
+    URLClassLoader compileClassLoader = LoadComponentLibTest.createClassloaderWithLibJars();
+    testParseAndCompile("de/seerheinlab/micgwaf/variable", "body", compileClassLoader);
+  }
 
-    classLoader = getClassLoader();
+  private void testParseAndCompile(String testDir, String rootComponentName)
+      throws Exception
+  {
+    testParseAndCompile(testDir, rootComponentName, null);
+  }
+
+  private void testParseAndCompile(String testDir, String rootComponentName, ClassLoader compileClassLoader)
+      throws Exception
+  {
+    String prefixedTestDir = "src/test/resources/" + testDir;
+    GeneratorAndCompiler.generateAndCompile(prefixedTestDir, compileClassLoader);
+
+    URLClassLoader classLoader = getClassLoader();
     initMicgwaf(classLoader);
+    String className = "ExtensionClassPrefix"
+          + rootComponentName.substring(0,1).toUpperCase() + rootComponentName.substring(1)
+          + "ExtensionClassSuffix";
     String pageContent = invokeRenderForPage(
-        "de.seerheinlab.micgwaf.test.generated.root.ExtensionClassPrefixRootExtensionClassSuffix",
+        "de.seerheinlab.micgwaf.test.generated." + rootComponentName + "." + className,
         classLoader);
-    File componentDir = new File("src/test/resources/de/seerheinlab/micgwaf/componentlib");
+    File componentDir = new File(prefixedTestDir);
     String expected = FileUtils.readFileToString(new File(componentDir, "expected.txt"));
     expected = expected.replace("\r\n", "\n");
     assertEquals(expected, pageContent);
   }
+
 
   private URLClassLoader getClassLoader() throws MalformedURLException
   {
