@@ -1,0 +1,1 @@
+This test checks that form components can be accessed and rendered.

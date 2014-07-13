@@ -1,5 +1,3 @@
-<form id="form" method="POST">
-  form content 1
+<form id="root" method="POST">
   <div>div content</div>
-  form content 2
 </form>

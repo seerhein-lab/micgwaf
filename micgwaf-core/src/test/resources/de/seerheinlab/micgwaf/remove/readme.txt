@@ -1,0 +1,1 @@
+This test checks that remove components can be accessed and are not rendered.

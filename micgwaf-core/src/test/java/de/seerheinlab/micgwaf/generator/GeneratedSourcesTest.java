@@ -26,7 +26,20 @@ import de.seerheinlab.micgwaf.parser.LoadComponentLibTest;
 public class GeneratedSourcesTest
 {
   @Test
-  public void testRenderSinglePage() throws Exception
+  public void testComponentlib() throws Exception
+  {
+    URLClassLoader compileClassLoader = LoadComponentLibTest.createClassloaderWithLibJars();
+    testParseAndCompile("componentlib", "root", compileClassLoader);
+  }
+
+  @Test
+  public void testForm() throws Exception
+  {
+    testParseAndCompile("form", "root");
+  }
+
+  @Test
+  public void testSinglePage() throws Exception
   {
     testParseAndCompile("singlepage", "singlePage");
   }
@@ -44,28 +57,21 @@ public class GeneratedSourcesTest
   }
 
   @Test
-  public void testRenderForm() throws Exception
-  {
-    testParseAndCompile("form", "form");
-  }
-
-  @Test
-  public void testRenderTemplate() throws Exception
+  public void testTemplate() throws Exception
   {
     testParseAndCompile("template", "templatedPage");
   }
 
   @Test
-  public void testRenderVariables() throws Exception
+  public void testTextInComponent() throws Exception
   {
-    testParseAndCompile("variable", "body");
+    testParseAndCompile("textInComponent", "root");
   }
 
   @Test
-  public void testRenderComponentRefsInLib() throws Exception
+  public void testVariables() throws Exception
   {
-    URLClassLoader compileClassLoader = LoadComponentLibTest.createClassloaderWithLibJars();
-    testParseAndCompile("componentlib", "root", compileClassLoader);
+    testParseAndCompile("variable", "body");
   }
 
   private void testParseAndCompile(String testDir, String rootComponentName)

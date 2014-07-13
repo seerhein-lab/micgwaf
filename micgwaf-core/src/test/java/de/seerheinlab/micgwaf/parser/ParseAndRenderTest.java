@@ -24,6 +24,12 @@ public class ParseAndRenderTest
   }
 
   @Test
+  public void testRenderForm() throws Exception
+  {
+    testParseAndRender("form", "root", 1);
+  }
+
+  @Test
   public void testReference() throws Exception
   {
     testParseAndRender("reference", "root", 3);
@@ -36,15 +42,15 @@ public class ParseAndRenderTest
   }
 
   @Test
-  public void testRenderForm() throws Exception
-  {
-    testParseAndRender("form", "form", 1);
-  }
-
-  @Test
   public void testRenderTemplatedPage() throws Exception
   {
     testParseAndRender("template", "templatedPage", 3);
+  }
+
+  @Test
+  public void testTextInComponent() throws Exception
+  {
+    testParseAndRender("textInComponent", "root", 1);
   }
 
   @Test

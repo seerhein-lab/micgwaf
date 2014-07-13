@@ -1,0 +1,1 @@
+This test checks that component content starting with text is handled correctly

@@ -1,0 +1,5 @@
+<div id="root">
+  div content 1
+  <span>content</span>
+  div content 2
+</div>
