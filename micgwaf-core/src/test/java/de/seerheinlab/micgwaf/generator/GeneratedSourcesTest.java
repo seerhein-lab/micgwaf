@@ -37,6 +37,22 @@ public class GeneratedSourcesTest
   }
 
   @Test
+  public void testRemove() throws Exception
+  {
+    GeneratorAndCompiler.generateAndCompile("src/test/resources/de/seerheinlab/micgwaf/remove", null);
+
+    URLClassLoader classLoader = getClassLoader();
+    initMicgwaf(classLoader);
+    String pageContent = invokeRenderForPage(
+        "de.seerheinlab.micgwaf.test.generated.root.ExtensionClassPrefixRootExtensionClassSuffix",
+        classLoader);
+    File componentDir = new File("src/test/resources/de/seerheinlab/micgwaf/remove");
+    String expected = FileUtils.readFileToString(new File(componentDir, "expected.txt"));
+    expected = expected.replace("\r\n", "\n");
+    assertEquals(expected, pageContent);
+  }
+
+  @Test
   public void testRenderComponentRefs() throws Exception
   {
     GeneratorAndCompiler.generateAndCompile("src/test/resources/de/seerheinlab/micgwaf/componentref", null);

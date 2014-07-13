@@ -36,6 +36,22 @@ public class ParseAndRenderTest
   }
 
   @Test
+  public void testRemove() throws Exception
+  {
+    File componentDir = new File("src/test/resources/de/seerheinlab/micgwaf/remove");
+    Map<String, Component> components
+        = new HtmlParser().readComponents(componentDir);
+    assertEquals(1, components.size());
+    StringWriter stringWriter = new StringWriter();
+    components.get("root").render(stringWriter);
+    String actual = stringWriter.toString();
+    actual = actual.replace("\r\n", "\n");
+    String expected = FileUtils.readFileToString(new File(componentDir, "expected.txt"));
+    expected = expected.replace("\r\n", "\n");
+    assertEquals(expected, stringWriter.toString());
+  }
+
+  @Test
   public void testRenderForm() throws Exception
   {
     File componentDir = new File("src/test/resources/de/seerheinlab/micgwaf/form");
