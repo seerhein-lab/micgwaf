@@ -49,7 +49,7 @@ Currently, the mapping is as follows (TODO add description what element/attribut
   <tr>
     <td>Element</td>
     <td>m:insert</td>
-    <td>AnyComponent</td>
+    <td>PlaceholderComponent</td>
     <td>name</td>
     <td></td>
   </tr>

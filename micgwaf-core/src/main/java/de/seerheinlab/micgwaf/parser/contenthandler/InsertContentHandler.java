@@ -3,7 +3,7 @@ package de.seerheinlab.micgwaf.parser.contenthandler;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
-import de.seerheinlab.micgwaf.component.AnyComponent;
+import de.seerheinlab.micgwaf.component.InsertComponent;
 import de.seerheinlab.micgwaf.component.Component;
 import de.seerheinlab.micgwaf.util.Constants;
 
@@ -45,8 +45,8 @@ public class InsertContentHandler extends ContentHandler
   }
 
   @Override
-  public AnyComponent finished() throws SAXException
+  public InsertComponent finished() throws SAXException
   {
-    return new AnyComponent(name, null);
+    return new InsertComponent(name, null);
   }
 }

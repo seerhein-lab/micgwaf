@@ -43,9 +43,9 @@ public class TemplateIntegration extends Component
     template = ((PartListComponent) templateCandidate).copy();
     for (PartListComponent.ComponentPart part : template.parts)
     {
-      if (part.component instanceof AnyComponent)
+      if (part.component instanceof InsertComponent)
       {
-        String name = ((AnyComponent) part.component).name;
+        String name = ((InsertComponent) part.component).name;
         part.component = definitions.get(name);
         if (part.component == null)
         {

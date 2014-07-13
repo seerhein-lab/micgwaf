@@ -3,7 +3,7 @@ package de.seerheinlab.micgwaf.generator.component;
 import de.seerheinlab.micgwaf.component.Component;
 import de.seerheinlab.micgwaf.generator.JavaClassName;
 
-public class AnyComponentGenerator extends ComponentGenerator
+public class InsertComponentGenerator extends ComponentGenerator
 {
   @Override
   public JavaClassName getClassName(GenerationContext generationContext)

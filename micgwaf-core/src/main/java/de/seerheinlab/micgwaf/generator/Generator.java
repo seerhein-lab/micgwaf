@@ -7,7 +7,7 @@ import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
 
-import de.seerheinlab.micgwaf.component.AnyComponent;
+import de.seerheinlab.micgwaf.component.InsertComponent;
 import de.seerheinlab.micgwaf.component.ChildListComponent;
 import de.seerheinlab.micgwaf.component.Component;
 import de.seerheinlab.micgwaf.component.ComponentRegistry;
@@ -19,7 +19,7 @@ import de.seerheinlab.micgwaf.component.InputComponent;
 import de.seerheinlab.micgwaf.component.PartListComponent;
 import de.seerheinlab.micgwaf.component.RefComponent;
 import de.seerheinlab.micgwaf.component.TemplateIntegration;
-import de.seerheinlab.micgwaf.generator.component.AnyComponentGenerator;
+import de.seerheinlab.micgwaf.generator.component.InsertComponentGenerator;
 import de.seerheinlab.micgwaf.generator.component.ChildListComponentGenerator;
 import de.seerheinlab.micgwaf.generator.component.ComponentGenerator;
 import de.seerheinlab.micgwaf.generator.component.DefineComponentGenerator;
@@ -70,7 +70,7 @@ public class Generator
     componentGeneratorMap.put(RefComponent.class, new RefComponentGenerator());
     componentGeneratorMap.put(ChildListComponent.class, new ChildListComponentGenerator());
     componentGeneratorMap.put(EmptyComponent.class, new EmptyComponentGenerator());
-    componentGeneratorMap.put(AnyComponent.class, new AnyComponentGenerator());
+    componentGeneratorMap.put(InsertComponent.class, new InsertComponentGenerator());
     componentGeneratorMap.put(TemplateIntegration.class, new TemplateIntegrationGenerator());
     componentGeneratorMap.put(DefineComponent.class, new DefineComponentGenerator());
   }
