@@ -18,49 +18,54 @@ import de.seerheinlab.micgwaf.Application;
 import de.seerheinlab.micgwaf.config.ApplicationBase;
 import de.seerheinlab.micgwaf.parser.LoadComponentLibTest;
 
+/**
+ * Tests the parse and generate part of micgwaf by parsing and generating files
+ * in a test directory, compiling the generated sources, running the compiled code and checking the
+ * output of the run.
+ */
 public class GeneratedSourcesTest
 {
   @Test
   public void testRenderSinglePage() throws Exception
   {
-    testParseAndCompile("de/seerheinlab/micgwaf/singlepage", "singlePage");
+    testParseAndCompile("singlepage", "singlePage");
   }
 
   @Test
   public void testRemove() throws Exception
   {
-    testParseAndCompile("de/seerheinlab/micgwaf/remove", "root");
+    testParseAndCompile("remove", "root");
   }
 
   @Test
-  public void testReferences() throws Exception
+  public void testReference() throws Exception
   {
-    testParseAndCompile("de/seerheinlab/micgwaf/componentref", "root");
+    testParseAndCompile("reference", "root");
   }
 
   @Test
   public void testRenderForm() throws Exception
   {
-    testParseAndCompile("de/seerheinlab/micgwaf/form", "form");
+    testParseAndCompile("form", "form");
   }
 
   @Test
   public void testRenderTemplate() throws Exception
   {
-    testParseAndCompile("de/seerheinlab/micgwaf/template", "templatedPage");
+    testParseAndCompile("template", "templatedPage");
   }
 
   @Test
   public void testRenderVariables() throws Exception
   {
-    testParseAndCompile("de/seerheinlab/micgwaf/variable", "body");
+    testParseAndCompile("variable", "body");
   }
 
   @Test
   public void testRenderComponentRefsInLib() throws Exception
   {
     URLClassLoader compileClassLoader = LoadComponentLibTest.createClassloaderWithLibJars();
-    testParseAndCompile("de/seerheinlab/micgwaf/variable", "body", compileClassLoader);
+    testParseAndCompile("componentlib", "root", compileClassLoader);
   }
 
   private void testParseAndCompile(String testDir, String rootComponentName)
@@ -72,7 +77,7 @@ public class GeneratedSourcesTest
   private void testParseAndCompile(String testDir, String rootComponentName, ClassLoader compileClassLoader)
       throws Exception
   {
-    String prefixedTestDir = "src/test/resources/" + testDir;
+    String prefixedTestDir = "src/test/resources/de/seerheinlab/micgwaf/" + testDir;
     GeneratorAndCompiler.generateAndCompile(prefixedTestDir, compileClassLoader);
 
     URLClassLoader classLoader = getClassLoader();

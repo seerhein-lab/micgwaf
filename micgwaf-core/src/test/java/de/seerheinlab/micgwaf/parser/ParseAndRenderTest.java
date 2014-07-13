@@ -6,6 +6,7 @@ import static org.junit.Assert.assertSame;
 
 import java.io.File;
 import java.io.StringWriter;
+import java.net.URLClassLoader;
 import java.util.Map;
 
 import org.apache.commons.io.FileUtils;
@@ -16,90 +17,69 @@ import de.seerheinlab.micgwaf.component.Component;
 public class ParseAndRenderTest
 {
   @Test
-  public void testRenderComponentRefs() throws Exception
+  public void testComponentlib() throws Exception
   {
-    File componentDir = new File("src/test/resources/de/seerheinlab/micgwaf/componentref");
-    Map<String, Component> components
-        = new HtmlParser().readComponents(componentDir);
-    assertEquals(3, components.size());
-    for (Component component : components.values())
-    {
-      component.resolveComponentReferences(components);
-    }
-    StringWriter stringWriter = new StringWriter();
-    components.get("root").render(stringWriter);
-    String actual = stringWriter.toString();
-    actual = actual.replace("\r\n", "\n");
-    String expected = FileUtils.readFileToString(new File(componentDir, "expected.txt"));
-    expected = expected.replace("\r\n", "\n");
-    assertEquals(expected, stringWriter.toString());
+    URLClassLoader parseClassLoader = LoadComponentLibTest.createClassloaderWithLibJars();
+    testParseAndRender("componentlib", "root", 3, parseClassLoader);
+  }
+
+  @Test
+  public void testReference() throws Exception
+  {
+    testParseAndRender("reference", "root", 3);
   }
 
   @Test
   public void testRemove() throws Exception
   {
-    File componentDir = new File("src/test/resources/de/seerheinlab/micgwaf/remove");
-    Map<String, Component> components
-        = new HtmlParser().readComponents(componentDir);
-    assertEquals(1, components.size());
-    StringWriter stringWriter = new StringWriter();
-    components.get("root").render(stringWriter);
-    String actual = stringWriter.toString();
-    actual = actual.replace("\r\n", "\n");
-    String expected = FileUtils.readFileToString(new File(componentDir, "expected.txt"));
-    expected = expected.replace("\r\n", "\n");
-    assertEquals(expected, stringWriter.toString());
+    testParseAndRender("remove", "root", 1);
   }
 
   @Test
   public void testRenderForm() throws Exception
   {
-    File componentDir = new File("src/test/resources/de/seerheinlab/micgwaf/form");
-    Map<String, Component> components
-        = new HtmlParser().readComponents(componentDir);
-    assertEquals(1, components.size());
-    StringWriter stringWriter = new StringWriter();
-    components.get("form").render(stringWriter);
-    String actual = stringWriter.toString();
-    actual = actual.replace("\r\n", "\n");
-    String expected = FileUtils.readFileToString(new File(componentDir, "expected.txt"));
-    expected = expected.replace("\r\n", "\n");
-    assertEquals(expected, stringWriter.toString());
+    testParseAndRender("form", "form", 1);
   }
 
   @Test
   public void testRenderTemplatedPage() throws Exception
   {
-    File componentDir = new File("src/test/resources/de/seerheinlab/micgwaf/template");
-    Map<String, Component> components
-        = new HtmlParser().readComponents(componentDir);
-    assertEquals(3, components.size());
-    for (Component component : components.values())
-    {
-      component.resolveComponentReferences(components);
-    }
-    StringWriter stringWriter = new StringWriter();
-    components.get("templatedPage").render(stringWriter);
-    String actual = stringWriter.toString();
-    actual = actual.replace("\r\n", "\n");
-    String expected = FileUtils.readFileToString(new File(componentDir, "expected.txt"));
-    expected = expected.replace("\r\n", "\n");
-    assertEquals(expected, stringWriter.toString());
+    testParseAndRender("template", "templatedPage", 3);
   }
 
   @Test
   public void testRenderVariables() throws Exception
   {
-    File componentDir = new File("src/test/resources/de/seerheinlab/micgwaf/variable");
+    testParseAndRender("variable", "body", 3);
+  }
+
+  private void testParseAndRender(
+      String testSubdir,
+      String rootComponentKey,
+      int rootComponentsExcpectedSize)
+    throws Exception
+  {
+    testParseAndRender(testSubdir, rootComponentKey, rootComponentsExcpectedSize, null);
+  }
+
+  private void testParseAndRender(
+        String testSubdir,
+        String rootComponentKey,
+        int rootComponentsExcpectedSize,
+        ClassLoader parseClassLoader)
+      throws Exception
+  {
+    String testDir = "src/test/resources/de/seerheinlab/micgwaf/" + testSubdir;
+    File componentDir = new File(testDir);
     Map<String, Component> components
-        = new HtmlParser().readComponents(componentDir);
-    assertEquals(3, components.size());
+        = new HtmlParser().readComponents(componentDir, parseClassLoader);
+    assertEquals(rootComponentsExcpectedSize, components.size());
     for (Component component : components.values())
     {
       component.resolveComponentReferences(components);
     }
     StringWriter stringWriter = new StringWriter();
-    components.get("body").render(stringWriter);
+    components.get(rootComponentKey).render(stringWriter);
     String actual = stringWriter.toString();
     actual = actual.replace("\r\n", "\n");
     String expected = FileUtils.readFileToString(new File(componentDir, "expected.txt"));
@@ -110,7 +90,7 @@ public class ParseAndRenderTest
   @Test
   public void testChildAndParentReferences() throws Exception
   {
-    File componentDir = new File("src/test/resources/de/seerheinlab/micgwaf/componentref");
+    File componentDir = new File("src/test/resources/de/seerheinlab/micgwaf/reference");
     Map<String, Component> components
         = new HtmlParser().readComponents(componentDir);
     assertEquals(3, components.size());
@@ -122,7 +102,8 @@ public class ParseAndRenderTest
     checkParentAndChildrenReferences(form);
   }
 
-  private void checkParentAndChildrenReferences(Component root) {
+  private void checkParentAndChildrenReferences(Component root)
+  {
     assertNull(root.getParent());
     for (Component child : root.getChildren())
     {
