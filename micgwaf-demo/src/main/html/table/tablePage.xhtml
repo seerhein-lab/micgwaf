@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns:m="http://seerhein-lab.de/micgwaf">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>micgwaf Demo</title>
+    <link href="styles/bootstrap.css" rel="stylesheet" type="text/css"/>
+  </head>
+
+  <body>
+    <div id="contentArea" class="container">
+      <form m:id="sizeForm">
+        <h2>Enter line number</h2>
+        <m:reference refid="parts/validatedInput" id="rows" label="rows"/>
+        <m:reference refid="parts/validatedInput" id="columns" label="columns"/>
+        <button m:id="okButton" type="submit" title="Display table" class="btn btn-default">Ok</button>
+      </form>
+      <table>
+        <tr m:id="tableRow" m:multiple="true">
+          <td m:id="tableColumn"  m:multiple="true"><span m:id="span">spanContent</span></td>
+        </tr>
+     </table>
+    </div>
+  </body>
+</html>

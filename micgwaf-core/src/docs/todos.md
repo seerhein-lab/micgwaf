@@ -18,3 +18,4 @@ TODO
   - check where to set GeneratedClass in generationContext (with package and possibly class definition)
 - unify generation method parameters and their order
 - why does xml header and doctype not get rendered?
+- defaultRendered does not work for root elements and m:reference element
