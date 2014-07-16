@@ -1,6 +1,7 @@
 package de.seerheinlab.test.micgwaf.component.table.tablePage;
 
 import de.seerheinlab.micgwaf.component.Component;
+import de.seerheinlab.test.micgwaf.component.parts.messageBox.ErrorMessage;
 
 
 
@@ -34,16 +35,31 @@ public class SizeForm extends BaseSizeForm
   @Override
   public Component okButtonPressed()
   {
+    int rowNumber = 0;
+    TablePage page = (TablePage) parent;
+    page.messageBox.errorMessageList.clear();
     try
     {
-      Integer rows = Integer.parseInt(getRowsInput());
-      Integer columns = Integer.parseInt(getColumnsInput());
-      ((TablePage) parent).displayTable(rows, columns);
+      rowNumber = Integer.parseInt(getRowsInput());
+      rows.removeErrorMarker();
     }
     catch (NumberFormatException e)
     {
-      // TODO
+      rows.markError();
+      page.messageBox.errorMessageList.add(new ErrorMessage("rowsNoInt", null, "rows is no integer"));
     }
+    int columnNumber = 0;
+    try
+    {
+      columnNumber = Integer.parseInt(getColumnsInput());
+      columns.removeErrorMarker();
+    }
+    catch (NumberFormatException e)
+    {
+      columns.markError();
+      page.messageBox.errorMessageList.add(new ErrorMessage("columnsNoInt", null, "columns is no integer"));
+    }
+    ((TablePage) parent).displayTable(rowNumber, columnNumber);
     return this;
   }
 }

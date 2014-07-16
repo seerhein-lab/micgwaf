@@ -9,15 +9,23 @@
 
   <body>
     <div id="contentArea" class="container">
+      <h1>Loop Demonstration</h1>
+      <p>
+        This page demonstrates how to create and handle nested loops.
+        Enter the row and column number of a table, press Ok, 
+        and a table with the given row and column number is created below. 
+      </p>
+      <m:reference refid="parts/messageBox"/>
+      <h3>Enter line number</h3>
       <form m:id="sizeForm">
-        <h2>Enter line number</h2>
         <m:reference refid="parts/validatedInput" id="rows" label="rows"/>
         <m:reference refid="parts/validatedInput" id="columns" label="columns"/>
         <button m:id="okButton" type="submit" title="Display table" class="btn btn-default">Ok</button>
       </form>
+      <h3>Rendered Table</h3>
       <table>
         <tr m:id="tableRow" m:multiple="true">
-          <td m:id="tableColumn"  m:multiple="true"><span m:id="span">spanContent</span></td>
+          <td m:id="tableColumn" m:multiple="true"><span m:id="span">spanContent</span></td>
         </tr>
      </table>
     </div>

@@ -23,6 +23,8 @@ public class TablePage extends BaseTablePage
   public TablePage(String id, Component parent)
   {
     super(id, parent);
+    displayTable(0, 0);
+    messageBox.errorMessageList.clear();
   }
 
   public void displayTable(int rows, int columns)
