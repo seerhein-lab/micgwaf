@@ -7,6 +7,7 @@ import de.seerheinlab.micgwaf.component.Component;
 import de.seerheinlab.micgwaf.config.ApplicationBase;
 import de.seerheinlab.test.micgwaf.component.book.bookListPage.BookListPage;
 import de.seerheinlab.test.micgwaf.component.errorPage.ErrorPage;
+import de.seerheinlab.test.micgwaf.component.table.tablePage.TablePage;
 
 public class Application extends ApplicationBase
 {
@@ -14,8 +15,9 @@ public class Application extends ApplicationBase
   public Application()
   {
     mount("/", BookListPage.class);
+    mount("/table", TablePage.class);
   }
-  
+
   @Override
   public Component handleException(Component component, Exception exception, boolean onRender)
   {
