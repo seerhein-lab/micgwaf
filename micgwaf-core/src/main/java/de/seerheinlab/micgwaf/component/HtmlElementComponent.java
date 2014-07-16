@@ -6,7 +6,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.StringTokenizer;
+
+import de.seerheinlab.micgwaf.util.StringTools;
 
 /**
  * A component for a single HTML element.
@@ -110,85 +111,34 @@ public class HtmlElementComponent extends Component
   }
 
   /**
-   * Adds a CSS class to an attribute if it is not already present.
-   * The class is appended to the existing class attribute value, separated by a space character.
+   * Adds CSS classes to the class attribute if they are not already present.
+   * The classes are appended to the existing class attribute value, separated by space characters.
    *
-   * @param toAdd the class to add, not null, must not contain spaces.
-   *
-   * @throws NullPointerException if toAdd is null.
-   * @throws IllegalArgumentException if toAdd contains spaces.
+   * @param toAdd the class to add, or a list of space-separated classes to add more than one class,
+   *        or null to leave the class attribute unchanged.
    */
   public void addClass(String toAdd)
   {
-    if (toAdd == null)
-    {
-      throw new NullPointerException("toAdd must not be null");
-    }
-    if (toAdd.indexOf(" ") != -1)
-    {
-      throw new IllegalArgumentException("toAdd must not contain spaces, but is \"" + toAdd + "\"");
-    }
-
     String oldClass = attributes.get(CLASS_ATTR);
-    if (oldClass == null)
-    {
-      attributes.put(CLASS_ATTR, toAdd);
-      return;
-    }
-    StringTokenizer classTokenizer = new StringTokenizer(oldClass, " ");
-    while (classTokenizer.hasMoreTokens())
-    {
-      String token = classTokenizer.nextToken();
-      if (token.equals(toAdd))
-      {
-        // class already present
-        return;
-      }
-    }
-    attributes.put(CLASS_ATTR, oldClass + " " + toAdd);
+    String newClass = StringTools.addTokens(toAdd, oldClass, " ");
+    attributes.put(CLASS_ATTR, newClass);
   }
 
   /**
-   * Removes a CSS class to an attribute if it is present.
+   * Removes CSS classes from the class attribute if they are not already present.
    * The class attribute value is split into tokens separated by spaces,
-   * and if any token equals <code>toRemove</code>, this token is removed.
+   * and if any token equals a token<code>toRemove</code>, this token is removed.
    *
-   * @param toRemove the class to remove, not null, should not contain spaces.
+   * @param toRemove the classes to remove, separated by spaces, or null to retain all classes.
    *
    * @throws NullPointerException if toRemove is null.
    * @throws IllegalArgumentException if toRemove contains spaces.
    */
   public void removeClass(String toRemove)
   {
-    if (toRemove == null)
-    {
-      throw new NullPointerException("toRemove must not be null");
-    }
-    if (toRemove.indexOf(" ") != -1)
-    {
-      throw new IllegalArgumentException("toRemove must not contain spaces, but is \"" + toRemove + "\"");
-    }
-
     String oldClass = attributes.get(CLASS_ATTR);
-    if (oldClass == null)
-    {
-      return;
-    }
-    StringBuilder newClass = new StringBuilder();
-    StringTokenizer classTokenizer = new StringTokenizer(oldClass, " ");
-    while (classTokenizer.hasMoreTokens())
-    {
-      String token = classTokenizer.nextToken();
-      if (!token.equals(toRemove))
-      {
-        if (newClass.length() != 0)
-        {
-          newClass.append(" ");
-        }
-        newClass.append(token);
-      }
-    }
-    attributes.put(CLASS_ATTR, newClass.toString());
+    String newClass = StringTools.removeTokens(toRemove, oldClass, " ");
+    attributes.put(CLASS_ATTR, newClass);
   }
 
   @Override
