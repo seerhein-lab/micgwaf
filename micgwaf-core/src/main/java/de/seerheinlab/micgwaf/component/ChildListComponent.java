@@ -63,7 +63,8 @@ public class ChildListComponent<T extends Component> extends Component implement
   }
 
   /**
-   * Adds the given child at the end of the list of children..
+   * Adds the given child at the end of the list of children.
+   * It also sets the parent of the added child to this component.
    *
    * @param child the child to add, not null.
    *
@@ -73,13 +74,19 @@ public class ChildListComponent<T extends Component> extends Component implement
   {
     Assertions.assertNotNull(child, "child");
     children.add(child);
+    child.setParent(this);
   }
 
   /**
    * Clears the list of children.
+   * The parents of the children are set to null.
    */
   public void clear()
   {
+    for (T child : children)
+    {
+      child.setParent(null);
+    }
     children.clear();
   }
 
