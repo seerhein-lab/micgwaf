@@ -30,6 +30,12 @@ public class ParseAndRenderTest
   }
 
   @Test
+  public void testLoop() throws Exception
+  {
+    testParseAndRender("loop", "root", 1);
+  }
+
+  @Test
   public void testReference() throws Exception
   {
     testParseAndRender("reference", "root", 3);

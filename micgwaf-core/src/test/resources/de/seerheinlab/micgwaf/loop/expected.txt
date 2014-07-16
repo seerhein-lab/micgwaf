@@ -1,0 +1,7 @@
+<table>
+  <tr id="tableRow:0">
+    <td id="value:0">Value</td>
+    <td id="tableColumn:0:0">Value 1<span id="span:0:0">spanContent</span></td>
+    <td>Value 2</td>
+  </tr>
+</table>

@@ -39,6 +39,12 @@ public class GeneratedSourcesTest
   }
 
   @Test
+  public void testLoop() throws Exception
+  {
+    testParseAndCompile("loop", "root");
+  }
+
+  @Test
   public void testSinglePage() throws Exception
   {
     testParseAndCompile("singlepage", "singlePage");
