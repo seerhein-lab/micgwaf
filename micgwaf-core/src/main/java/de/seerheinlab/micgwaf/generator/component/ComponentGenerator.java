@@ -427,14 +427,14 @@ public abstract class ComponentGenerator
 
   public String getComponentFieldName(Component component, int componentCounter)
   {
+    if (component instanceof ReferenceComponent)
+    {
+      ReferenceComponent refComponent = (ReferenceComponent) component;
+      return removeDirectoryPrefix(replaceDots(refComponent.getId()));
+    }
     if (component != null && component.getId() != null)
     {
       return removeDirectoryPrefix(removeLoopPart(component.getId()));
-    }
-    else if (component instanceof ReferenceComponent)
-    {
-      ReferenceComponent refComponent = (ReferenceComponent) component;
-      return removeDirectoryPrefix(replaceDots(refComponent.refid));
     }
     return "component" + componentCounter;
   }

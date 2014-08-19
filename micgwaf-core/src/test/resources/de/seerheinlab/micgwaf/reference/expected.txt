@@ -4,12 +4,12 @@
   </head>
   <body>
     <div>
-  <h3 class="sectionTitle" id="content:title">Title</h3>
+  <h3 class="sectionTitle" id="changedContentId:title">Title</h3>
   <div class="formContainer">
-    <form id="content:form" method="POST">
-  <input name="content:form:input1" value="input1" id="content:form:input1"></input>
-  <input name="content:form:input2" value="input2" id="content:form:input2"></input>
-  <button type="submit" name="content:form:submitButton" value="submit" id="content:form:submitButton"></button>
+    <form id="changedContentId:form" method="POST">
+  <input name="changedContentId:form:input1" value="input1" id="changedContentId:form:input1"></input>
+  <input name="changedContentId:form:input2" value="input2" id="changedContentId:form:input2"></input>
+  <button type="submit" name="changedContentId:form:submitButton" value="submit" id="changedContentId:form:submitButton"></button>
 </form>
   </div>
   <table>
@@ -17,7 +17,7 @@
       <td>Column 1</td>
       <td>Column 2</td>
     </tr>
-    <tr id="content:tableRow:0">
+    <tr id="changedContentId:tableRow:0">
       <td>Value 1</td>
       <td>Value 2</td>
     </tr>

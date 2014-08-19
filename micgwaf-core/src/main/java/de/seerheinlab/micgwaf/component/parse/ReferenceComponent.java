@@ -31,7 +31,7 @@ public class ReferenceComponent extends Component implements ChangesChildHtmlId
 
   public ReferenceComponent(String refid, String id, Component parent)
   {
-    super(id, parent);
+    super(id == null ? refid : id, parent);
     this.refid = refid;
   }
 
@@ -67,8 +67,13 @@ public class ReferenceComponent extends Component implements ChangesChildHtmlId
       throw new IllegalStateException("No component bound to component reference, refid=" + refid);
     }
     Component oldParent= referencedComponent.getParent();
+    String oldId = referencedComponent.getId();
     Map<String, String> referencedComponentOldVariableValues = new HashMap<>();
     referencedComponent.setParent(this);
+    if (this.id != null)
+    {
+      referencedComponent.setId(this.id);
+    }
     setVariablesInPartListComponent(referencedComponent, variableValues, referencedComponentOldVariableValues);
     Map<String, String> childComponentOldVariableValues = new HashMap<>();
     if (referencedComponent instanceof HtmlElementComponent)
@@ -81,6 +86,7 @@ public class ReferenceComponent extends Component implements ChangesChildHtmlId
     referencedComponent.render(writer);
     // restore original state
     referencedComponent.setParent(oldParent);
+    referencedComponent.setId(oldId);
     setVariablesInPartListComponent(referencedComponent, referencedComponentOldVariableValues, null);
     if (referencedComponent instanceof HtmlElementComponent)
     {
@@ -134,9 +140,9 @@ public class ReferenceComponent extends Component implements ChangesChildHtmlId
   {
     // do not prefix page id (page component has no parent)
     // or component which is the endpoint of the reference (has same id)
-    if (parent != null && !htmlId.equals(refid))
+    if (parent != null && !htmlId.equals(id))
     {
-      return refid + ":" + htmlId;
+      return id + ":" + htmlId;
     }
     return htmlId;
   }
