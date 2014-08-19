@@ -7,7 +7,6 @@ TODO
 - for attributes in loops must be treated like ids (add :number) 
 - find a way how to find components higher up in the tree (e.g. messageBox outside form)
 - add note about when classes are generated in class javadoc
-- multiple should also work on m:reference
 - error should be output when variables are accessed in m:reference which do not exist in referenced component
 - handle escape character (backslash) in variables properly or use other escape mechanism
 - check whether use builder pattern is useable throughout

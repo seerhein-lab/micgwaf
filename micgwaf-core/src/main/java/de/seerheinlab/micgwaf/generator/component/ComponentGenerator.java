@@ -97,6 +97,15 @@ public abstract class ComponentGenerator
   }
 
   /**
+   * Adds the necessary imports if the explicitly passed component is used as field (e.g. ReferenceComponent)
+   * or fields (e.g. PartListComponent) in the context given by generationContext.
+   *
+   * @param component the component used as a field or as fields, not null.
+   * @param generationContext the generation context in which the field is used, not null.
+   */
+  public abstract void addImportsForField(Component component, GenerationContext generationContext);
+
+  /**
    * Returns whether an extension class should be generated for the component.
    *
    * @param component the component to check, not null.

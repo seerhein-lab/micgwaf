@@ -219,4 +219,12 @@ public class UseTemplateComponentGenerator extends ComponentGenerator
   {
     return component.getId() != null;
   }
+
+
+  @Override
+  public void addImportsForField(Component component,
+      GenerationContext generationContext)
+  {
+    // TODO why does this generator not need an import?
+  }
 }

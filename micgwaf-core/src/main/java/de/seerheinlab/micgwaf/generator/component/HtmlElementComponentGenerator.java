@@ -13,7 +13,6 @@ import de.seerheinlab.micgwaf.component.GenerationParameters;
 import de.seerheinlab.micgwaf.component.HtmlElementComponent;
 import de.seerheinlab.micgwaf.component.SnippetComponent;
 import de.seerheinlab.micgwaf.component.parse.PartListComponent;
-import de.seerheinlab.micgwaf.component.parse.ReferenceComponent;
 import de.seerheinlab.micgwaf.config.ApplicationBase;
 import de.seerheinlab.micgwaf.generator.GeneratedClass;
 import de.seerheinlab.micgwaf.generator.Generator;
@@ -46,7 +45,6 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
   {
     GeneratedClass result = generationContext.generatedClass;
     HtmlElementComponent htmlElementCompont = (HtmlElementComponent) generationContext.component;
-    JavaClassName javaClassName = getClassName(generationContext);
 
     result.classPackage = generationContext.getPackage();
     result.imports.add(ChangesChildHtmlId.class.getName());
@@ -62,34 +60,8 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
     result.imports.add(ArrayList.class.getName());
     for (Component child : htmlElementCompont.getChildren())
     {
-      if (child instanceof ReferenceComponent)
-      {
-        ComponentGenerator generator = Generator.getGenerator(child);
-        JavaClassName componentClass = generator.getReferencableClassName(
-            new GenerationContext(generationContext, child));
-        if (!javaClassName.getPackage().equals(componentClass.getPackage()))
-        {
-          result.imports.add(componentClass.getName());
-        }
-      }
-      else if (child instanceof PartListComponent)
-      {
-        PartListComponent snippetListChild = (PartListComponent) child;
-        for (PartListComponent.ComponentPart part : snippetListChild.parts)
-        {
-          if (part.component != null)
-          {
-            ComponentGenerator generator = Generator.getGenerator(part.component);
-            JavaClassName componentClass = generator.getReferencableClassName(
-                new GenerationContext(generationContext, part.component));
-            if (part.component instanceof ReferenceComponent
-                && !javaClassName.getPackage().equals(componentClass.getPackage()))
-            {
-              result.imports.add(componentClass.getName());
-            }
-          }
-        }
-      }
+      ComponentGenerator generator = Generator.getGenerator(child);
+      generator.addImportsForField(child, generationContext);
     }
     generateClassJavadoc(generationContext, false);
     generateClassDefinition(generationContext, HtmlElementComponent.class);
@@ -318,5 +290,12 @@ public class HtmlElementComponentGenerator extends ComponentGenerator
   @Override
   public void generateInitializer(GenerationContext generationContext, String componentField)
   {
+  }
+
+  @Override
+  public void addImportsForField(Component component,
+      GenerationContext generationContext)
+  {
+    // HTML components do not need an import as they live in the same package as the parent component
   }
 }

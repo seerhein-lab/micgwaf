@@ -6,6 +6,7 @@ import java.util.Map;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 
+import de.seerheinlab.micgwaf.component.ChildListComponent;
 import de.seerheinlab.micgwaf.component.Component;
 import de.seerheinlab.micgwaf.component.parse.ReferenceComponent;
 import de.seerheinlab.micgwaf.util.Constants;
@@ -21,6 +22,8 @@ public class ReferenceContentHandler extends ContentHandler
   public String refid;
 
   public String id;
+
+  public boolean multiple = false;
 
   public Map<String, String> variableValues = new HashMap<>();
 
@@ -49,6 +52,10 @@ public class ReferenceContentHandler extends ContentHandler
       {
         id = value;
       }
+      else if (ContentHandlerRegistry.MULTIPLE_ATTR.equals(attributeQName))
+      {
+        multiple = true;
+      }
       else
       {
         variableValues.put(attributeQName, value);
@@ -70,10 +77,20 @@ public class ReferenceContentHandler extends ContentHandler
   }
 
   @Override
-  public ReferenceComponent finished() throws SAXException
+  public Component finished() throws SAXException
   {
-    ReferenceComponent result = new ReferenceComponent(refid, id, null);
-    result.variableValues = variableValues;
-    return result;
+    ReferenceComponent referenceComponent = new ReferenceComponent(refid, id, null);
+    referenceComponent.variableValues = variableValues;
+    if (multiple)
+    {
+
+      Component result = new ChildListComponent<ReferenceComponent>(
+          (id == null ? refid : id) + "List",
+          null,
+          referenceComponent);
+      referenceComponent.setParent(result);
+      return result;
+    }
+    return referenceComponent;
   }
 }

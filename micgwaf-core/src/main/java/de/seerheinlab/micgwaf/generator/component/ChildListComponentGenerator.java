@@ -30,7 +30,7 @@ public class ChildListComponentGenerator extends ComponentGenerator
     {
       return null;
     }
-    return  new JavaClassName(
+    return new JavaClassName(
         "ChildListComponent<" + delegateClassName + ">",
         ChildListComponent.class.getPackage().getName());
   }
@@ -81,5 +81,17 @@ public class ChildListComponentGenerator extends ComponentGenerator
   public boolean generateExtensionClass(Component component)
   {
     return false;
+  }
+
+  @Override
+  public void addImportsForField(Component component,
+      GenerationContext generationContext)
+  {
+    // add imports for children to care for generics type of generated ChildListComponent component
+    for (Component child : component.getChildren())
+    {
+      ComponentGenerator childGenerator = Generator.getGenerator(child);
+      childGenerator.addImportsForField(child, generationContext);
+    }
   }
 }

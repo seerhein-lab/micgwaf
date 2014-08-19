@@ -10,7 +10,6 @@ import de.seerheinlab.micgwaf.component.ChildListComponent;
 import de.seerheinlab.micgwaf.component.Component;
 import de.seerheinlab.micgwaf.component.SnippetComponent;
 import de.seerheinlab.micgwaf.component.parse.PartListComponent;
-import de.seerheinlab.micgwaf.component.parse.ReferenceComponent;
 import de.seerheinlab.micgwaf.config.ApplicationBase;
 import de.seerheinlab.micgwaf.generator.GeneratedClass;
 import de.seerheinlab.micgwaf.generator.Generator;
@@ -58,13 +57,7 @@ public class PartListComponentGenerator extends ComponentGenerator
       if (part.component != null)
       {
         ComponentGenerator generator = Generator.getGenerator(part.component);
-        JavaClassName componentClass = generator.getReferencableClassName(
-            new GenerationContext(generationContext, part.component));
-        if (part.component instanceof ReferenceComponent
-            && !javaClassName.getPackage().equals(componentClass.getPackage()))
-        {
-          result.imports.add(componentClass.getName());
-        }
+        generator.addImportsForField(part.component, generationContext);
       }
     }
 
@@ -198,10 +191,10 @@ public class PartListComponentGenerator extends ComponentGenerator
       String componentField)
   {
     String indentString = GeneratorHelper.getIndentString(generationContext.indent);
-    PartListComponent snippetListComponent = (PartListComponent) generationContext.component;
+    PartListComponent partListComponent = (PartListComponent) generationContext.component;
     generationContext.generatedClass.classBody.append(indentString).append("{\n");
     int counter = 1;
-    for (PartListComponent.ComponentPart part : snippetListComponent.parts)
+    for (PartListComponent.ComponentPart part : partListComponent.parts)
     {
       if (part.component != null)
       {
@@ -237,5 +230,20 @@ public class PartListComponentGenerator extends ComponentGenerator
   public boolean generateExtensionClass(Component component)
   {
     return component.getId() != null;
+  }
+
+  @Override
+  public void addImportsForField(Component component,
+      GenerationContext generationContext)
+  {
+    PartListComponent partListComponent = (PartListComponent) component;
+    for (PartListComponent.ComponentPart part : partListComponent.parts)
+    {
+      if (part.component != null)
+      {
+        ComponentGenerator generator = Generator.getGenerator(part.component);
+        generator.addImportsForField(part.component, generationContext);
+      }
+    }
   }
 }

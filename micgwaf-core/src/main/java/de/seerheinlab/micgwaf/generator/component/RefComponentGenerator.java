@@ -65,4 +65,18 @@ public class RefComponentGenerator extends ComponentGenerator
     }
     generationContext.generatedClass.classBody.append("  }\n\n");
   }
+
+  @Override
+  public void addImportsForField(Component component,
+      GenerationContext generationContext)
+  {
+    ComponentGenerator contextGenerator = Generator.getGenerator(generationContext.component);
+    JavaClassName contextComponentClassName = contextGenerator.getClassName(generationContext);
+    JavaClassName componentClassName = getReferencableClassName(
+        new GenerationContext(generationContext, component));
+    if (!contextComponentClassName.getPackage().equals(componentClassName.getPackage()))
+    {
+      generationContext.generatedClass.imports.add(componentClassName.getName());
+    }
+  }
 }

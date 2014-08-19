@@ -32,4 +32,14 @@ public class InsertComponentGenerator extends ComponentGenerator
   public void generateInitializer(GenerationContext generationContext, String componentField)
   {
   }
+
+  @Override
+  public void addImportsForField(Component component,
+      GenerationContext generationContext)
+  {
+    if (!generationContext.generatedClass.imports.contains(Component.class.getName()))
+    {
+      generationContext.generatedClass.imports.add(Component.class.getName());
+    }
+  }
 }
