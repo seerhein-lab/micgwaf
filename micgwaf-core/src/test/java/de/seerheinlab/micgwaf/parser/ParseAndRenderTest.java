@@ -24,7 +24,7 @@ public class ParseAndRenderTest
   }
 
   @Test
-  public void testRenderForm() throws Exception
+  public void testForm() throws Exception
   {
     testParseAndRender("form", "root", 1);
   }
@@ -32,7 +32,13 @@ public class ParseAndRenderTest
   @Test
   public void testLoop() throws Exception
   {
-    testParseAndRender("loop", "root", 1);
+    testParseAndRender("loop", "root", 2);
+  }
+
+  @Test
+  public void testSinglePage() throws Exception
+  {
+    testParseAndRender("singlepage", "singlePage", 1);
   }
 
   @Test
@@ -48,7 +54,7 @@ public class ParseAndRenderTest
   }
 
   @Test
-  public void testRenderTemplatedPage() throws Exception
+  public void testTemplate() throws Exception
   {
     testParseAndRender("template", "templatedPage", 3);
   }
@@ -60,7 +66,7 @@ public class ParseAndRenderTest
   }
 
   @Test
-  public void testRenderVariables() throws Exception
+  public void testVariables() throws Exception
   {
     testParseAndRender("variable", "body", 3);
   }
