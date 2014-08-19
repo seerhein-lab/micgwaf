@@ -78,7 +78,7 @@ public class UrlParamSessionStateHandler implements StateHandler
       entryIt.next();
       entryIt.remove();
     }
-    response.sendRedirect(".?" + stateKeyParam + "=" + nextStateKey);
+    response.sendRedirect(path + "?" + stateKeyParam + "=" + nextStateKey);
   }
 
 
