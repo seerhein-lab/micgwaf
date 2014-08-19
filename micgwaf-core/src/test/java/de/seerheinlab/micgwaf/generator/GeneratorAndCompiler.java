@@ -8,30 +8,31 @@ import javax.tools.ToolProvider;
 
 import org.apache.commons.io.FileUtils;
 
-import de.seerheinlab.micgwaf.generator.Generator;
-
+/**
+ * Test utility which runs the micgwaf generator for component classes and compiles them.
+ */
 public class GeneratorAndCompiler
 {
   public static File compileRootDir = new File("target/manually-compiled-classes");
-  
+
   public static File generatedSourcesDir = new File("target/generated-sources");
-  
+
   public static File generatedExtensionsDir = new File("target/generated-extension-sources");
 
-  public static void generateAndCompile(String componentPath, ClassLoader classLoader) throws Exception
+  public static void generateAndCompile(String componentDirPath, ClassLoader classLoader) throws Exception
   {
     Generator.configurationClasspathResource = "/de/seerheinlab/micgwaf/config/test-micgwaf-codegen.properties";
-    
-    File componentDir = new File(componentPath);
-    
+
+    File componentDir = new File(componentDirPath);
+
     FileUtils.deleteDirectory(generatedSourcesDir);
     FileUtils.deleteDirectory(generatedExtensionsDir);
     FileUtils.deleteDirectory(compileRootDir);
-    
+
     Generator generator = new Generator();
     generator.generate(
-        componentDir, 
-        generatedSourcesDir, 
+        componentDir,
+        generatedSourcesDir,
         generatedExtensionsDir,
         "de.seerheinlab.micgwaf.test.generated",
         classLoader);
