@@ -24,7 +24,7 @@ public class GenerationContext
   public GeneratedClass generatedClass;
 
   /**
-   * Constructor without indent and stringBuilder.
+   * Constructor without indent and generatedClass.
    *
    * @param component The component to generate code for.
    * @param rootPackage The root package for all generated components.
@@ -42,7 +42,7 @@ public class GenerationContext
    * @param rootPackage The root package for all generated components.
    * @param componentSubpackage The subpackage for the specific component.
    * @param indent The current indent for generation, if applicable, or 0 otherwise.
-   * @param stringBuilder The class which is currently generated, or null if a complete class is generated.
+   * @param generatedClass The class which is currently generated.
    */
   public GenerationContext(
       Component component,
