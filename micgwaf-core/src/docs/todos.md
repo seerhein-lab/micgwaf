@@ -9,7 +9,7 @@ TODO
 - add note about when classes are generated in class javadoc
 - error should be output when variables are accessed in m:reference which do not exist in referenced component
 - handle escape character (backslash) in variables properly or use other escape mechanism
-- check whether use builder pattern is useable throughout
+- check whether builder pattern is useable throughout
 - check and document what the generated component registry is for, and remove if unnecessary
 - ignore white space in parsing
 - generate only class files for classes with an m:id and use inner classes for the rest
