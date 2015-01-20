@@ -25,7 +25,10 @@ Micgwaf consists of different components
 
 ### Checkout the project into eclipse
 
-The following procedure can be followed to checkout this project into eclipse
+Micgwaf is organized as a hierarchical project, i.e. the subprojects are subfolders of a parent project
+which itself is a maven project.
+This project structure is not supported out of the box by eclipse.
+However, the following procedure can be followed to checkout this project into eclipse:
 
 - use the git repository exploring perspective and clone the micgwaf repository from github
 - right-click the cloned repo and select import projects... then select "import as general project"
