@@ -26,7 +26,7 @@ code is possible.
 For using the components in a web application, a servlet filter needs to be configured and
 the page components need to be mounted to specific request URLs.
 
-micgwaf also supports development of HTML code alongside application development.
+Micgwaf also supports development of HTML code alongside application development.
 For this, a special servlet filter is provided, which renders HTML files as-is, but resolves component
 references.
 
@@ -51,7 +51,10 @@ Creating XHTML files and Generating Code
 - create all .xhtml files in one directory
   - use namespace http://seerhein-lab.de/micgwaf for micgwaf 
     (the following assumes xmlns:m="http://seerhein-lab.de/micgwaf")
-  - use an unique m:id for each active component. m:id should start with a lowercase letter.
+  - use an unique m:id for each active component.
+    The content of the m:id attribute should start with a lowercase letter.
+    If you are unsure which html elements should receive a m:id attribute, a good starting point
+    is all form and input elements.
   - use m:generateExtensionClass="true" for each component which code you want to change.
     By default, for forms and page components, m:generateExtensionClass is true, 
     for all other components, it is false.
@@ -60,14 +63,15 @@ Creating XHTML files and Generating Code
     or by changing its renderSelf or renderChildren attributes).
   - use m:multiple="true" for components which can appear multiple times (so they are referenced as lists
     and not as single references in the parent component).
-  - use the element m:reference to reference other components. The refid attribute references the name
-    of the components. Only components defined in their own xhtml file can be referenced. for these,
-    the default id is the file name minus the .xhtml extension.
+    An example where m:multiple often makes sense is table rows in a table.
+  - use the element m:reference to reference other components. The refid attribute references the id
+    of the referenced components. Only components defined in their own xhtml file can be referenced.
+    For these, the default id is the file name minus the .xhtml extension.
   - for defining page templates, define a normal html file as template, and use a 
     <m:insert name="..."/> at the places where the templated page should insert its content.
     For templated pages, use <m:template templateId="..."> as root element 
     and <m:define name="..."> elements to define the snippets to insert into the template.
-  - see the xhtml files in the directory src/test/resources/de/seerheinlab/micgwaf/page for an example.
+  - see the xhtml files in the directory src/main/html in the micgwaf-demo project for an example.
   - see the [micgwaf namespace reference](namespace.md) for a reference of the elements and attributes
     in the micgwaf namespace.
 
