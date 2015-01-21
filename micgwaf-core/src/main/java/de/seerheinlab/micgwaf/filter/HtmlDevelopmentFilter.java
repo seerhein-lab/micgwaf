@@ -59,10 +59,9 @@ public class HtmlDevelopmentFilter implements Filter
     Component component;
     String path = httpServletRequest.getServletPath();
     String componentId = path;
-    int lastSlashPos = componentId.lastIndexOf("/");
-    if (lastSlashPos != -1)
+    if (componentId.startsWith("/"))
     {
-      componentId = componentId.substring(lastSlashPos + 1);
+      componentId = componentId.substring(1);
     }
 
     int lastDotPos = componentId.lastIndexOf(".");
