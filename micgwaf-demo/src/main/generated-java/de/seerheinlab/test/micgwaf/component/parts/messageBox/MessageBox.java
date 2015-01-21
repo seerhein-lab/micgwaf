@@ -1,6 +1,9 @@
 package de.seerheinlab.test.micgwaf.component.parts.messageBox;
 
 
+import java.io.IOException;
+import java.io.Writer;
+
 import de.seerheinlab.micgwaf.component.Component;
 
 /**
@@ -15,7 +18,7 @@ public class MessageBox extends BaseMessageBox
 
 
   /**
-  * Constructor. 
+  * Constructor.
   *
   * @param id the id of this component, or null.
   * @param parent the parent component. Can be null if this is a standalone component (e.g. a page).
@@ -23,6 +26,21 @@ public class MessageBox extends BaseMessageBox
   public MessageBox(String id, Component parent)
   {
     super(id, parent);
+  }
+
+  /**
+   * Override default rendering behavior.
+   * Only render messgeBox if any messages are contained.
+   */
+  @Override
+  public void render(Writer writer) throws IOException
+  {
+    if (errorMessageList != null && errorMessageList.children.size() > 0)
+    {
+      writer.write(SNIPPET_1);
+      errorMessageList.render(writer);
+      writer.write(SNIPPET_2);
+    }
   }
 
 }
