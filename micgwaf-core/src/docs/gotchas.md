@@ -12,3 +12,8 @@ Gotchas
   - input components which are not buttons use the submitted value as new value of the "value" attribute
     if they are re-rendered.
   - the content inside m:reference and m:remove elements is removed.
+  
+- Changing the id of active components (e.g. Buttons) can result in renaming methods in the base classes.
+  However, as the extension classes are generated only once, method names do not change automatically there.
+  They need to be changed manually to match the new generated classes.
+  So, ids of active components should be chosen with care.
