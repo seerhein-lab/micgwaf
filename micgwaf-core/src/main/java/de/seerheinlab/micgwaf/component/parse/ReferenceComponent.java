@@ -49,7 +49,7 @@ public class ReferenceComponent extends Component implements ChangesChildHtmlId
     referencedComponent = allComponents.get(refid);
     if (referencedComponent == null)
     {
-      throw new IllegalStateException("unknown refid " + refid);
+      throw new IllegalStateException("unknown refid " + refid + ". Known refids are " + allComponents.keySet());
     }
   }
 
