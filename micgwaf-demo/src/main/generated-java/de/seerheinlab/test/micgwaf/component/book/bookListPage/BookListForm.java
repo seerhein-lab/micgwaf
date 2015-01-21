@@ -23,6 +23,7 @@ public class BookListForm extends BaseBookListForm
   public BookListForm(String id, Component parent)
   {
     super(id, parent);
+    clearErrorMessages();
   }
 
 
@@ -172,4 +173,13 @@ public class BookListForm extends BaseBookListForm
       bookRowList.children.add(new BookRow(null, bookRowList, book));
     }
   }
+
+  /**
+   * Clears the error messages in the surrounding page.
+   */
+  public void clearErrorMessages()
+  {
+    messageBox.errorMessageList.clear();
+  }
+
 }
