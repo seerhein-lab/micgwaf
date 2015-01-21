@@ -1,15 +1,14 @@
-package de.seerheinlab.test.micgwaf.component.book.bookListPage;
-
+package de.seerheinlab.test.micgwaf.component.parts.messageBox;
 
 import de.seerheinlab.micgwaf.component.Component;
-import de.seerheinlab.test.micgwaf.service.BookService;
+
 
 /**
- * This class represents the HTML element with m:id bookListPage.
+ * This class represents the HTML element with m:id successMessage.
  * Instances of this class are used whenever these elements are rendered
  * or when form date from a page containing these elements is processed.
  **/
-public class BookListPage extends BaseBookListPage
+public class SuccessMessage extends BaseSuccessMessage implements Message
 {
   /** Serial Version UID. */
   private static final long serialVersionUID = 1L;
@@ -21,9 +20,10 @@ public class BookListPage extends BaseBookListPage
   * @param id the id of this component, or null.
   * @param parent the parent component. Can be null if this is a standalone component (e.g. a page).
   */
-  public BookListPage(String id, Component parent)
+  public SuccessMessage(String id, Component parent)
   {
     super(id, parent);
-    bookListForm.display(BookService.instance.getBookList());
   }
+
+
 }

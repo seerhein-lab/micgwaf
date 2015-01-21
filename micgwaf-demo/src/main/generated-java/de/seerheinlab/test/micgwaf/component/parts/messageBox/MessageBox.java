@@ -1,9 +1,6 @@
 package de.seerheinlab.test.micgwaf.component.parts.messageBox;
 
 
-import java.io.IOException;
-import java.io.Writer;
-
 import de.seerheinlab.micgwaf.component.Component;
 
 /**
@@ -26,21 +23,78 @@ public class MessageBox extends BaseMessageBox
   public MessageBox(String id, Component parent)
   {
     super(id, parent);
+    clear();
   }
 
   /**
-   * Override default rendering behavior.
-   * Only render messgeBox if any messages are contained.
+   * Clears all contained messages.
    */
-  @Override
-  public void render(Writer writer) throws IOException
+  public void clear()
   {
-    if (errorMessageList != null && errorMessageList.children.size() > 0)
-    {
-      writer.write(SNIPPET_1);
-      errorMessageList.render(writer);
-      writer.write(SNIPPET_2);
-    }
+    successMessageList.clear();
+    infoMessageList.clear();
+    warnMessageList.clear();
+    errorMessageList.clear();
   }
+
+  public void addSuccessMessage(String messageString)
+  {
+    if (messageString == null)
+    {
+      return;
+    }
+    SuccessMessage message = new SuccessMessage(null, null);
+    message.setTextContent(messageString);
+    successMessageList.add(message);
+    setRender(true);
+  }
+
+  public void addInfoMessage(String messageString)
+  {
+    if (messageString == null)
+    {
+      return;
+    }
+    InfoMessage message = new InfoMessage(null, null);
+    message.setTextContent(messageString);
+    infoMessageList.add(message);
+    setRender(true);
+  }
+
+  public void addWarnMessage(String messageString)
+  {
+    if (messageString == null)
+    {
+      return;
+    }
+    WarnMessage message = new WarnMessage(null, null);
+    message.setTextContent(messageString);
+    warnMessageList.add(message);
+    setRender(true);
+  }
+
+  public void addErrorMessage(String messageString)
+  {
+    if (messageString == null)
+    {
+      return;
+    }
+    ErrorMessage message = new ErrorMessage(null, null);
+    message.setTextContent(messageString);
+    errorMessageList.add(message);
+    setRender(true);
+  }
+
+//  TODO use once component is an interface
+//  protected <T extends Message> void addMessage(String messageString, T messageObject, ChildListComponent<T> messageList)
+//  {
+//    if (messageString == null)
+//    {
+//      return;
+//    }
+//    messageObject.setTextContent(messageString);
+//    messageList.add(messageObject);
+//    setRender(true);
+//  }
 
 }

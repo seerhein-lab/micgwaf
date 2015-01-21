@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<div xmlns:m="http://seerhein-lab.de/micgwaf" class="alert alert-error">
-  <ul>
-    <li m:id="errorMessage" m:multiple="true" m:generateExtensionClass="true">error message</li>
-  </ul>
+<div xmlns:m="http://seerhein-lab.de/micgwaf" m:id="messageBox"  m:defaultRender="false">
+  <div m:id="successMessage" m:multiple="true" m:generateExtensionClass="true" class="alert alert-success">success message</div>
+  <div m:id="infoMessage" m:multiple="true" m:generateExtensionClass="true" class="alert alert-info">info message</div>
+  <div m:id="warnMessage" m:multiple="true" m:generateExtensionClass="true" class="alert alert-warn">warn message</div>
+  <div m:id="errorMessage" m:multiple="true" m:generateExtensionClass="true" class="alert alert-danger">error message</div>
 </div> 

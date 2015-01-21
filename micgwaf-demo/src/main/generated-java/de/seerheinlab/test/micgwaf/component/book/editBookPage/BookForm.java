@@ -4,7 +4,6 @@ package de.seerheinlab.test.micgwaf.component.book.editBookPage;
 import de.seerheinlab.micgwaf.component.Component;
 import de.seerheinlab.micgwaf.util.Assertions;
 import de.seerheinlab.test.micgwaf.component.book.bookListPage.BookListPage;
-import de.seerheinlab.test.micgwaf.component.parts.messageBox.ErrorMessage;
 import de.seerheinlab.test.micgwaf.service.Book;
 import de.seerheinlab.test.micgwaf.service.BookService;
 
@@ -15,11 +14,11 @@ public class BookForm extends BaseBookForm
 
 
   public Book book;
-  
+
   public int messageIdCounter;
 
   /**
-  * Constructor. 
+  * Constructor.
   *
   * @param baseEditBookPage the parent component, not null.
   */
@@ -28,13 +27,12 @@ public class BookForm extends BaseBookForm
     super(id, baseEditBookPage);
     Assertions.assertNotNull(baseEditBookPage, "baseEditBookPage");
     setBook(null);
-    clearErrorMessages();
   }
 
   /**
    * Sets a book to be edited in this page.
    * The book's content is copied to the appropriate input fields.
-   * 
+   *
    * @param book the book to edit, or null to create a new Book from scratch.
    */
   public void setBook(Book book)
@@ -68,7 +66,9 @@ public class BookForm extends BaseBookForm
       return null;
     }
     BookService.instance.save(book);
-    return new BookListPage(null, null);
+    BookListPage result = new BookListPage(null, null);
+    result.bookListForm.messageBox.addSuccessMessage("Book \"" + book.getTitle() + "\" successfully saved");
+    return result;
   }
 
   /**
@@ -82,19 +82,19 @@ public class BookForm extends BaseBookForm
   {
     return new BookListPage(null, null);
   }
-  
+
   /**
-   * Validates the input and sets the input values to the corresponding fields in the stored book, 
+   * Validates the input and sets the input values to the corresponding fields in the stored book,
    * if validation was successful.
    * If validation was not successful, the erroneous fields are marked and an error message is printed.
-   * 
-   * @return true if the input is valid and the form data was copied into the book, 
+   *
+   * @return true if the input is valid and the form data was copied into the book,
    *         or false if an validation error occurred.
    */
   public boolean processInput()
   {
     hideErrorBoxes();
-    clearErrorMessages();
+    clearMessages();
     boolean valid = true;
     if (getAuthorInput() == null || getAuthorInput().trim().isEmpty())
     {
@@ -132,20 +132,19 @@ public class BookForm extends BaseBookForm
 
   /**
    * Adds an error message to the surrounding page.
-   * 
+   *
    * @param message the message to add, not null.
    */
   public void addErrorMessage(String message)
   {
-    ((EditBookPage) parent).messageBox.errorMessageList.add(new ErrorMessage("message" + messageIdCounter, parent, message));
-    messageIdCounter++;
+    ((EditBookPage) parent).messageBox.addErrorMessage(message);
   }
-  
+
   /**
    * Clears the error messages in the surrounding page.
    */
-  public void clearErrorMessages()
+  public void clearMessages()
   {
-    ((EditBookPage) parent).messageBox.errorMessageList.clear();
+    ((EditBookPage) parent).messageBox.clear();
   }
 }
