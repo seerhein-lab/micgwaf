@@ -15,7 +15,7 @@ public class BookListForm extends BaseBookListForm
 
 
   /**
-  * Constructor. 
+  * Constructor.
   *
   * @param id the id of this component, or null.
   * @param parent the parent component. Can be null if this is a standalone component (e.g. a page).
@@ -27,7 +27,7 @@ public class BookListForm extends BaseBookListForm
 
 
   /**
-   * Hook method which is called when the button hinzufuegenButton was pressed.
+   * Hook method which is called when the button addButton was pressed.
    *
    * @return the page to be rendered.
    *         If no component or called hook method returns a not-null result, the current page
@@ -36,7 +36,7 @@ public class BookListForm extends BaseBookListForm
    *         the last not-null result will be used.
    */
   @Override
-  public Component hinzufuegenButtonPressed()
+  public Component addButtonPressed()
   {
     return new EditBookPage(null, null);
   }
@@ -157,11 +157,11 @@ public class BookListForm extends BaseBookListForm
   {
     return super.saveButtonPressed(bookRow);
   }
-  
+
   /**
    * Displays the given list of books.
    * The bookRowList is re-filled with BookRow instances representing the passed list of books.
-   * 
+   *
    * @param toDisplay the list of books to display, not null.
    */
   public void display(List<Book> toDisplay)
