@@ -16,4 +16,6 @@ Gotchas
 - Changing the id of active components (e.g. Buttons) can result in renaming methods in the base classes.
   However, as the extension classes are generated only once, method names do not change automatically there.
   They need to be changed manually to match the new generated classes.
+  Changing ids also results in unused classes both in the src/main/generated-java 
+  and target/generated-sources directory, which need to be removed.
   So, ids of active components should be chosen with care.
