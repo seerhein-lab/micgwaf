@@ -2,6 +2,7 @@ package de.seerheinlab.test.micgwaf.component.errorPage;
 
 
 import de.seerheinlab.micgwaf.component.Component;
+import de.seerheinlab.test.micgwaf.component.book.bookListPage.BookListPage;
 
 public class ErrorForm extends BaseErrorForm
 {
@@ -10,7 +11,7 @@ public class ErrorForm extends BaseErrorForm
 
 
   /**
-  * Constructor. 
+  * Constructor.
   *
   * @param id the id of this component, or null.
   * @param parent the parent component. Can be null if this is a standalone component (e.g. a page).
@@ -33,6 +34,6 @@ public class ErrorForm extends BaseErrorForm
   @Override
   public Component okButtonPressed()
   {
-    return super.okButtonPressed();
+    return new BookListPage(null,  null);
   }
 }
