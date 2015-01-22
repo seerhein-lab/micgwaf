@@ -18,7 +18,6 @@ TODO
 - why does xml header and doctype not get rendered?
 - defaultRendered does not work for root elements and m:reference element
 - implement bookmarkeable pages
-- in preview mode and for components in subdirectories, relative stylesheet links do not work
 - add link to relevant pages (e.g. component java source code, html code, preview mode of page) to demo pages
 - when example project start class is re-executed, the old execution does not stop automatically
 - change Component to an interface (so one can create an interface which extends Component)
