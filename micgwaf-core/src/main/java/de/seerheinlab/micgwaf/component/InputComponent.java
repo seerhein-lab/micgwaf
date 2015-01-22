@@ -48,8 +48,10 @@ public class InputComponent extends HtmlElementComponent
   }
 
   /**
-   * Constructor without id.
+   * Constructor with id.
    *
+   * @param id the id of the component, may be null.
+   *        If set, it should be unique in the current context (e.g. page).
    * @param parent the parent component, or null if this is a standalone component (e.g. a page)
    */
   public InputComponent(String id, Component parent)
@@ -60,6 +62,7 @@ public class InputComponent extends HtmlElementComponent
   /**
    * Constructor.
    *
+   * @param elementName the name of the html element, should not be null.
    * @param id the id of the component, may be null.
    *        If set, it should be unique in the current context (e.g. page).
    * @param parent the parent component, or null if this is a standalone component (e.g. a page)
