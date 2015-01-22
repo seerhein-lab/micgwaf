@@ -17,7 +17,6 @@ TODO
 - unify generation method parameters and their order
 - why does xml header and doctype not get rendered?
 - defaultRendered does not work for root elements and m:reference element
-- style message box in demo
 - implement bookmarkeable pages
 - in preview mode and for components in subdirectories, relative stylesheet links do not work
 - add link to relevant pages (e.g. component java source code, html code, preview mode of page) to demo pages
