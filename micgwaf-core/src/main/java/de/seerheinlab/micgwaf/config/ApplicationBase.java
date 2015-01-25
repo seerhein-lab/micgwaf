@@ -39,7 +39,8 @@ public abstract class ApplicationBase
   /**
    * Sets the application instance retrieved by <code>getApplication()</code>.
    * This method must be called at least once with the appropriate application instance
-   * because the micgwaf framework depends on getting the application instance by <code>getApplication()</code>.
+   * because the micgwaf framework depends on getting the application instance by
+   * <code>getApplication()</code>.
    *
    * @param instance the instance which is used by the micgwaf framework.
    */
@@ -59,7 +60,8 @@ public abstract class ApplicationBase
   {
     if (instance == null)
     {
-      throw new IllegalStateException("Micgwaf was not (yet) initialized correctly: no instance of Application is known.");
+      throw new IllegalStateException(
+          "Micgwaf was not (yet) initialized correctly: no instance of Application is known.");
     }
     return instance;
   }
@@ -124,6 +126,25 @@ public abstract class ApplicationBase
     Component result = Component.getInstance(componentClass);
     postConstruct(result);
     return result;
+  }
+
+  /**
+   * Returns the path under which a component is mounted.
+   *
+   * @param componentClass the component class to get the path for, not null.
+   *
+   * @param the first found mount path for the component, or null if none exists.
+   */
+  public String getPath(Class<? extends Component> componentClass)
+  {
+    for (Map.Entry<String, Class<? extends Component>> componentEntry : components.entrySet())
+    {
+      if (componentEntry.getValue() == componentClass)
+      {
+        return componentEntry.getKey();
+      }
+    }
+    return null;
   }
 
   /**
