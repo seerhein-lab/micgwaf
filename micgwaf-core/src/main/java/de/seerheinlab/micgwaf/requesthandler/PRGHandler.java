@@ -73,8 +73,7 @@ public class PRGHandler implements RequestHandler
       // Although storing/retrieving from the session may loose information,
       // which may need rebuilding,
       // we may not be sure whether this method does initializations which
-      // should happen only once
-      // during instance lifetime.
+      // should happen only once during instance lifetime.
       ApplicationBase.getApplication().postConstruct(toRender);
     }
     else
