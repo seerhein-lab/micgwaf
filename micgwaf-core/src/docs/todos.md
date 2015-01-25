@@ -21,3 +21,4 @@ TODO
 - add link to relevant pages (e.g. component java source code, html code, preview mode of page) to demo pages
 - when example project start class is re-executed, the old execution does not stop automatically
 - change Component to an interface (so one can create an interface which extends Component)
+- implement the editInlineAjax button in the demo
