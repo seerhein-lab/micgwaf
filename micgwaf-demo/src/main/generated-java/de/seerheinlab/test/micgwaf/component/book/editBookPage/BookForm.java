@@ -67,7 +67,7 @@ public class BookForm extends BaseBookForm
     }
     BookService.instance.save(book);
     BookListPage result = new BookListPage(null, null);
-    result.bookListForm.messageBox.addSuccessMessage("Book \"" + book.getTitle() + "\" successfully saved");
+    result.bookListForm.addSaveMessage(book);
     return result;
   }
 

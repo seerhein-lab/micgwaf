@@ -23,7 +23,7 @@ public class BookListForm extends BaseBookListForm
   public BookListForm(String id, Component parent)
   {
     super(id, parent);
-    clearErrorMessages();
+    messageBox.clear();
   }
 
 
@@ -87,7 +87,10 @@ public class BookListForm extends BaseBookListForm
   @Override
   public Component cancelEditButtonPressed(BookRow bookRow)
   {
-    return super.cancelEditButtonPressed(bookRow);
+    bookRow.editMode(false);
+    // reset input box values to read-only instance in row
+    bookRow.setBook(bookRow.getBook());
+    return getParent();
   }
 
   /**
@@ -121,7 +124,9 @@ public class BookListForm extends BaseBookListForm
   @Override
   public Component editInlineButtonPressed(BookRow bookRow)
   {
-    return super.editInlineButtonPressed(bookRow);
+    bookRow.editMode(true);
+    messageBox.clear();
+    return getParent();
   }
 
   /**
@@ -156,7 +161,12 @@ public class BookListForm extends BaseBookListForm
   @Override
   public Component saveButtonPressed(BookRow bookRow)
   {
-    return super.saveButtonPressed(bookRow);
+    Book book = bookRow.getBook();
+    BookService.instance.save(book);
+    // propagate saved values ro read-only instance in row
+    bookRow.setBook(book);
+    bookRow.editMode(false);
+    return null;
   }
 
   /**
@@ -175,11 +185,13 @@ public class BookListForm extends BaseBookListForm
   }
 
   /**
-   * Clears the error messages in the surrounding page.
+   * Adds a save success message.
+   *
+   * @param book the book which was saved.
    */
-  public void clearErrorMessages()
+  public void addSaveMessage(Book book)
   {
-    messageBox.errorMessageList.clear();
+    messageBox.addSuccessMessage("Book \"" + book.getTitle() + "\" successfully saved");
   }
 
 }
