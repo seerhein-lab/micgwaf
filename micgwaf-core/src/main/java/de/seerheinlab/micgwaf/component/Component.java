@@ -125,12 +125,16 @@ public abstract class Component implements Serializable
    */
   public Component processRequest(HttpServletRequest request)
   {
-    Component toRedirectTo = null;
+    Component redirectTo = null;
     for (Component child : getChildren())
     {
-      toRedirectTo = child.processRequest(request);
+      Component childRedirectTo = child.processRequest(request);
+      if (childRedirectTo != null)
+      {
+        redirectTo = childRedirectTo;
+      }
     }
-    return toRedirectTo;
+    return redirectTo;
   }
 
   /**
