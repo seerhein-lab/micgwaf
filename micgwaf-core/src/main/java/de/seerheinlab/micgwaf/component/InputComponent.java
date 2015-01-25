@@ -84,9 +84,13 @@ public class InputComponent extends HtmlElementComponent
         submitted = true;
         if (!isButton())
         {
-          // in case this component is re-rendered
+          // in case this component is re-rendered, fill value attribute with submitted value
           attributes.put(VALUE_ATTR, submittedValue);
         }
+      }
+      else
+      {
+        submitted = false;
       }
     }
     return super.processRequest(request);
@@ -149,5 +153,16 @@ public class InputComponent extends HtmlElementComponent
       return;
     }
     attributes.put(VALUE_ATTR, value);
+  }
+
+  /**
+   * Returns the value of the "value" attribute.
+   *
+   * @return the value of the "value" attribute, or null if the "value" attribute is not set.
+   *
+   */
+  public String getValue()
+  {
+    return attributes.get(VALUE_ATTR);
   }
 }
