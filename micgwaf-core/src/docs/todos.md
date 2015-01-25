@@ -22,3 +22,4 @@ TODO
 - when example project start class is re-executed, the old execution does not stop automatically
 - change Component to an interface (so one can create an interface which extends Component)
 - implement the editInlineAjax button in the demo
+- validation for inline editing in demo
