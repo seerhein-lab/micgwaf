@@ -166,6 +166,7 @@ public class BookListForm extends BaseBookListForm
     // propagate saved values ro read-only instance in row
     bookRow.setBook(book);
     bookRow.editMode(false);
+    addSaveMessage(book);
     return null;
   }
 
