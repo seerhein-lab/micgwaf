@@ -70,8 +70,8 @@ public abstract class ApplicationBase
   /**
    * Returns the path considered for mounting components.
    * We assume we are running in a servlet filter,
-   * so this implementation returns the path info from the request,
-   * or "/" if the path info is null.
+   * so this implementation returns the servlet path from the request,
+   * or "/" if the servlet path is null or empty.
    *
    * @param request the request, not null.
    *
