@@ -120,7 +120,15 @@ public class HtmlParser
       String fileName = file.getName();
       if (file.isFile() && fileName.endsWith(XHTML_SUFFIX))
       {
-        parseAndStore(file, prefix, componentMap);
+        try
+        {
+          parseAndStore(file, prefix, componentMap);
+        }
+        catch (Exception e)
+        {
+          throw new RuntimeException(
+              "Caught Exception while parsing file " + file.getAbsolutePath() + " : " + e.getMessage(), e);
+        }
       }
       else if (file.isDirectory())
       {
