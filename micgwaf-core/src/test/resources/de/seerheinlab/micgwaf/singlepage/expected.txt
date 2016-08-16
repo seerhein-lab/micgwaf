@@ -9,6 +9,9 @@
         <input name="input1" value="input1" id="input1"></input>
         <input name="input2" value="input2" id="input2"></input>
         <button type="submit" name="submitButton" value="submit" id="submitButton"></button>
+        <ul>
+          <li>list<br />item</li>
+        </ul>
       </form>
     </div>
   </body>

@@ -23,6 +23,12 @@ public class PartListContentHandler extends ContentHandler
 
   private final PartListComponent component = new PartListComponent(null);
 
+  /**
+   * Whether the currently parsed XML element is empty. We assume this is the case until proved otherwise.
+   */
+  private boolean elementEmpty = true;
+
+
   @Override
   public void startElement(
         String uri,
@@ -31,6 +37,7 @@ public class PartListContentHandler extends ContentHandler
         Attributes attributes)
       throws SAXException
   {
+    elementEmpty = true;
     currentStringPart.append("<").append(localName);
     if (attributes != null)
     {
@@ -61,13 +68,24 @@ public class PartListContentHandler extends ContentHandler
   public void endElement(String uri, String localName, String qName)
       throws SAXException
   {
-    currentStringPart.append("</").append(localName).append(">");
+    if (elementEmpty && currentStringPart.length() > 0)
+    {
+      // remove last >
+      currentStringPart.setLength(currentStringPart.length() - 1);
+      currentStringPart.append(" />");
+    }
+    else
+    {
+      currentStringPart.append("</").append(localName).append(">");
+    }
+    elementEmpty = false; // the enclosing element is not empty
   }
 
   @Override
   public void characters(char[] ch, int start, int length)
       throws SAXException
   {
+    elementEmpty = false;
     String characterString = new String(Arrays.copyOfRange(ch, start, start + length));
     extractVariablesAndSnippets(characterString);
   }
