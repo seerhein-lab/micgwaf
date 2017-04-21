@@ -40,7 +40,7 @@ public class UseTemplateComponent extends Component
     }
     if (!(templateCandidate instanceof PartListComponent))
     {
-      throw new IllegalStateException("template must be of class SnippetListComponent but is of class "
+      throw new IllegalStateException("template must be of class PartListComponent but is of class "
           + templateCandidate.getClass().getName());
     }
     template = ((PartListComponent) templateCandidate).copy();
