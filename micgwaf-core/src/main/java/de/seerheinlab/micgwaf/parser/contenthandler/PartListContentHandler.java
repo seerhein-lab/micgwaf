@@ -1,6 +1,9 @@
 package de.seerheinlab.micgwaf.parser.contenthandler;
 
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -19,15 +22,38 @@ public class PartListContentHandler extends ContentHandler
 
   private static final char VARIABLE_DEFAULT_VALUE_SEPARATOR = ':';
 
+  private static final Set<String> VOID_HTML_ELEMENTS;
+
+  static
+  {
+    Set<String> voidHtmlElements = new HashSet<>();
+    voidHtmlElements.add("area");
+    voidHtmlElements.add("base");
+    voidHtmlElements.add("br");
+    voidHtmlElements.add("col");
+    voidHtmlElements.add("embed");
+    voidHtmlElements.add("hr");
+    voidHtmlElements.add("img");
+    voidHtmlElements.add("input");
+    voidHtmlElements.add("keygen");
+    voidHtmlElements.add("link");
+    voidHtmlElements.add("meta");
+    voidHtmlElements.add("param");
+    voidHtmlElements.add("source");
+    voidHtmlElements.add("track");
+    voidHtmlElements.add("wbr");
+    VOID_HTML_ELEMENTS = Collections.unmodifiableSet(voidHtmlElements);
+  }
+
   public StringBuilder currentStringPart = new StringBuilder();
 
   private final PartListComponent component = new PartListComponent(null);
 
   /**
-   * Whether the currently parsed XML element is empty. We assume this is the case until proved otherwise.
+   * Whether the currently parsed XML element is empty or one of the HTML5 void elements.
+   * We assume this is the case until proved otherwise.
    */
-  private boolean elementEmpty = true;
-
+  private boolean elementVoidEmpty = true;
 
   @Override
   public void startElement(
@@ -37,7 +63,7 @@ public class PartListContentHandler extends ContentHandler
         Attributes attributes)
       throws SAXException
   {
-    elementEmpty = true;
+    elementVoidEmpty = VOID_HTML_ELEMENTS.contains(localName);
     currentStringPart.append("<").append(localName);
     if (attributes != null)
     {
@@ -68,7 +94,7 @@ public class PartListContentHandler extends ContentHandler
   public void endElement(String uri, String localName, String qName)
       throws SAXException
   {
-    if (elementEmpty && currentStringPart.length() > 0)
+    if (elementVoidEmpty && currentStringPart.length() > 0)
     {
       // remove last >
       currentStringPart.setLength(currentStringPart.length() - 1);
@@ -78,14 +104,14 @@ public class PartListContentHandler extends ContentHandler
     {
       currentStringPart.append("</").append(localName).append(">");
     }
-    elementEmpty = false; // the enclosing element is not empty
+    elementVoidEmpty = false; // the enclosing element is not empty
   }
 
   @Override
   public void characters(char[] ch, int start, int length)
       throws SAXException
   {
-    elementEmpty = false;
+    elementVoidEmpty = false;
     String characterString = new String(Arrays.copyOfRange(ch, start, start + length));
     extractVariablesAndSnippets(characterString);
   }
