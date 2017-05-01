@@ -87,4 +87,17 @@ public class UseTemplateComponent extends Component
   {
     template.afterRender();
   }
+
+  @Override
+  public String toString()
+  {
+    StringBuilder builder = new StringBuilder();
+    builder.append("UseTemplateComponent [definitions=");
+    builder.append(definitions.keySet());
+    builder.append(", templateId=");
+    builder.append(templateId);
+    builder.append("]");
+    return builder.toString();
+  }
+
 }
