@@ -71,6 +71,12 @@ public class ParseAndRenderTest
     testParseAndRender("variable", "body", 3);
   }
 
+  @Test
+  public void testXmlEscaping() throws Exception
+  {
+    testParseAndRender("xmlEscaping", "root", 1);
+  }
+
   private void testParseAndRender(
       String testSubdir,
       String rootComponentKey,
