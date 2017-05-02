@@ -83,6 +83,7 @@ public class PartListContentHandler extends ContentHandler
         currentStringPart.append(" ")
             .append(attributeName)
             .append("=\"");
+        attributeValue = escapeXmlEntities(attributeValue);
         extractVariablesAndSnippets(attributeValue);
         currentStringPart.append("\"");
       }
@@ -113,7 +114,18 @@ public class PartListContentHandler extends ContentHandler
   {
     elementVoidEmpty = false;
     String characterString = new String(Arrays.copyOfRange(ch, start, start + length));
+    characterString = escapeXmlEntities(characterString);
     extractVariablesAndSnippets(characterString);
+  }
+
+  protected String escapeXmlEntities(String characters)
+  {
+    characters = characters.replace("&", "&amp;");
+    characters = characters.replace("<", "&lt;");
+    characters = characters.replace(">", "&gt;");
+    characters = characters.replace("'", "&apos;");
+    characters = characters.replace("\"", "&quot;");
+    return characters;
   }
 
   /**

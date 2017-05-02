@@ -130,10 +130,17 @@ public class PartListComponent extends Component
 
   /**
    * A part of the SnippetList component.
-   * Contains either a HTML Snippet or a child component.
+   * Contains either a HTML Snippet, a variable reference or a child component.
    */
   public static class ComponentPart implements Cloneable
   {
+    /**
+     * Contains HTML which can be rendered as-is, i.e. no further processing
+     * is necessary for output.
+     * This means that e.g.  XML entities are properly escaped.
+     *
+     * Is only non-null if this part contains a HTML snippet.
+     */
     public String htmlSnippet;
 
     public String variableName;

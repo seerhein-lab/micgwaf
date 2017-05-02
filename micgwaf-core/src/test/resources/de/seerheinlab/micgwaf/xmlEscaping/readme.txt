@@ -1,0 +1,1 @@
+This test checks that xml entity escaping works correctly

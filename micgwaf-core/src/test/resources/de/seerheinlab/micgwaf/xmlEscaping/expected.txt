@@ -1,0 +1,4 @@
+<div id="root">
+  <a href="http://test-with-special-characters?param1&amp;param2"></a>
+  Text &amp; containing &quot; the &apos; xml &lt; special &gt; characters.
+</div>
